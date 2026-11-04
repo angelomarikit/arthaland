@@ -1,6 +1,7 @@
 import { Button } from '../ui/Button'
 import { Container } from '../ui/Container'
 import { sectionImages } from '../../config/sectionImages'
+import { usePageSection } from '../../contexts/PageContentContext'
 
 type PageConsultCtaProps = {
   eyebrow?: string
@@ -9,14 +10,23 @@ type PageConsultCtaProps = {
 }
 
 export function PageConsultCta({
-  eyebrow = 'Consultation',
-  title = 'Explore properties or request a viewing',
-  body = 'Our sales team can share verified development information, coordinate show suites where available, and guide your next steps.',
+  eyebrow: eyebrowProp,
+  title: titleProp,
+  body: bodyProp,
 }: PageConsultCtaProps) {
+  const cms = usePageSection('consultation-cta')
+  const eyebrow = eyebrowProp ?? cms.eyebrow ?? 'Consultation'
+  const title = titleProp ?? cms.title ?? 'Explore properties or request a viewing'
+  const body =
+    bodyProp ??
+    cms.body ??
+    'Our sales team can share verified development information, coordinate show suites where available, and guide your next steps.'
+  const bg = cms.imageUrl ?? sectionImages.closingCta
+
   return (
     <section className="relative overflow-hidden bg-ink text-surface">
       <img
-        src={sectionImages.closingCta}
+        src={bg}
         alt=""
         className="absolute inset-0 size-full object-cover opacity-40"
         loading="lazy"

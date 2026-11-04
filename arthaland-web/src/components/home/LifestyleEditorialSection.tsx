@@ -6,6 +6,7 @@ import { Container } from '../ui/Container'
 import { Eyebrow } from '../ui/Eyebrow'
 import { ImageMaskReveal } from '../motion/ImageMaskReveal'
 import { sectionImages } from '../../config/sectionImages'
+import { usePageSection } from '../../contexts/PageContentContext'
 
 const layers = [
   {
@@ -29,6 +30,7 @@ const layers = [
 ]
 
 export function LifestyleEditorialSection() {
+  const copy = usePageSection('lifestyle')
   const ref = useRef<HTMLElement>(null)
 
   useGsapScope(
@@ -49,16 +51,16 @@ export function LifestyleEditorialSection() {
   return (
     <section ref={ref} className="bg-surface py-24 md:py-32">
       <Container className="section-x">
-        <Eyebrow>Lifestyle</Eyebrow>
+        <Eyebrow>{copy.eyebrow ?? 'Lifestyle'}</Eyebrow>
         <h2
           data-lifestyle-title
           className="text-display-l mt-6 max-w-[14ch] text-ink"
         >
-          Spaces shaped for calm, light, and longevity
+          {copy.title ?? 'Spaces shaped for calm, light, and longevity'}
         </h2>
-        <p className="mt-8 max-w-xl text-title-muted">
-          Editorial glimpses from verified ARTHALAND project photography — interiors,
-          landscapes, and residential facades as published on the official site.
+        <p className="mt-8 max-w-xl text-title-muted whitespace-pre-line">
+          {copy.body ??
+            'Editorial glimpses from verified ARTHALAND project photography — interiors, landscapes, and residential facades as published on the official site.'}
         </p>
 
         <div className="mt-16 grid gap-6 lg:grid-cols-12 lg:gap-8">

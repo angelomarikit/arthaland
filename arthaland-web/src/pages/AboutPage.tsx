@@ -5,6 +5,8 @@ import { Eyebrow } from '../components/ui/Eyebrow'
 import { FadeInWhenVisible } from '../components/page/FadeInWhenVisible'
 import { PageConsultCta } from '../components/page/PageConsultCta'
 import { sectionImages } from '../config/sectionImages'
+import { usePageSection } from '../contexts/PageContentContext'
+import { titleToDisplayLines } from '../lib/cms/pageContentMerge'
 
 const sustainabilityStats = [
   {
@@ -25,6 +27,14 @@ const sustainabilityStats = [
 ]
 
 export function AboutPage() {
+  const hero = usePageSection('hero')
+  const who = usePageSection('who-we-are')
+  const vision = usePageSection('architectural-vision')
+  const statsSection = usePageSection('sustainability-stats')
+  const living = usePageSection('approach-to-living')
+  const sales = usePageSection('sales-channel')
+  const heroLines = titleToDisplayLines(hero.title, ['Building Beyond', 'Expectations.'])
+
   return (
     <>
       <SiteHeader embedded />
@@ -36,10 +46,13 @@ export function AboutPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/25" />
         <Container className="section-x relative flex min-h-[70vh] flex-col justify-end pb-20 pt-32">
-          <Eyebrow dark>About ARTHALAND</Eyebrow>
+          <Eyebrow dark>{hero.eyebrow ?? 'About ARTHALAND'}</Eyebrow>
           <h1 className="text-display-l mt-6 max-w-[14ch] animate-fade-up">
-            <span className="block">Building Beyond</span>
-            <span className="block">Expectations.</span>
+            {heroLines.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
           </h1>
         </Container>
       </section>
@@ -47,16 +60,13 @@ export function AboutPage() {
       <section className="py-20 md:py-28">
         <Container className="section-x grid gap-12 lg:grid-cols-2 lg:gap-16">
           <FadeInWhenVisible>
-            <Eyebrow>Who we are</Eyebrow>
+            <Eyebrow>{who.eyebrow ?? 'Who we are'}</Eyebrow>
             <h2 className="text-heading-3 mt-4">
-              Boutique developments with sustainability at the core
+              {who.title ?? 'Boutique developments with sustainability at the core'}
             </h2>
-            <p className="mt-6 leading-relaxed text-title-muted">
-              ARTHALAND Corporation is a publicly listed Philippine real estate
-              developer focused on thoughtfully scaled residential and commercial
-              projects. The company reports that its portfolio is certified as
-              sustainable by local and global organizations, with a stated
-              commitment to a net-zero development portfolio by 2030.
+            <p className="mt-6 leading-relaxed text-title-muted whitespace-pre-line">
+              {who.body ??
+                'ARTHALAND Corporation is a publicly listed Philippine real estate developer focused on thoughtfully scaled residential and commercial projects. The company reports that its portfolio is certified as sustainable by local and global organizations, with a stated commitment to a net-zero development portfolio by 2030.'}
             </p>
             <p className="mt-4 leading-relaxed text-title-muted">
               Learn more on the corporate site at{' '}
@@ -93,14 +103,13 @@ export function AboutPage() {
         <div className="absolute inset-0 bg-ink/55" />
         <Container className="section-x relative max-w-3xl">
           <FadeInWhenVisible>
-            <Eyebrow dark>Architectural vision</Eyebrow>
+            <Eyebrow dark>{vision.eyebrow ?? 'Architectural vision'}</Eyebrow>
             <h2 className="text-heading-2 mt-4">
-              Design that respects light, landscape, and long-term living
+              {vision.title ?? 'Design that respects light, landscape, and long-term living'}
             </h2>
-            <p className="mt-6 text-lg leading-relaxed text-surface/80">
-              From low-density addresses in Makati to wellness-led towers in Cebu
-              and garden communities in Laguna, ARTHALAND pairs architectural
-              rigor with environments meant to be lived in — not merely viewed.
+            <p className="mt-6 text-lg leading-relaxed text-surface/80 whitespace-pre-line">
+              {vision.body ??
+                'From low-density addresses in Makati to wellness-led towers in Cebu and garden communities in Laguna, ARTHALAND pairs architectural rigor with environments meant to be lived in — not merely viewed.'}
             </p>
           </FadeInWhenVisible>
         </Container>
@@ -109,14 +118,13 @@ export function AboutPage() {
       <section className="bg-surface-soft py-20 md:py-28">
         <Container className="section-x">
           <FadeInWhenVisible>
-            <Eyebrow>Sustainability</Eyebrow>
+            <Eyebrow>{statsSection.eyebrow ?? 'Sustainability'}</Eyebrow>
             <h2 className="text-heading-3 mt-4">
-              Measured progress across the portfolio
+              {statsSection.title ?? 'Measured progress across the portfolio'}
             </h2>
-            <p className="mt-4 max-w-2xl text-title-muted">
-              Figures below reflect corporate reporting published on arthaland.com
-              (December 2025). Individual developments may publish additional
-              certifications and targets.
+            <p className="mt-4 max-w-2xl text-title-muted whitespace-pre-line">
+              {statsSection.body ??
+                'Figures below reflect corporate reporting published on arthaland.com (December 2025). Individual developments may publish additional certifications and targets.'}
             </p>
           </FadeInWhenVisible>
           <ul className="mt-14 grid gap-10 sm:grid-cols-3">
@@ -146,15 +154,13 @@ export function AboutPage() {
             </div>
           </FadeInWhenVisible>
           <FadeInWhenVisible className="order-1 lg:order-2">
-            <Eyebrow>Approach to living</Eyebrow>
+            <Eyebrow>{living.eyebrow ?? 'Approach to living'}</Eyebrow>
             <h2 className="text-heading-3 mt-4">
-              Wellness, community, and responsible design
+              {living.title ?? 'Wellness, community, and responsible design'}
             </h2>
-            <p className="mt-6 leading-relaxed text-title-muted">
-              Potager gardens, efficient envelopes, and amenity programs that
-              encourage movement and connection recur across ARTHALAND projects.
-              The intent is residential environments that feel calm, durable, and
-              aligned with how people actually live.
+            <p className="mt-6 leading-relaxed text-title-muted whitespace-pre-line">
+              {living.body ??
+                'Potager gardens, efficient envelopes, and amenity programs that encourage movement and connection recur across ARTHALAND projects. The intent is residential environments that feel calm, durable, and aligned with how people actually live.'}
             </p>
           </FadeInWhenVisible>
         </Container>
@@ -173,13 +179,13 @@ export function AboutPage() {
             </div>
           </FadeInWhenVisible>
           <FadeInWhenVisible className="flex flex-col justify-center">
-            <Eyebrow>Sales team channel</Eyebrow>
-            <h2 className="text-heading-3 mt-4">Supervised by Mr. Gary Lee</h2>
-            <p className="mt-6 max-w-xl leading-relaxed text-title-muted">
-              This website is the ARTHALAND property sales team channel — distinct
-              from the corporate site. Mr. Gary Lee supervises the team assisting
-              buyers with development information, viewings where available, and
-              inquiry follow-up.
+            <Eyebrow>{sales.eyebrow ?? 'Sales team channel'}</Eyebrow>
+            <h2 className="text-heading-3 mt-4">
+              {sales.title ?? 'Supervised by Mr. Gary Lee'}
+            </h2>
+            <p className="mt-6 max-w-xl leading-relaxed text-title-muted whitespace-pre-line">
+              {sales.body ??
+                'This website is the ARTHALAND property sales team channel — distinct from the corporate site. Mr. Gary Lee supervises the team assisting buyers with development information, viewings where available, and inquiry follow-up.'}
             </p>
             <Button href="/contact" className="mt-8">
               Request a Consultation

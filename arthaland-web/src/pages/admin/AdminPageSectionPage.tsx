@@ -31,7 +31,7 @@ export function AdminPageSectionPage() {
   const [sectionType, setSectionType] = useState(liveSection?.sectionType ?? 'richtext')
   const [displayOrder, setDisplayOrder] = useState(liveSection?.displayOrder ?? 0)
   const [content, setContent] = useState<SectionContent>(liveSection?.content ?? {})
-  const [published, setPublished] = useState(false)
+  const [published, setPublished] = useState(true)
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
@@ -60,20 +60,21 @@ export function AdminPageSectionPage() {
     setMessage(null)
     try {
       const payload = content as Record<string, unknown>
+      const live = published !== false
       if (sectionId) {
-        await updatePageSection(sectionId, { content: payload, published })
+        await updatePageSection(sectionId, { content: payload, published: live })
       } else {
         const id = await upsertPageSection({
           pageSlug: slug,
           sectionKey,
           sectionType,
           content: payload,
-          published,
+          published: live,
           displayOrder,
         })
         setSectionId(id)
       }
-      setMessage('Saved to the CMS. The live site still uses built-in text until this section is connected.')
+      setMessage('Saved — your changes are live on the website. Refresh the public page to see them.')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Save failed')
     } finally {
@@ -149,7 +150,7 @@ export function AdminPageSectionPage() {
           label="Section photo"
           accept="image"
           previewUrl={content.imageUrl}
-          helperText="Optional — for when this section is wired to the live page."
+          helperText="Optional — replaces the default section image on the live site when set."
           onUpload={async (file, onProgress) => {
             const media = await uploadMediaWithMetadata({
               file,
@@ -170,7 +171,7 @@ export function AdminPageSectionPage() {
             checked={published}
             onChange={(e) => setPublished(e.target.checked)}
           />
-          Mark as published in CMS (for future live connection)
+          Published on live site
         </label>
 
         {error && <p className="text-sm text-red-700">{error}</p>}

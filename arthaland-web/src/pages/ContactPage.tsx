@@ -18,6 +18,8 @@ import { siteConfig } from '../config/site'
 import { sectionImages } from '../config/sectionImages'
 import { getInquiryFormDevelopments } from '../data/developments'
 import { submitInquiry } from '../lib/inquiries'
+import { usePageSection } from '../contexts/PageContentContext'
+import { titleToDisplayLines } from '../lib/cms/pageContentMerge'
 
 const schema = z.object({
   firstName: z.string().min(1, 'Required'),
@@ -43,6 +45,12 @@ function FormCorners() {
 }
 
 export function ContactPage() {
+  const hero = usePageSection('hero')
+  const panel = usePageSection('consultation-panel')
+  const heroLines = titleToDisplayLines(hero.title, [
+    'Your Next Chapter',
+    'Starts Here.',
+  ])
   const {
     register,
     handleSubmit,
@@ -69,14 +77,17 @@ export function ContactPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/50 to-ink" />
         <Container className="section-x relative flex min-h-[42vh] flex-col justify-end pb-28 pt-32 md:min-h-[48vh] md:pb-36">
-          <Eyebrow dark>Contact</Eyebrow>
+          <Eyebrow dark>{hero.eyebrow ?? 'Contact'}</Eyebrow>
           <h1 className="text-display-l mt-5 max-w-[12ch] animate-fade-up">
-            <span className="block">Your Next Chapter</span>
-            <span className="block">Starts Here.</span>
+            {heroLines.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
           </h1>
-          <p className="mt-6 max-w-lg text-lg text-surface/75 animate-fade-up animation-delay-150">
-            A private conversation with the ARTHALAND sales team — thoughtful,
-            unhurried, and grounded in verified development information.
+          <p className="mt-6 max-w-lg text-lg text-surface/75 animate-fade-up animation-delay-150 whitespace-pre-line">
+            {hero.body ??
+              'A private conversation with the ARTHALAND sales team — thoughtful, unhurried, and grounded in verified development information.'}
           </p>
         </Container>
       </section>
@@ -95,10 +106,12 @@ export function ContactPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/10" />
               <div className="relative flex h-full min-h-[360px] flex-col justify-between p-8 md:p-10 lg:min-h-[680px] lg:p-12">
                 <div className="max-w-xs">
-                  <p className="text-eyebrow text-surface/60">Consultation</p>
+                  <p className="text-eyebrow text-surface/60">
+                    {panel.eyebrow ?? 'Consultation'}
+                  </p>
                   <p className="mt-4 text-2xl font-light leading-snug tracking-[-0.04em] text-surface md:text-3xl">
-                    Tell us what you are looking for — we will guide you through
-                    the published portfolio.
+                    {panel.title ??
+                      'Tell us what you are looking for — we will guide you through the published portfolio.'}
                   </p>
                 </div>
 

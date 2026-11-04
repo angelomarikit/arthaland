@@ -4,14 +4,22 @@ import { FaqAccordion } from '../faq/FaqAccordion'
 import { faqItems } from '../../data/faqs'
 import { Link } from 'react-router-dom'
 import { siteConfig } from '../../config/site'
+import { usePageSection } from '../../contexts/PageContentContext'
 
 export function HomeFaqSection() {
+  const copy = usePageSection('faq')
   return (
     <section className="bg-surface-soft pb-24 pt-20 md:pb-[130px] md:pt-[120px]">
       <Container className="section-x">
-        <Eyebrow>questions</Eyebrow>
-        <h2 className="text-heading-2 mt-4">The things people ask us first</h2>
-        <p className="mt-4 max-w-xl text-title-muted">
+        <Eyebrow>{copy.eyebrow ?? 'questions'}</Eyebrow>
+        <h2 className="text-heading-2 mt-4">
+          {copy.title ?? 'The things people ask us first'}
+        </h2>
+        <p className="mt-4 max-w-xl text-title-muted whitespace-pre-line">
+          {copy.body ? (
+            copy.body
+          ) : (
+            <>
           If yours is not here, use the Help widget, visit our{' '}
           <Link to="/faq" className="font-medium text-ink underline underline-offset-4">
             FAQ page
@@ -30,6 +38,8 @@ export function HomeFaqSection() {
             {siteConfig.contact.salesEmail}
           </a>
           .
+            </>
+          )}
         </p>
         <div className="mt-12">
           <FaqAccordion items={faqItems.slice(0, 6)} defaultOpenIndex={0} />

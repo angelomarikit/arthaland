@@ -4,6 +4,8 @@ import { Eyebrow } from '../components/ui/Eyebrow'
 import { FadeInWhenVisible } from '../components/page/FadeInWhenVisible'
 import { PageConsultCta } from '../components/page/PageConsultCta'
 import { sectionImages } from '../config/sectionImages'
+import { usePageSection } from '../contexts/PageContentContext'
+import { titleToDisplayLines } from '../lib/cms/pageContentMerge'
 
 const serviceSections = [
   {
@@ -44,6 +46,18 @@ const processSteps = [
 ]
 
 export function ServicesPage() {
+  const hero = usePageSection('hero')
+  const consultation = usePageSection('property-consultation')
+  const discovery = usePageSection('development-discovery')
+  const selection = usePageSection('unit-selection')
+  const viewings = usePageSection('viewing-coordination')
+  const processCopy = usePageSection('process')
+  const heroLines = titleToDisplayLines(hero.title, [
+    'Thoughtful Guidance,',
+    'Every Step of the Way.',
+  ])
+  const cmsByBlock = [consultation, discovery, selection, viewings]
+
   return (
     <>
       <SiteHeader embedded />
@@ -55,19 +69,26 @@ export function ServicesPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/30" />
         <Container className="section-x relative flex min-h-[58vh] flex-col justify-end pb-16 pt-32 md:min-h-[62vh] md:pb-20">
-          <Eyebrow dark>Services</Eyebrow>
+          <Eyebrow dark>{hero.eyebrow ?? 'Services'}</Eyebrow>
           <h1 className="text-display-l mt-5 max-w-[14ch] animate-fade-up">
-            <span className="block">Thoughtful Guidance,</span>
-            <span className="block">Every Step of the Way.</span>
+            {heroLines.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-surface/80 animate-fade-up animation-delay-150">
-            How the ARTHALAND sales team supports buyers exploring verified
-            developments — from first questions through viewing coordination.
+          <p className="mt-6 max-w-xl text-lg text-surface/80 animate-fade-up animation-delay-150 whitespace-pre-line">
+            {hero.subtitle ??
+              hero.body ??
+              'How the ARTHALAND sales team supports buyers exploring verified developments — from first questions through viewing coordination.'}
           </p>
         </Container>
       </section>
 
-      {serviceSections.map((block) => (
+      {serviceSections.map((block, index) => {
+        const copy = cmsByBlock[index]!
+        const imageSrc = copy.imageUrl ?? block.image
+        return (
         <section
           key={block.title}
           className={`py-16 md:py-24 ${block.imageLeft ? 'bg-surface-soft' : ''}`}
@@ -76,10 +97,10 @@ export function ServicesPage() {
             <FadeInWhenVisible
               className={`lg:col-span-5 ${block.imageLeft ? 'lg:order-2' : ''}`}
             >
-              <Eyebrow>{block.eyebrow}</Eyebrow>
-              <h2 className="text-heading-3 mt-4">{block.title}</h2>
-              <p className="mt-5 max-w-md leading-relaxed text-title-muted">
-                {block.body}
+              <Eyebrow>{copy.eyebrow ?? block.eyebrow}</Eyebrow>
+              <h2 className="text-heading-3 mt-4">{copy.title ?? block.title}</h2>
+              <p className="mt-5 max-w-md leading-relaxed text-title-muted whitespace-pre-line">
+                {copy.body ?? block.body}
               </p>
             </FadeInWhenVisible>
             <FadeInWhenVisible
@@ -87,7 +108,7 @@ export function ServicesPage() {
             >
               <div className="aspect-[16/10] overflow-hidden">
                 <img
-                  src={block.image}
+                  src={imageSrc}
                   alt=""
                   className="size-full object-cover"
                   loading="lazy"
@@ -96,17 +117,19 @@ export function ServicesPage() {
             </FadeInWhenVisible>
           </Container>
         </section>
-      ))}
+      )})}
 
       <section className="border-y border-border py-16 md:py-24">
         <Container className="section-x">
           <div className="grid gap-12 lg:grid-cols-12 lg:items-start">
             <FadeInWhenVisible className="lg:col-span-5">
-              <Eyebrow>Process</Eyebrow>
-              <h2 className="text-heading-3 mt-4">Buying process guidance</h2>
-              <p className="mt-5 text-title-muted">
-                Orientation on next steps — always subject to final terms from
-                ARTHALAND and your legal and financial advisors.
+              <Eyebrow>{processCopy.eyebrow ?? 'Process'}</Eyebrow>
+              <h2 className="text-heading-3 mt-4">
+                {processCopy.title ?? 'How we work together'}
+              </h2>
+              <p className="mt-5 text-title-muted whitespace-pre-line">
+                {processCopy.body ??
+                  'Orientation on next steps — always subject to final terms from ARTHALAND and your legal and financial advisors.'}
               </p>
             </FadeInWhenVisible>
             <FadeInWhenVisible className="lg:col-span-7">

@@ -6,6 +6,7 @@ export type PageSectionContent = {
   title?: string
   subtitle?: string
   body?: string
+  imageUrl?: string
 }
 
 export type LivePageSection = {

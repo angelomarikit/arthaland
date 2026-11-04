@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { usePageSection } from '../../contexts/PageContentContext'
 import { getFeaturedDevelopments } from '../../data/developments'
 import { usePublicDevelopmentsList } from '../../hooks/usePublicDevelopments'
 import type { Development } from '../../domain/development/types'
@@ -11,6 +12,7 @@ import { Eyebrow } from '../ui/Eyebrow'
  * Native scroll-snap horizontal gallery (no pin).
  */
 export function FeaturedHorizontalShowcase() {
+  const copy = usePageSection('featured-developments')
   const { items, state, source } = usePublicDevelopmentsList()
 
   const featured = useMemo(() => {
@@ -26,9 +28,9 @@ export function FeaturedHorizontalShowcase() {
   return (
     <section className="bg-ink text-surface py-20 md:py-24 xl:py-28">
       <Container className="section-x">
-        <Eyebrow dark>Featured developments</Eyebrow>
+        <Eyebrow dark>{copy.eyebrow ?? 'Featured developments'}</Eyebrow>
         <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <h2 className="text-heading-2 max-w-[14ch]">Scroll the portfolio</h2>
+          <h2 className="text-heading-2 max-w-[14ch]">{copy.title ?? 'Scroll the portfolio'}</h2>
           <p className="text-sm text-[#bababa]">
             {featured.length} featured developments · swipe on mobile
           </p>

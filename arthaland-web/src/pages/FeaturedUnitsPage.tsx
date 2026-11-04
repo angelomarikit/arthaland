@@ -12,8 +12,10 @@ import {
   uniqueDevelopmentNames,
 } from '../lib/featuredUnitsSearch'
 import { PageConsultCta } from '../components/page/PageConsultCta'
+import { usePageSection } from '../contexts/PageContentContext'
 
 export function FeaturedUnitsPage() {
+  const hero = usePageSection('hero')
   const { items, loading } = usePublicFeaturedUnits()
   const [searchParams, setSearchParams] = useSearchParams()
   const [query, setQuery] = useState(() => searchParams.get('q') ?? '')
@@ -48,13 +50,13 @@ export function FeaturedUnitsPage() {
       <section className="hero-under-header relative min-h-[42vh] overflow-hidden bg-ink text-surface md:min-h-[48vh]">
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/80 to-ink/40" />
         <Container className="section-x relative flex min-h-[42vh] flex-col justify-end pb-16 pt-32 md:min-h-[48vh] md:pb-20">
-          <Eyebrow dark>Marketplace</Eyebrow>
+          <Eyebrow dark>{hero.eyebrow ?? 'Marketplace'}</Eyebrow>
           <h1 className="text-display-l mt-5 max-w-[16ch]">
-            Featured units for sale
+            {hero.title ?? 'Featured units for sale'}
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-surface/80">
-            Curated resale and developer inventory posted by the ARTHALAND sales team —
-            browse photos like a property booking site, then inquire on the unit you want.
+          <p className="mt-6 max-w-xl text-lg text-surface/80 whitespace-pre-line">
+            {hero.body ??
+              'Curated resale and developer inventory posted by the ARTHALAND sales team — browse photos like a property booking site, then inquire on the unit you want.'}
           </p>
         </Container>
       </section>

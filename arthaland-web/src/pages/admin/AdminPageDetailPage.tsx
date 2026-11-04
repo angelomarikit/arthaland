@@ -6,6 +6,7 @@ import {
   getLivePageSections,
   type LivePageSection,
 } from '../../config/pageContentRegistry'
+import { mergeSectionContent } from '../../lib/cms/pageContentMerge'
 import { fetchPageSections } from '../../lib/cms/pagesApi'
 import type { DbPageSection } from '../../lib/supabase/database.types'
 
@@ -33,11 +34,14 @@ function mergeSections(pageSlug: string, dbRows: DbPageSection[]): MergedSection
   return live.map((section) => {
     const db = dbRows.find((r) => r.section_key === section.sectionKey)
     const cmsContent = db?.content as LivePageSection['content'] | undefined
+    const merged = cmsContent
+      ? mergeSectionContent(section.content, cmsContent)
+      : section.content
     return {
       ...section,
       db,
-      onWebsitePreview: formatSectionPreview(section.content),
-      content: cmsContent?.title ? { ...section.content, ...cmsContent } : section.content,
+      onWebsitePreview: formatSectionPreview(merged),
+      content: merged,
     }
   })
 }
@@ -64,9 +68,9 @@ export function AdminPageDetailPage() {
       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-title-muted">
         Each row is a block on the public page. The gray box shows the{' '}
         <strong className="font-medium text-ink">words visitors see today</strong>.
-        Use <strong className="font-medium text-ink">Edit content</strong> to prepare
-        updated copy in the CMS (your developer connects saved sections to the live site
-        over time).
+        Use <strong className="font-medium text-ink">Edit content</strong> to update
+        copy on the live site. Saved sections replace the built-in text shown in the gray
+        preview below.
       </p>
 
       <ul className="mt-8 space-y-4">

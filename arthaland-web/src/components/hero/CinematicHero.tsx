@@ -6,9 +6,11 @@ import { gsap, initGsap } from '../../animation/gsapSetup'
 import { motionDuration, motionEase } from '../../animation/motionTokens'
 import { heroAssets } from '../../config/assets'
 import { siteConfig } from '../../config/site'
+import { usePageSection } from '../../contexts/PageContentContext'
 import { SiteHeader } from '../layout/SiteHeader'
 
 export function CinematicHero() {
+  const cmsHero = usePageSection('hero')
   const reduceMotion = useReducedMotion()
   const desktopVideoRef = useRef<HTMLVideoElement>(null)
   const mobileVideoRef = useRef<HTMLVideoElement>(null)
@@ -16,7 +18,18 @@ export function CinematicHero() {
   const [videoReady, setVideoReady] = useState(false)
 
   const { hero } = siteConfig
+  const heroEyebrow = cmsHero.eyebrow ?? hero.eyebrow
+  const heroHeadline = cmsHero.title ?? hero.headline
+  const heroSubheading = cmsHero.subtitle ?? cmsHero.body ?? hero.subheading
   const posterSrc = heroAssets.poster
+  const headlineLines = heroHeadline.includes('\n')
+    ? heroHeadline.split('\n').map((s) => s.trim()).filter(Boolean)
+    : heroHeadline.split(' ').reduce<string[][]>((acc, word, i) => {
+        const lineIndex = i < 2 ? 0 : 1
+        if (!acc[lineIndex]) acc[lineIndex] = []
+        acc[lineIndex].push(word)
+        return acc
+      }, [])
 
   useEffect(() => {
     if (reduceMotion) return
@@ -149,19 +162,14 @@ export function CinematicHero() {
                 className="text-eyebrow mb-4 flex items-center gap-2 text-surface/90"
               >
                 <span className="size-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
-                {hero.eyebrow}
+                {heroEyebrow}
               </p>
 
               <h1 className="max-w-[14ch] text-[clamp(2.25rem,6.5vw,8.625rem)] font-medium leading-[0.98] tracking-[-0.05em] text-surface">
-                {hero.headline.split(' ').reduce<string[][]>((acc, word, i) => {
-                  const lineIndex = i < 2 ? 0 : 1
-                  if (!acc[lineIndex]) acc[lineIndex] = []
-                  acc[lineIndex].push(word)
-                  return acc
-                }, []).map((words, i) => (
+                {headlineLines.map((line, i) => (
                   <span key={i} className="block overflow-hidden py-[0.04em]">
                     <span data-hero-line className="block">
-                      {words.join(' ')}
+                      {Array.isArray(line) ? line.join(' ') : line}
                     </span>
                   </span>
                 ))}
@@ -171,7 +179,7 @@ export function CinematicHero() {
                 data-hero-fade
                 className="mt-6 max-w-xl text-base leading-relaxed tracking-[-0.02em] text-surface/85 md:text-lg"
               >
-                {hero.subheading}
+                {heroSubheading}
               </p>
 
               <div

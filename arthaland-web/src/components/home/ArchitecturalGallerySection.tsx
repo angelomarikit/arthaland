@@ -3,6 +3,7 @@ import { gsap } from '../../animation/gsapSetup'
 import { motionDuration, motionEase } from '../../animation/motionTokens'
 import { useGsapScope } from '../../animation/useGsapScope'
 import { sectionImages } from '../../config/sectionImages'
+import { usePageSection } from '../../contexts/PageContentContext'
 import { Container } from '../ui/Container'
 import { Eyebrow } from '../ui/Eyebrow'
 
@@ -22,6 +23,7 @@ const columns = [
 ]
 
 export function ArchitecturalGallerySection() {
+  const copy = usePageSection('gallery')
   const ref = useRef<HTMLElement>(null)
 
   useGsapScope(
@@ -42,9 +44,9 @@ export function ArchitecturalGallerySection() {
   return (
     <section ref={ref} className="overflow-hidden bg-stage py-24 md:py-32">
       <Container className="section-x">
-        <Eyebrow>Gallery</Eyebrow>
+        <Eyebrow>{copy.eyebrow ?? 'Gallery'}</Eyebrow>
         <h2 className="text-heading-2 mt-4 max-w-[20ch]">
-          Architectural rhythm across developments
+          {copy.title ?? 'Architectural rhythm across developments'}
         </h2>
       </Container>
 

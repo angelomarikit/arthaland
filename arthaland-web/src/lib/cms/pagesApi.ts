@@ -24,6 +24,11 @@ export async function fetchPageSections(pageSlug: string): Promise<DbPageSection
   return (data ?? []) as DbPageSection[]
 }
 
+/** Saved sections for the public site (same table as admin; merged over built-in copy). */
+export async function fetchPublicPageSections(pageSlug: string): Promise<DbPageSection[]> {
+  return fetchPageSections(pageSlug)
+}
+
 export async function updatePageSection(
   id: string,
   patch: Partial<Pick<DbPageSection, 'content' | 'published' | 'display_order'>>,

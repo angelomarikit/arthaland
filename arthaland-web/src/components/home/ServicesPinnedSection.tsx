@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { sectionImages } from '../../config/sectionImages'
+import { usePageSection } from '../../contexts/PageContentContext'
 import { Container } from '../ui/Container'
 import { Eyebrow } from '../ui/Eyebrow'
 
@@ -30,19 +31,20 @@ const services = serviceCopy.map((s, i) => ({
 
 /** Static services block — no scroll pin/scrub (was causing jank with Lenis). */
 export function ServicesPinnedSection() {
+  const copy = usePageSection('services-preview')
   const [active, setActive] = useState(0)
   const current = services[active]!
 
   return (
     <section className="bg-ink text-surface">
       <Container className="section-x pt-20 md:pt-28">
-        <Eyebrow dark>Services</Eyebrow>
+        <Eyebrow dark>{copy.eyebrow ?? 'Services'}</Eyebrow>
         <h2 className="text-heading-2 mt-4 max-w-[18ch]">
-          Sales-team guidance at every step
+          {copy.title ?? 'Sales-team guidance at every step'}
         </h2>
-        <p className="mt-4 max-w-xl text-sm text-[#bababa]">
-          Service categories are proposed for this channel — confirm scope with the
-          client before publishing as commitments.
+        <p className="mt-4 max-w-xl text-sm text-[#bababa] whitespace-pre-line">
+          {copy.body ??
+            'Service categories are proposed for this channel — confirm scope with the client before publishing as commitments.'}
         </p>
       </Container>
 
