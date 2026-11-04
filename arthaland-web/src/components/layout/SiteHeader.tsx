@@ -10,15 +10,16 @@ import { MobileNavOverlay } from './MobileNavOverlay'
 import { PropertiesNavMenu } from './PropertiesNavMenu'
 
 type SiteHeaderProps = {
-  /** Kept for page layout compatibility; header is always the dark bar. */
+  /** When true, header sits over the page hero (transparent until scroll). */
   embedded?: boolean
 }
 
-export function SiteHeader({ embedded: _embedded = false }: SiteHeaderProps) {
+export function SiteHeader({ embedded = false }: SiteHeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { nav } = siteConfig
   const location = useLocation()
+  const onHero = embedded && !scrolled
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 48)
@@ -34,13 +35,17 @@ export function SiteHeader({ embedded: _embedded = false }: SiteHeaderProps) {
   return (
     <>
       <header
-        className={`sticky top-0 z-30 h-[var(--site-header-h)] bg-ink text-surface transition-shadow duration-500 ${
-          scrolled ? 'shadow-md' : 'shadow-sm'
+        className={`sticky top-0 z-30 h-[var(--site-header-h)] transition-[background-color,box-shadow,backdrop-filter] duration-500 ${
+          onHero
+            ? 'bg-transparent shadow-none [&_nav]:drop-shadow-[0_1px_10px_rgba(0,0,0,0.35)]'
+            : scrolled || !embedded
+              ? 'bg-surface/95 shadow-sm backdrop-blur-md'
+              : 'bg-surface'
         }`}
       >
         <Container className="flex h-full items-center justify-between gap-4 px-6 md:px-8">
           <Link to="/" className="flex min-w-0 shrink-0 items-center">
-            <SiteLogo inverted />
+            <SiteLogo inverted={onHero} />
           </Link>
 
           <nav
@@ -49,14 +54,14 @@ export function SiteHeader({ embedded: _embedded = false }: SiteHeaderProps) {
           >
             {nav.primary.map((item) => {
               if (item.href === '/properties') {
-                return <PropertiesNavMenu key={item.href} onHero />
+                return <PropertiesNavMenu key={item.href} onHero={onHero} />
               }
               const active = location.pathname === item.href
               return (
                 <Link
                   key={item.href}
                   to={item.href}
-                  className={`text-nav text-surface transition-opacity hover:opacity-70 ${active ? 'underline underline-offset-8' : ''}`}
+                  className={`text-nav transition-opacity hover:opacity-70 ${onHero ? 'text-surface' : 'text-ink'} ${active ? 'underline underline-offset-8' : ''}`}
                 >
                   {item.label}
                 </Link>
@@ -66,19 +71,23 @@ export function SiteHeader({ embedded: _embedded = false }: SiteHeaderProps) {
               href={siteConfig.social.facebook}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-surface transition-opacity hover:opacity-70"
+              className={`transition-opacity hover:opacity-70 ${onHero ? 'text-surface' : 'text-ink'}`}
               aria-label="ARTHALAND on Facebook"
             >
               <FacebookIcon className="size-5" />
             </a>
-            <Button href={nav.cta.href} variant="outlineOnDark" size="compact">
+            <Button
+              href={nav.cta.href}
+              variant={onHero ? 'outlineOnDark' : 'default'}
+              size="compact"
+            >
               {nav.cta.label}
             </Button>
           </nav>
 
           <button
             type="button"
-            className="flex size-11 items-center justify-center border border-surface/40 text-surface lg:hidden"
+            className={`flex size-11 items-center justify-center border lg:hidden ${onHero ? 'border-surface/40 text-surface' : 'border-border text-ink'}`}
             aria-label="Open menu"
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen(true)}
