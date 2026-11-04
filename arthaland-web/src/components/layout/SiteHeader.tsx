@@ -10,7 +10,6 @@ import { MobileNavOverlay } from './MobileNavOverlay'
 import { PropertiesNavMenu } from './PropertiesNavMenu'
 
 type SiteHeaderProps = {
-  /** When true, header sits over the page hero (transparent until scroll). */
   embedded?: boolean
 }
 
@@ -45,7 +44,7 @@ export function SiteHeader({ embedded = false }: SiteHeaderProps) {
       >
         <Container className="flex h-full items-center justify-between gap-4 px-6 md:px-8">
           <Link to="/" className="flex min-w-0 shrink-0 items-center">
-            <SiteLogo inverted={onHero} />
+            <SiteLogo inverted={!onHero} />
           </Link>
 
           <nav
