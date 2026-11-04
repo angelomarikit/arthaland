@@ -30,7 +30,29 @@ export function CinematicHero() {
       el.addEventListener('loadeddata', onReady)
       void el.play().catch(() => undefined)
     })
-    return () => nodes.forEach((el) => el.removeEventListener('loadeddata', onReady))
+
+    const section = sectionRef.current
+    let observer: IntersectionObserver | undefined
+    if (section) {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          nodes.forEach((el) => {
+            if (!entry?.isIntersecting) {
+              el.pause()
+            } else {
+              void el.play().catch(() => undefined)
+            }
+          })
+        },
+        { threshold: 0.08 },
+      )
+      observer.observe(section)
+    }
+
+    return () => {
+      observer?.disconnect()
+      nodes.forEach((el) => el.removeEventListener('loadeddata', onReady))
+    }
   }, [reduceMotion])
 
   useEffect(() => {
@@ -74,7 +96,7 @@ export function CinematicHero() {
             trigger: section,
             start: 'top top',
             end: '+=60%',
-            scrub: 0.35,
+            scrub: 0.25,
           },
         })
         .to(content, { opacity: 0, y: -32, ease: 'none' }, 0)

@@ -1,7 +1,8 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import Lenis from 'lenis'
-import { gsap, initGsap, ScrollTrigger } from '../../animation/gsapSetup'
+import { initGsap, ScrollTrigger } from '../../animation/gsapSetup'
+import { connectLenisScrollTrigger } from '../../animation/lenisScrollTrigger'
 import { isDesktopMotion, prefersReducedMotion } from '../../animation/prefersReducedMotion'
 
 type ScrollMotionProviderProps = {
@@ -11,7 +12,8 @@ type ScrollMotionProviderProps = {
 export function ScrollMotionProvider({ children }: ScrollMotionProviderProps) {
   const location = useLocation()
   const lenisRef = useRef<Lenis | null>(null)
-  const tickerRef = useRef<((time: number) => void) | null>(null)
+  const disconnectRef = useRef<(() => void) | null>(null)
+  const refreshTimerRef = useRef<number | null>(null)
 
   useEffect(() => {
     initGsap()
@@ -23,29 +25,20 @@ export function ScrollMotionProvider({ children }: ScrollMotionProviderProps) {
       document.documentElement.classList.add('lenis', 'lenis-smooth')
       document.documentElement.style.scrollBehavior = 'auto'
 
-      // Lerp-only (no duration) — duration-based easing feels laggy behind the wheel.
       const lenis = new Lenis({
-        lerp: 0.12,
+        lerp: 0.15,
         smoothWheel: true,
         syncTouch: false,
-        wheelMultiplier: 0.95,
+        wheelMultiplier: 1,
+        autoRaf: false,
       })
       lenisRef.current = lenis
-
-      lenis.on('scroll', ScrollTrigger.update)
-
-      const ticker = (time: number) => {
-        lenis.raf(time * 1000)
-      }
-      tickerRef.current = ticker
-      gsap.ticker.add(ticker)
+      disconnectRef.current = connectLenisScrollTrigger(lenis)
     }
 
     return () => {
-      if (tickerRef.current) {
-        gsap.ticker.remove(tickerRef.current)
-        tickerRef.current = null
-      }
+      disconnectRef.current?.()
+      disconnectRef.current = null
       lenisRef.current?.destroy()
       lenisRef.current = null
       document.documentElement.classList.remove('lenis', 'lenis-smooth')
@@ -57,8 +50,20 @@ export function ScrollMotionProvider({ children }: ScrollMotionProviderProps) {
   useEffect(() => {
     window.scrollTo(0, 0)
     lenisRef.current?.scrollTo(0, { immediate: true })
-    const id = requestAnimationFrame(() => ScrollTrigger.refresh(true))
-    return () => cancelAnimationFrame(id)
+
+    if (refreshTimerRef.current) {
+      window.clearTimeout(refreshTimerRef.current)
+    }
+    refreshTimerRef.current = window.setTimeout(() => {
+      ScrollTrigger.refresh(false)
+      refreshTimerRef.current = null
+    }, 120)
+
+    return () => {
+      if (refreshTimerRef.current) {
+        window.clearTimeout(refreshTimerRef.current)
+      }
+    }
   }, [location.pathname])
 
   return children

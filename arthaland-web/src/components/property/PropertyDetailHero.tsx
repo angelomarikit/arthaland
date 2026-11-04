@@ -25,9 +25,9 @@ export function PropertyDetailHero({ development }: PropertyDetailHeroProps) {
       })
 
       gsap.to('[data-detail-hero-img]', {
-        yPercent: 12,
-        scale: 1.06,
+        yPercent: 8,
         ease: 'none',
+        force3D: true,
         scrollTrigger: {
           trigger: ref.current,
           start: 'top top',
@@ -45,7 +45,7 @@ export function PropertyDetailHero({ development }: PropertyDetailHeroProps) {
         data-detail-hero-img
         src={development.heroImage}
         alt=""
-        className="absolute inset-0 size-full object-cover will-change-transform"
+        className="absolute inset-0 size-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/20" />
 

@@ -41,7 +41,7 @@ export function ImageMaskReveal({
 
   return (
     <div ref={ref} className={`overflow-hidden ${className}`}>
-      <div data-mask-inner className="size-full will-change-[clip-path,transform]">
+      <div data-mask-inner className="size-full">
         {children}
       </div>
     </div>

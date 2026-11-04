@@ -1,8 +1,7 @@
 import { useRef } from 'react'
 import { gsap } from '../../animation/gsapSetup'
-import { scrollScrub } from '../../animation/motionTokens'
+import { scrollScrub, breakpoints } from '../../animation/motionTokens'
 import { useGsapScope } from '../../animation/useGsapScope'
-import { breakpoints } from '../../animation/motionTokens'
 
 type ParallaxImageProps = {
   src: string
@@ -15,7 +14,7 @@ export function ParallaxImage({
   src,
   alt = '',
   className = '',
-  speed = 12,
+  speed = 8,
 }: ParallaxImageProps) {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -27,6 +26,7 @@ export function ParallaxImage({
         gsap.to('[data-parallax-img]', {
           yPercent: speed,
           ease: 'none',
+          force3D: true,
           scrollTrigger: {
             trigger: ref.current,
             start: 'top bottom',
@@ -48,7 +48,7 @@ export function ParallaxImage({
         data-parallax-img
         src={src}
         alt={alt}
-        className="size-full scale-110 object-cover will-change-transform"
+        className="size-full scale-110 object-cover"
         loading="lazy"
         decoding="async"
       />
