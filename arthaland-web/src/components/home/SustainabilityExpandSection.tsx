@@ -54,15 +54,6 @@ export function SustainabilityExpandSection() {
           0.35,
         )
       })
-
-      mm.add('(max-width: 1023px)', () => {
-        gsap.from(copyRef.current, {
-          y: 24,
-          opacity: 0,
-          duration: 0.8,
-          scrollTrigger: { trigger: wrapRef.current, start: 'top 80%' },
-        })
-      })
     },
     [],
   )
@@ -78,22 +69,25 @@ export function SustainabilityExpandSection() {
           Figures below are corporate highlights from arthaland.com (December 2025).
         </p>
       </Container>
+
       <Container className="section-x flex justify-center">
         <div
           ref={mediaRef}
-          className="relative mx-auto overflow-hidden will-change-[width,height]"
-          style={{ width: '100%', height: 'min(52vh, 480px)' }}
+          className="relative mx-auto w-full overflow-hidden lg:will-change-[width,height]"
+          style={{ height: 'min(52vh, 480px)' }}
         >
           <img
             src={sectionImages.sustainability}
             alt=""
             className="absolute inset-0 size-full object-cover"
-            loading="lazy"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-ink/35" />
           <div
             ref={copyRef}
-            className="relative hidden h-full flex-col justify-end p-8 text-surface md:p-14 lg:flex"
+            className="relative hidden h-full min-h-[min(52vh,480px)] flex-col justify-end p-8 text-surface md:p-14 lg:flex lg:min-h-0"
           >
             <Eyebrow dark>Sustainability</Eyebrow>
             <h2 className="text-heading-2 mt-4 max-w-[18ch]">
@@ -114,6 +108,7 @@ export function SustainabilityExpandSection() {
           </div>
         </div>
       </Container>
+
       <Container className="section-x mt-12 lg:hidden">
         <div className="grid gap-8 sm:grid-cols-2">
           {stats.map((stat) => (

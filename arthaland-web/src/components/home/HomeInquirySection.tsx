@@ -18,7 +18,7 @@ export function HomeInquirySection() {
           </p>
           <div className="mt-10 hidden aspect-[4/3] overflow-hidden lg:block">
             <img
-              src={sectionImages.contactBg}
+              src={sectionImages.inquirySide}
               alt=""
               className="size-full object-cover"
               loading="lazy"

@@ -93,7 +93,7 @@ export const assetRegistry: AssetRecord[] = [
 ]
 
 /** Bump `v` when replacing hero media so browsers pick up new encodes. */
-const heroMediaVersion = 5
+const heroMediaVersion = 6
 
 export const heroAssets = {
   poster: `/assets/hero/arthaland-hero-poster.webp?v=${heroMediaVersion}`,

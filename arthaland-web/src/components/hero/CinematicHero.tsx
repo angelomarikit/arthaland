@@ -78,7 +78,7 @@ export function CinematicHero() {
           },
         })
         .to(content, { opacity: 0, y: -48, ease: 'none' }, 0)
-        .to(overlay, { opacity: 0.92, ease: 'none' }, 0)
+        .to(overlay, { opacity: 0.75, ease: 'none' }, 0)
     }, section)
 
     return () => ctx.revert()
@@ -136,7 +136,7 @@ export function CinematicHero() {
             aria-hidden
           />
           <div
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-52 bg-gradient-to-t from-surface via-surface/90 to-transparent"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-surface via-surface/75 to-transparent md:h-40"
             aria-hidden
           />
 
@@ -198,7 +198,7 @@ export function CinematicHero() {
           <a
             href="#introduction"
             data-hero-scroll-hint
-            className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2 text-surface/80 transition-colors hover:text-surface max-sm:bottom-4"
+            className="absolute bottom-14 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2 rounded-full bg-ink/35 px-4 py-2 text-surface/90 backdrop-blur-sm transition-colors hover:bg-ink/50 hover:text-surface md:bottom-16"
           >
             <span className="text-eyebrow">Scroll</span>
             <ChevronDown className="size-5 animate-[bounce_2s_ease-in-out_infinite]" />

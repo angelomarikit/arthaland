@@ -136,12 +136,12 @@ export const developments: Development[] = [
     type: 'Mixed-Use',
     status: 'Inquire for Availability',
     priceLabel: 'Price Upon Request',
-    featured: true,
-    published: true,
+    featured: false,
+    published: false,
     heroImage: '/assets/properties/una-apartments/exterior-hero.jpeg',
     gallery: ['/assets/properties/una-apartments/exterior-hero.jpeg'],
     sourceNote:
-      'Dedicated Sevina Park hero asset blocked for automated download (imgix 403). Image shows Una Apartments within Sevina Park until authorized media is supplied.',
+      'Unpublished until dedicated Sevina Park photography is authorized (was reusing Una construction image).',
     summary:
       'An 8.1-hectare masterplanned community with 60% green and open spaces, including villas and Una Apartments.',
     overview:
@@ -170,9 +170,11 @@ export const developments: Development[] = [
     priceLabel: 'Inquire for Availability',
     bedroomsRange: 'Studio – 2 Bedroom',
     featured: false,
-    published: true,
+    published: false,
     heroImage: '/assets/properties/liv/exterior-hero.png',
     gallery: ['/assets/properties/liv/exterior-hero.png'],
+    sourceNote:
+      'Unpublished — current asset is a campaign graphic, not building photography.',
     summary:
       'A vertical neighborhood in Katipunan with adaptable layouts and quadruple sustainability certification targets.',
     overview:
@@ -200,8 +202,11 @@ export const developments: Development[] = [
     bedroomsRange: '1–3 Bedroom + Garden units',
     featured: false,
     published: true,
-    heroImage: '/assets/properties/sondris/exterior-hero.png',
-    gallery: ['/assets/properties/sondris/exterior-hero.png'],
+    heroImage: '/assets/properties/sondris/exterior-hero.webp',
+    gallery: [
+      '/assets/properties/sondris/exterior-hero.webp',
+      '/assets/properties/sondris/exterior-hero.png',
+    ],
     summary:
       'A 37-story green residential tower along Arnaiz Avenue developed by ARTHALAND and Mitsui Fudosan (Asia).',
     overview:
