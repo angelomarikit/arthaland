@@ -175,7 +175,7 @@
   }
 
   .cert-marquee-inner {
-    animation: cert-marquee-ltr 42s linear infinite;
+    animation: cert-marquee-ltr 21s linear infinite;
     will-change: transform;
   }
 
