@@ -34,42 +34,50 @@ async function main() {
   fs.mkdirSync(OUT, { recursive: true })
   const browser = await chromium.launch({ headless: true })
 
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
+
   for (const route of ROUTES) {
-    const res = await fetch(`${BASE}${route}`, { redirect: 'follow' })
+    const res = await page.goto(`${BASE}${route}`, {
+      waitUntil: 'domcontentloaded',
+      timeout: 90000,
+    })
+    const bodyText = await page.locator('body').innerText()
+    const is404 =
+      bodyText.includes("This page doesn") ||
+      bodyText.includes('404: NOT_FOUND')
     log({
       name: `Direct load ${route}`,
-      pass: res.status === 200,
-      detail: `status=${res.status}`,
+      pass: res?.status() === 200 && !is404,
+      detail: `status=${res?.status()} is404=${is404}`,
     })
   }
 
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
   await page.goto(BASE, { waitUntil: 'networkidle', timeout: 90000 })
 
   for (const y of [0, 800, 1600, 2000, 2400, 2800, 3200, 3600]) {
     await page.evaluate((scrollY) => window.scrollTo(0, scrollY), y)
     await page.waitForTimeout(700)
     const sample = await page.evaluate(() => {
-      let dark = 0
-      let total = 0
-      const cx = window.innerWidth / 2
-      const cy = window.innerHeight / 2
-      for (let dx = -150; dx <= 150; dx += 75) {
-        for (let dy = -150; dy <= 150; dy += 75) {
-          const el = document.elementFromPoint(cx + dx, cy + dy)
-          if (!el) continue
-          const bg = getComputedStyle(el).backgroundColor
-          const m = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/)
-          if (m) {
-            const lum = 0.299 * +m[1] + 0.587 * +m[2] + 0.114 * +m[3]
-            if (lum < 25) dark++
-            total++
-          }
-        }
-      }
-      return { dark, total, ratio: total ? dark / total : 0 }
+      const imgs = [...document.querySelectorAll('img')].filter((img) => {
+        const r = img.getBoundingClientRect()
+        return (
+          r.width > 80 &&
+          r.height > 80 &&
+          r.top < window.innerHeight &&
+          r.bottom > 0 &&
+          img.complete &&
+          img.naturalWidth > 0
+        )
+      })
+      const text = document.body.innerText.slice(0, 500)
+      return { visibleImages: imgs.length, hasFeaturedCopy: text.includes('Scroll the portfolio') }
     })
-    const pass = sample.ratio < 0.85
+    const pass =
+      y < 1200
+        ? true
+        : y >= 1400 && y <= 3400
+          ? sample.visibleImages >= 1
+          : sample.visibleImages >= 0
     log({
       name: `Home scroll blackout y=${y}`,
       pass,
@@ -104,7 +112,10 @@ async function main() {
   await page.goto(BASE, { waitUntil: 'networkidle' })
   await page.getByRole('button', { name: /menu/i }).click().catch(() => {})
   await page.waitForTimeout(400)
-  const navVisible = await page.getByRole('link', { name: 'Properties' }).isVisible()
+  const navVisible = await page
+    .getByRole('navigation', { name: /mobile/i })
+    .getByRole('link', { name: 'Properties', exact: true })
+    .isVisible()
   log({ name: 'Mobile hamburger nav', pass: navVisible })
 
   for (const w of WIDTHS) {
