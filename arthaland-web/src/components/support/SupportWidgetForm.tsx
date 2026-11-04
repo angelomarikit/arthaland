@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { getPublishedDevelopments } from '../../data/developments'
+import { getInquiryFormDevelopments } from '../../data/developments'
 import { submitInquiry } from '../../lib/inquiries'
 import { Button } from '../ui/Button'
 import {
@@ -106,7 +106,7 @@ export function SupportWidgetForm({ onSuccess }: { onSuccess?: () => void }) {
         </label>
         <select id="widget-development" className={formInputClass} {...register('development')}>
           <option value="">Select…</option>
-          {getPublishedDevelopments().map((d) => (
+          {getInquiryFormDevelopments().map((d) => (
             <option key={d.slug} value={d.slug}>
               {d.name}
             </option>

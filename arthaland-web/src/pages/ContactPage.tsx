@@ -16,7 +16,7 @@ import {
 } from '../components/forms/formStyles'
 import { siteConfig } from '../config/site'
 import { sectionImages } from '../config/sectionImages'
-import { getPublishedDevelopments } from '../data/developments'
+import { getInquiryFormDevelopments } from '../data/developments'
 import { submitInquiry } from '../lib/inquiries'
 
 const schema = z.object({
@@ -234,7 +234,7 @@ export function ContactPage() {
                       {...register('development')}
                     >
                       <option value="">Optional — select a development</option>
-                      {getPublishedDevelopments().map((d) => (
+                      {getInquiryFormDevelopments().map((d) => (
                         <option key={d.slug} value={d.slug}>
                           {d.name}
                         </option>

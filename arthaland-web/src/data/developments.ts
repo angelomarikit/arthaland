@@ -18,6 +18,7 @@ export {
   getDevelopmentMedia,
   getDevelopments,
   getFeaturedDevelopments,
+  getInquiryFormDevelopments,
   getPortfolioDevelopments,
   getNavigationDevelopments,
   getPrimaryFeaturedDevelopment,

@@ -53,6 +53,11 @@ export function getPublishedDevelopments(): Development[] {
   return getDevelopments().filter((d) => d.publicationStatus === 'published')
 }
 
+/** Inquiry / contact forms — full portfolio list (matches main nav). */
+export function getInquiryFormDevelopments(): Development[] {
+  return getDevelopments()
+}
+
 export function getFeaturedDevelopments(): Development[] {
   return getPublishedDevelopments().filter((d) => d.featured)
 }

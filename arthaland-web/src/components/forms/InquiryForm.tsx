@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { getPublishedDevelopments } from '../../data/developments'
+import { getInquiryFormDevelopments } from '../../data/developments'
 import { salesPhoneDisplayList } from '../contact/SalesContactBlock'
 import { submitInquiry } from '../../lib/inquiries'
 import { Button } from '../ui/Button'
@@ -36,7 +36,7 @@ function splitName(fullName: string) {
 }
 
 export function InquiryForm({ source, className = '' }: InquiryFormProps) {
-  const developments = getPublishedDevelopments()
+  const developments = getInquiryFormDevelopments()
   const {
     register,
     handleSubmit,
