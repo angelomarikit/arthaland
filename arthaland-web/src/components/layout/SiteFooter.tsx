@@ -59,24 +59,21 @@ export function SiteFooter() {
               {line}
             </p>
           ))}
-          {footer.office.email ? (
-            <p className="mt-4">
-              <a
-                href={`mailto:${footer.office.email}`}
-                className="text-sm text-accent transition-opacity hover:opacity-80"
-              >
-                {footer.office.email}
-              </a>
-            </p>
-          ) : null}
-          <p className="mt-2">
+          <p className="mt-4">
             <a
-              href={`tel:${footer.office.phone.replace(/\s/g, '')}`}
-              className="text-sm text-[#bababa] hover:text-surface"
+              href={`mailto:${siteConfig.contact.salesEmail}`}
+              className="text-sm text-accent transition-opacity hover:opacity-80"
             >
-              {footer.office.phone}
+              {siteConfig.contact.salesEmail}
             </a>
           </p>
+          {siteConfig.contact.salesPhones.map((p) => (
+            <p key={p.tel} className="mt-2">
+              <a href={`tel:${p.tel}`} className="text-sm text-[#bababa] hover:text-surface">
+                {p.display}
+              </a>
+            </p>
+          ))}
           <p className="mt-6">
             <a
               href={siteConfig.social.facebook}

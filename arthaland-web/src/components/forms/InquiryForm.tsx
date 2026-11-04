@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { getPublishedDevelopments } from '../../data/developments'
+import { salesPhoneDisplayList } from '../contact/SalesContactBlock'
 import { submitInquiry } from '../../lib/inquiries'
 import { Button } from '../ui/Button'
 
@@ -68,7 +69,7 @@ export function InquiryForm({ source, className = '' }: InquiryFormProps) {
       reset({ privacy: false })
     } catch {
       setSubmitError(
-        'We could not send your inquiry. Please try again or call +63 2 8403 6910.',
+        `We could not send your inquiry. Please try again or call ${salesPhoneDisplayList()}.`,
       )
     }
   }

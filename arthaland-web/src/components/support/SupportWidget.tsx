@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MessageCircle, X, Phone, ChevronRight } from 'lucide-react'
+import { siteConfig } from '../../config/site'
 import { faqItems } from '../../data/faqs'
 import { FaqAccordion } from '../faq/FaqAccordion'
 import { SupportWidgetForm } from './SupportWidgetForm'
@@ -101,15 +102,25 @@ export function SupportWidget() {
                   </span>
                   <ChevronRight className="size-5 shrink-0 text-title-muted" />
                 </button>
+                {siteConfig.contact.salesPhones.map((p) => (
+                  <a
+                    key={p.tel}
+                    href={`tel:${p.tel}`}
+                    className="btn-tile flex items-center gap-3 px-4 py-4"
+                  >
+                    <Phone className="size-5 shrink-0" aria-hidden />
+                    <span>
+                      <span className="block text-sm text-title-muted">Call sales</span>
+                      <span className="font-medium">{p.display}</span>
+                    </span>
+                  </a>
+                ))}
                 <a
-                  href="tel:+63284036910"
+                  href={`mailto:${siteConfig.contact.salesEmail}`}
                   className="btn-tile flex items-center gap-3 px-4 py-4"
                 >
-                  <Phone className="size-5 shrink-0" aria-hidden />
-                  <span>
-                    <span className="block text-sm text-title-muted">Call office</span>
-                    <span className="font-medium">+63 2 8403 6910</span>
-                  </span>
+                  <span className="text-sm text-title-muted">Email</span>
+                  <span className="font-medium">{siteConfig.contact.salesEmail}</span>
                 </a>
                 <Link
                   to="/contact"

@@ -265,3 +265,69 @@ export async function fetchDashboardStats(): Promise<{
     missingHero,
   }
 }
+
+export async function fetchInquiryAnalytics(): Promise<{
+  totalAllTime: number
+  last14Days: { label: string; value: number }[]
+  byDevelopment: { label: string; value: number }[]
+  bySource: { label: string; value: number }[]
+}> {
+  const empty = {
+    totalAllTime: 0,
+    last14Days: [] as { label: string; value: number }[],
+    byDevelopment: [] as { label: string; value: number }[],
+    bySource: [] as { label: string; value: number }[],
+  }
+  const supabase = getSupabaseClient()
+  if (!supabase) return empty
+
+  const since = new Date(Date.now() - 14 * 864e5).toISOString()
+  const { data, error } = await supabase
+    .from('inquiries')
+    .select('created_at, development_slug, source')
+    .gte('created_at', since)
+    .order('created_at', { ascending: true })
+
+  if (error) throw error
+  const rows = data ?? []
+
+  const { count: totalAllTime } = await supabase
+    .from('inquiries')
+    .select('*', { count: 'exact', head: true })
+
+  const dayBuckets: Record<string, number> = {}
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date()
+    d.setDate(d.getDate() - i)
+    const key = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    dayBuckets[key] = 0
+  }
+  for (const row of rows) {
+    const key = new Date(row.created_at).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    })
+    if (key in dayBuckets) dayBuckets[key] += 1
+  }
+
+  const devCounts: Record<string, number> = {}
+  const srcCounts: Record<string, number> = {}
+  for (const row of rows) {
+    const dev = row.development_slug || 'General / not specified'
+    devCounts[dev] = (devCounts[dev] ?? 0) + 1
+    const src = row.source || 'website'
+    srcCounts[src] = (srcCounts[src] ?? 0) + 1
+  }
+
+  return {
+    totalAllTime: totalAllTime ?? 0,
+    last14Days: Object.entries(dayBuckets).map(([label, value]) => ({ label, value })),
+    byDevelopment: Object.entries(devCounts)
+      .map(([label, value]) => ({ label, value }))
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 8),
+    bySource: Object.entries(srcCounts)
+      .map(([label, value]) => ({ label, value }))
+      .sort((a, b) => b.value - a.value),
+  }
+}

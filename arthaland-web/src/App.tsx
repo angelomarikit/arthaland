@@ -111,6 +111,11 @@ const AdminSettingsPage = lazy(() =>
     default: m.AdminSettingsPage,
   })),
 )
+const AdminSiteImagesPage = lazy(() =>
+  import('./pages/admin/AdminSiteImagesPage').then((m) => ({
+    default: m.AdminSiteImagesPage,
+  })),
+)
 
 function PageFallback() {
   return <div className="min-h-[40vh] bg-surface" aria-hidden />
@@ -141,6 +146,7 @@ export default function App() {
             <Route element={<AdminGuard />}>
               <Route element={<AdminLayout />}>
                 <Route path="admin" element={<AdminDashboardPage />} />
+                <Route path="admin/site-images" element={<AdminSiteImagesPage />} />
                 <Route path="admin/pages" element={<AdminPagesPage />} />
                 <Route path="admin/pages/:slug" element={<AdminPageDetailPage />} />
                 <Route

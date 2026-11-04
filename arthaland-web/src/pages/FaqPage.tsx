@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button'
 import { FaqAccordion } from '../components/faq/FaqAccordion'
 import { faqItems } from '../data/faqs'
 import { PageConsultCta } from '../components/page/PageConsultCta'
+import { siteConfig } from '../config/site'
 
 export function FaqPage() {
   return (
@@ -34,9 +35,11 @@ export function FaqPage() {
           <FaqAccordion items={faqItems} defaultOpenIndex={0} />
           <div className="mt-12 flex flex-wrap gap-4 border-t border-border pt-10">
             <Button href="/contact">Contact sales team</Button>
-            <Button href="tel:+63284036910" variant="outline" size="compact">
-              +63 2 8403 6910
-            </Button>
+            {siteConfig.contact.salesPhones.map((p) => (
+              <Button key={p.tel} href={`tel:${p.tel}`} variant="outline" size="compact">
+                {p.display}
+              </Button>
+            ))}
           </div>
         </Container>
       </section>

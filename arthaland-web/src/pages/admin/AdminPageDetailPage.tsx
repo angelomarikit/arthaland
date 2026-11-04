@@ -22,7 +22,12 @@ export function AdminPageDetailPage() {
       />
       <h1 className="text-2xl font-medium capitalize">{slug} sections</h1>
       <p className="mt-2 text-sm text-title-muted">
-        Reorder and edit each section. Seed sections in SQL as needed.
+        Choose a section to edit headings, text, and photos. Need to know which
+        image is live today? See{' '}
+        <Link to="/admin/site-images" className="underline">
+          Where images appear
+        </Link>
+        .
       </p>
       <ul className="mt-8 space-y-2">
         {sections.map((s) => (

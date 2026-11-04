@@ -1,7 +1,8 @@
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ArrowUpRight, MapPin, Phone } from 'lucide-react'
+import { ArrowUpRight, MapPin } from 'lucide-react'
+import { SalesContactBlock } from '../components/contact/SalesContactBlock'
 import { SiteHeader } from '../components/layout/SiteHeader'
 import { Button } from '../components/ui/Button'
 import { Container } from '../components/ui/Container'
@@ -116,20 +117,8 @@ export function ContactPage() {
                         </p>
                       </div>
                     </div>
-                    <div className="mt-6 flex gap-4 border-t border-surface/15 pt-6">
-                      <Phone className="mt-1 size-5 shrink-0 text-surface/70" aria-hidden />
-                      <div>
-                        <p className="text-nav text-surface/55">Phone</p>
-                        <a
-                          href="tel:+63284036910"
-                          className="mt-2 block text-2xl font-light tracking-[-0.03em] text-surface transition-opacity hover:opacity-80"
-                        >
-                          +63 2 8403 6910
-                        </a>
-                        <p className="mt-2 text-xs text-surface/50">
-                          Corporate office line · arthaland.com
-                        </p>
-                      </div>
+                    <div className="mt-6 border-t border-surface/15 pt-6">
+                      <SalesContactBlock variant="dark" />
                     </div>
                   </div>
 

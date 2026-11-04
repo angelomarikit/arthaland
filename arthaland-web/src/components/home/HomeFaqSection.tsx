@@ -3,6 +3,7 @@ import { Eyebrow } from '../ui/Eyebrow'
 import { FaqAccordion } from '../faq/FaqAccordion'
 import { faqItems } from '../../data/faqs'
 import { Link } from 'react-router-dom'
+import { siteConfig } from '../../config/site'
 
 export function HomeFaqSection() {
   return (
@@ -15,11 +16,20 @@ export function HomeFaqSection() {
           <Link to="/faq" className="font-medium text-ink underline underline-offset-4">
             FAQ page
           </Link>
-          , or call{' '}
-          <a href="tel:+63284036910" className="underline">
-            +63 2 8403 6910
-          </a>{' '}
-          (ARTHALAND corporate office, per arthaland.com).
+          , call{' '}
+          {siteConfig.contact.salesPhones.map((p, i) => (
+            <span key={p.tel}>
+              {i > 0 ? ' or ' : ''}
+              <a href={`tel:${p.tel}`} className="underline">
+                {p.display}
+              </a>
+            </span>
+          ))}{' '}
+          , or email{' '}
+          <a href={`mailto:${siteConfig.contact.salesEmail}`} className="underline">
+            {siteConfig.contact.salesEmail}
+          </a>
+          .
         </p>
         <div className="mt-12">
           <FaqAccordion items={faqItems.slice(0, 6)} defaultOpenIndex={0} />

@@ -5,6 +5,7 @@ import {
   ImageIcon,
   LayoutDashboard,
   Mail,
+  Map,
   Settings,
   Users,
 } from 'lucide-react'
@@ -31,6 +32,7 @@ export const adminNavGroups: AdminNavGroup[] = [
     id: 'website',
     label: 'Website',
     items: [
+      { label: 'Where images appear', href: '/admin/site-images', icon: Map },
       { label: 'Pages', href: '/admin/pages', icon: FileText },
       { label: 'Media Library', href: '/admin/media', icon: ImageIcon },
     ],

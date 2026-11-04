@@ -15,6 +15,14 @@ export const siteConfig = {
   social: {
     facebook: 'https://www.facebook.com/arthaland',
   },
+  /** Property sales team — shown on Contact, footer, widget, FAQ */
+  contact: {
+    salesEmail: 'gelee@partners.arthaland.com',
+    salesPhones: [
+      { display: '0927 372 2697', tel: '+639273722697' },
+      { display: '0918 902 8888', tel: '+639189028888' },
+    ],
+  },
   nav: {
     primary: [
       { label: 'Home', href: '/' },
@@ -66,8 +74,8 @@ export const siteConfig = {
         'Arthaland Century Pacific Tower',
         '5th Avenue corner 30th Street, Taguig City, 1634',
       ],
-      email: '',
-      phone: '+63 2 8403 6910',
+      email: 'gelee@partners.arthaland.com',
+      phone: '0927 372 2697',
     },
     copyright: '© 2026 ARTHALAND Corporation. Sales team site by Apex Technology.',
   },
