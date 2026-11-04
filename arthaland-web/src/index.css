@@ -174,6 +174,39 @@
     }
   }
 
+  .cert-marquee-inner {
+    animation: cert-marquee-ltr 42s linear infinite;
+    will-change: transform;
+  }
+
+  @keyframes cert-marquee-ltr {
+    from {
+      transform: translateX(-50%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cert-marquee-inner {
+      animation: none;
+      width: 100%;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 2.5rem;
+      padding-inline: 1.5rem;
+    }
+
+    .cert-marquee-viewport {
+      overflow: visible;
+    }
+
+    .cert-marquee-inner li:nth-child(n + 5) {
+      display: none;
+    }
+  }
+
   .editorial-list li {
     position: relative;
     padding-left: 1.25rem;

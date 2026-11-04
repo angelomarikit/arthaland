@@ -1,4 +1,5 @@
 import { CinematicHero } from '../components/hero/CinematicHero'
+import { CertificationLogoMarquee } from '../components/home/CertificationLogoMarquee'
 import { PropertyDiscoveryBar } from '../components/property/PropertyDiscoveryBar'
 import { ArchitecturalGallerySection } from '../components/home/ArchitecturalGallerySection'
 import { ClosingCtaSection } from '../components/home/ClosingCtaSection'
@@ -14,6 +15,7 @@ export function HomePage() {
   return (
     <>
       <CinematicHero />
+      <CertificationLogoMarquee />
       <PropertyDiscoveryBar />
       <EditorialIntroSection />
       <FeaturedHorizontalShowcase />
