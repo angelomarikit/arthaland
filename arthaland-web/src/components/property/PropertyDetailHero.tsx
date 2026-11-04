@@ -7,7 +7,7 @@ type PropertyDetailHeroProps = {
 
 export function PropertyDetailHero({ development }: PropertyDetailHeroProps) {
   return (
-    <section className="relative min-h-[72vh] overflow-hidden bg-ink text-surface">
+    <section className="hero-under-header relative min-h-[72vh] overflow-hidden bg-ink text-surface">
       <img
         src={development.heroImage}
         alt=""

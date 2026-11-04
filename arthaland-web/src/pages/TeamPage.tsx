@@ -29,7 +29,7 @@ export function TeamPage() {
   return (
     <>
       <SiteHeader embedded />
-      <section className="relative min-h-[55vh] overflow-hidden bg-ink text-surface md:min-h-[60vh]">
+      <section className="hero-under-header relative min-h-[55vh] overflow-hidden bg-ink text-surface md:min-h-[60vh]">
         <img
           src={sectionImages.teamHero}
           alt=""

@@ -60,7 +60,7 @@ export function ContactPage() {
   return (
     <>
       <SiteHeader embedded />
-      <section className="relative min-h-[42vh] overflow-hidden bg-ink text-surface md:min-h-[48vh]">
+      <section className="hero-under-header relative min-h-[42vh] overflow-hidden bg-ink text-surface md:min-h-[48vh]">
         <img
           src={sectionImages.contactBg}
           alt=""

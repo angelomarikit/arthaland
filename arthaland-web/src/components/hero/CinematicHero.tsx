@@ -91,10 +91,10 @@ export function CinematicHero() {
     `absolute inset-0 size-full object-cover transition-opacity duration-700 ${videoReady ? 'opacity-100' : 'opacity-0'} ${mobile ? 'object-[center_38%] md:hidden' : 'hidden md:block'}`
 
   return (
-    <section ref={sectionRef} className="relative bg-ink">
+    <section ref={sectionRef} className="relative">
       <SiteHeader embedded />
 
-      <div className="relative isolate w-full overflow-hidden">
+      <div className="hero-under-header relative isolate w-full overflow-hidden bg-ink">
         <div className="relative mx-auto min-h-[min(782px,92vh)] w-full max-w-[1920px]">
           {!reduceMotion && (
             <>

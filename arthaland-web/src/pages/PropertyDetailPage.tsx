@@ -11,15 +11,24 @@ import { PropertyFloorPlansSection } from '../components/property/PropertyFloorP
 import { PropertyGallery } from '../components/property/PropertyGallery'
 import { PropertyUnitTypesSection } from '../components/property/PropertyUnitTypesSection'
 import { PropertyVideoSection } from '../components/property/PropertyVideoSection'
-import {
-  getDevelopmentBySlug,
-  getPortfolioDevelopments,
-  getUnitTypesByDevelopment,
-} from '../data/repositories/developmentRepository'
+import { getPortfolioDevelopments, getUnitTypesByDevelopment } from '../data/repositories/developmentRepository'
+import { usePublicDevelopment, usePublicDevelopmentsList } from '../hooks/usePublicDevelopments'
 
 export function PropertyDetailPage() {
   const { slug } = useParams()
-  const development = slug ? getDevelopmentBySlug(slug) : undefined
+  const { development, state } = usePublicDevelopment(slug)
+  const { items: portfolioList } = usePublicDevelopmentsList()
+
+  if (state === 'loading') {
+    return (
+      <>
+        <SiteHeader />
+        <Container className="section-x py-32">
+          <p className="text-title-muted">Loading development…</p>
+        </Container>
+      </>
+    )
+  }
 
   if (!development) {
     return (
@@ -40,7 +49,8 @@ export function PropertyDetailPage() {
   }
 
   const units = getUnitTypesByDevelopment(development.id)
-  const related = getPortfolioDevelopments()
+  const list = portfolioList.length ? portfolioList : getPortfolioDevelopments()
+  const related = list
     .filter(
       (d) =>
         d.slug !== development.slug &&
@@ -48,7 +58,7 @@ export function PropertyDetailPage() {
         d.region === development.region,
     )
     .slice(0, 3)
-  const fallbackRelated = getPortfolioDevelopments()
+  const fallbackRelated = list
     .filter(
       (d) => d.slug !== development.slug && d.publicationStatus === 'published',
     )
@@ -65,6 +75,16 @@ export function PropertyDetailPage() {
           <Container className="section-x text-center text-sm text-title-muted">
             Full sales listing coming soon — contact the team for verified
             information in the meantime.
+          </Container>
+        </div>
+      )}
+
+      {development.publicationStatus === 'draft' && (
+        <div className="border-b border-border bg-surface-soft py-4">
+          <Container className="section-x text-center text-sm text-title-muted">
+            This development profile is in preparation. Verified specifications
+            and photography will be published when available — inquire for
+            current information.
           </Container>
         </div>
       )}

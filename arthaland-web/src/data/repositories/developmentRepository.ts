@@ -44,6 +44,11 @@ export function getPortfolioDevelopments(): Development[] {
   )
 }
 
+/** Main navigation — all 10 default developments, grouped by category. */
+export function getNavigationDevelopments(): Development[] {
+  return getDevelopments()
+}
+
 export function getPublishedDevelopments(): Development[] {
   return getDevelopments().filter((d) => d.publicationStatus === 'published')
 }
@@ -60,7 +65,6 @@ export function getPrimaryFeaturedDevelopment(): Development | undefined {
 export function getDevelopmentBySlug(slug: string): Development | undefined {
   const record = developmentSeed.find((d) => d.slug === slug)
   if (!record) return undefined
-  if (record.publicationStatus === 'draft') return undefined
   return toView(record)
 }
 

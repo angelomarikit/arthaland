@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ChevronDown } from 'lucide-react'
-import { getPortfolioDevelopments } from '../../data/repositories/developmentRepository'
+import { getNavigationDevelopments } from '../../data/repositories/developmentRepository'
 
 type PropertiesNavMenuProps = {
   onHero: boolean
@@ -11,7 +11,7 @@ export function PropertiesNavMenu({ onHero }: PropertiesNavMenuProps) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const location = useLocation()
-  const developments = getPortfolioDevelopments()
+  const developments = getNavigationDevelopments()
   const residential = developments.filter((d) => d.category === 'residential')
   const commercial = developments.filter((d) => d.category === 'commercial')
   const mixed = developments.filter((d) => d.category === 'mixed-use')
@@ -44,7 +44,7 @@ export function PropertiesNavMenu({ onHero }: PropertiesNavMenuProps) {
         <ChevronDown className={`size-4 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className="absolute left-0 top-full z-40 mt-3 w-[min(92vw,520px)] border border-border bg-surface p-6 shadow-xl">
+        <div className="absolute left-0 top-full z-40 mt-3 w-[min(92vw,640px)] border border-border bg-surface p-6 shadow-xl">
           <Link
             to="/properties"
             className="text-sm font-medium underline underline-offset-4"
@@ -58,8 +58,17 @@ export function PropertiesNavMenu({ onHero }: PropertiesNavMenuProps) {
                 <ul className="mt-3 space-y-2 text-sm">
                   {residential.map((d) => (
                     <li key={d.slug}>
-                      <Link to={`/properties/${d.slug}`} className="hover:underline">
+                      <Link
+                        to={`/properties/${d.slug}`}
+                        className="inline-flex flex-wrap items-baseline gap-x-2 hover:underline"
+                      >
                         {d.name}
+                        {d.publicationStatus === 'coming_soon' && (
+                          <span className="text-xs text-title-muted">Coming soon</span>
+                        )}
+                        {d.publicationStatus === 'draft' && (
+                          <span className="text-xs text-title-muted">In preparation</span>
+                        )}
                       </Link>
                     </li>
                   ))}
@@ -72,8 +81,17 @@ export function PropertiesNavMenu({ onHero }: PropertiesNavMenuProps) {
                 <ul className="mt-3 space-y-2 text-sm">
                   {commercial.map((d) => (
                     <li key={d.slug}>
-                      <Link to={`/properties/${d.slug}`} className="hover:underline">
+                      <Link
+                        to={`/properties/${d.slug}`}
+                        className="inline-flex flex-wrap items-baseline gap-x-2 hover:underline"
+                      >
                         {d.name}
+                        {d.publicationStatus === 'coming_soon' && (
+                          <span className="text-xs text-title-muted">Coming soon</span>
+                        )}
+                        {d.publicationStatus === 'draft' && (
+                          <span className="text-xs text-title-muted">In preparation</span>
+                        )}
                       </Link>
                     </li>
                   ))}
@@ -86,8 +104,17 @@ export function PropertiesNavMenu({ onHero }: PropertiesNavMenuProps) {
                 <ul className="mt-3 space-y-2 text-sm">
                   {mixed.map((d) => (
                     <li key={d.slug}>
-                      <Link to={`/properties/${d.slug}`} className="hover:underline">
+                      <Link
+                        to={`/properties/${d.slug}`}
+                        className="inline-flex flex-wrap items-baseline gap-x-2 hover:underline"
+                      >
                         {d.name}
+                        {d.publicationStatus === 'coming_soon' && (
+                          <span className="text-xs text-title-muted">Coming soon</span>
+                        )}
+                        {d.publicationStatus === 'draft' && (
+                          <span className="text-xs text-title-muted">In preparation</span>
+                        )}
                       </Link>
                     </li>
                   ))}

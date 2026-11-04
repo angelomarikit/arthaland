@@ -25,7 +25,7 @@ export function PageEditorialHero({
     <>
       <SiteHeader embedded={embeddedHeader} />
       <section
-        className={`relative overflow-hidden bg-ink text-surface ${minHeightClass}`}
+        className={`${embeddedHeader ? 'hero-under-header ' : ''}relative overflow-hidden bg-ink text-surface ${minHeightClass}`}
       >
         <img
           src={image}

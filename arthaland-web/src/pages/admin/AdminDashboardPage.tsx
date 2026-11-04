@@ -1,48 +1,56 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Container } from '../../components/ui/Container'
-
-const modules = [
-  { label: 'All developments', href: '/admin/developments' },
-  { label: 'Inquiry inbox', href: '/admin', note: 'Supabase table ready' },
-  { label: 'Site copy & SEO', href: '/admin', note: 'Planned' },
-  { label: 'Team profiles', href: '/admin', note: 'Planned' },
-]
+import { AdminBreadcrumbs } from '../../components/admin/AdminBreadcrumbs'
+import { fetchDashboardStats } from '../../lib/cms/developmentsApi'
 
 export function AdminDashboardPage() {
+  const [stats, setStats] = useState({
+    totalProperties: 0,
+    published: 0,
+    draft: 0,
+    recentInquiries: 0,
+    missingHero: 0,
+  })
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchDashboardStats()
+      .then(setStats)
+      .catch((e: Error) => setError(e.message))
+  }, [])
+
   return (
-    <div className="min-h-svh bg-surface-soft">
-      <header className="border-b border-border bg-surface px-6 py-4">
-        <Container className="flex items-center justify-between">
-          <span className="text-nav font-medium">ARTHALAND CMS</span>
-          <Link to="/" className="text-sm text-title-muted hover:text-ink">
-            View site
-          </Link>
-        </Container>
-      </header>
-      <Container className="section-x py-12">
-        <h1 className="text-heading-3">Dashboard</h1>
-        <p className="mt-2 max-w-2xl text-title-muted">
-          Preview administration shell. Local seed data powers the public site;
-          Supabase migration is documented in{' '}
-          <code className="text-sm">docs/SUPABASE_CMS_PROPOSAL.md</code>. Admin
-          routes are not authenticated yet — do not expose publicly without auth.
+    <div>
+      <AdminBreadcrumbs items={[{ label: 'Dashboard' }]} />
+      <h1 className="text-2xl font-medium tracking-tight">Overview</h1>
+      {error && (
+        <p className="mt-2 text-sm text-red-700">
+          Could not load stats (is <code>002_full_cms.sql</code> applied?): {error}
         </p>
-        <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-          {modules.map((m) => (
-            <li key={m.label}>
-              <Link
-                to={m.href}
-                className="block border border-border bg-surface p-4 text-sm transition-colors hover:border-ink/30"
-              >
-                <span className="font-medium">{m.label}</span>
-                {m.note && (
-                  <span className="mt-1 block text-title-muted">{m.note}</span>
-                )}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </Container>
+      )}
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          { label: 'Properties', value: stats.totalProperties, href: '/admin/properties' },
+          { label: 'Published', value: stats.published, href: '/admin/properties' },
+          { label: 'Draft', value: stats.draft, href: '/admin/properties' },
+          { label: 'Inquiries (7d)', value: stats.recentInquiries, href: '/admin/inquiries' },
+        ].map((card) => (
+          <Link
+            key={card.label}
+            to={card.href}
+            className="rounded-2xl border border-border bg-surface p-5 transition-shadow hover:shadow-md"
+          >
+            <p className="text-sm text-title-muted">{card.label}</p>
+            <p className="mt-2 text-3xl font-medium tabular-nums">{card.value}</p>
+          </Link>
+        ))}
+      </div>
+      {stats.missingHero > 0 && (
+        <p className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+          {stats.missingHero} development(s) missing hero imagery — upload in property
+          media manager.
+        </p>
+      )}
     </div>
   )
 }

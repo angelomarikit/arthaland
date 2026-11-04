@@ -47,7 +47,7 @@ export function ServicesPage() {
   return (
     <>
       <SiteHeader embedded />
-      <section className="relative min-h-[58vh] overflow-hidden bg-ink text-surface md:min-h-[62vh]">
+      <section className="hero-under-header relative min-h-[58vh] overflow-hidden bg-ink text-surface md:min-h-[62vh]">
         <img
           src={sectionImages.servicesHero}
           alt=""

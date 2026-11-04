@@ -19,6 +19,7 @@ export {
   getDevelopments,
   getFeaturedDevelopments,
   getPortfolioDevelopments,
+  getNavigationDevelopments,
   getPrimaryFeaturedDevelopment,
   getPublishedDevelopments,
   getUnitTypesByDevelopment,

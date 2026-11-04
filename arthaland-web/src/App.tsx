@@ -1,5 +1,8 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { AuthProvider } from './contexts/AuthContext'
+import { AdminGuard } from './components/admin/AdminGuard'
+import { AdminLayout } from './components/admin/AdminLayout'
 import { MainLayout } from './components/layout/MainLayout'
 import { HomePage } from './pages/HomePage'
 
@@ -42,14 +45,69 @@ const AdminDashboardPage = lazy(() =>
     default: m.AdminDashboardPage,
   })),
 )
-const AdminDevelopmentsPage = lazy(() =>
-  import('./pages/admin/AdminDevelopmentsPage').then((m) => ({
-    default: m.AdminDevelopmentsPage,
+const AdminPropertiesPage = lazy(() =>
+  import('./pages/admin/AdminPropertiesPage').then((m) => ({
+    default: m.AdminPropertiesPage,
   })),
 )
-const AdminDevelopmentEditPage = lazy(() =>
-  import('./pages/admin/AdminDevelopmentEditPage').then((m) => ({
-    default: m.AdminDevelopmentEditPage,
+const AdminPropertyOverviewPage = lazy(() =>
+  import('./pages/admin/AdminPropertyOverviewPage').then((m) => ({
+    default: m.AdminPropertyOverviewPage,
+  })),
+)
+const AdminPropertySectionPage = lazy(() =>
+  import('./pages/admin/AdminPropertySectionPage').then((m) => ({
+    default: m.AdminPropertySectionPage,
+  })),
+)
+const AdminPropertyUnitsPage = lazy(() =>
+  import('./pages/admin/AdminPropertyUnitsPage').then((m) => ({
+    default: m.AdminPropertyUnitsPage,
+  })),
+)
+const AdminPropertyMediaPage = lazy(() =>
+  import('./pages/admin/AdminPropertyMediaPage').then((m) => ({
+    default: m.AdminPropertyMediaPage,
+  })),
+)
+const AdminPropertyAmenitiesPage = lazy(() =>
+  import('./pages/admin/AdminPropertyAmenitiesPage').then((m) => ({
+    default: m.AdminPropertyAmenitiesPage,
+  })),
+)
+const AdminPagesPage = lazy(() =>
+  import('./pages/admin/AdminPagesPage').then((m) => ({
+    default: m.AdminPagesPage,
+  })),
+)
+const AdminPageDetailPage = lazy(() =>
+  import('./pages/admin/AdminPageDetailPage').then((m) => ({
+    default: m.AdminPageDetailPage,
+  })),
+)
+const AdminPageSectionPage = lazy(() =>
+  import('./pages/admin/AdminPageSectionPage').then((m) => ({
+    default: m.AdminPageSectionPage,
+  })),
+)
+const AdminMediaLibraryPage = lazy(() =>
+  import('./pages/admin/AdminMediaLibraryPage').then((m) => ({
+    default: m.AdminMediaLibraryPage,
+  })),
+)
+const AdminInquiriesPage = lazy(() =>
+  import('./pages/admin/AdminInquiriesPage').then((m) => ({
+    default: m.AdminInquiriesPage,
+  })),
+)
+const AdminTeamPage = lazy(() =>
+  import('./pages/admin/AdminTeamPage').then((m) => ({
+    default: m.AdminTeamPage,
+  })),
+)
+const AdminSettingsPage = lazy(() =>
+  import('./pages/admin/AdminSettingsPage').then((m) => ({
+    default: m.AdminSettingsPage,
   })),
 )
 
@@ -59,31 +117,65 @@ function PageFallback() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Suspense fallback={<PageFallback />}>
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route index element={<HomePage />} />
-            <Route path="about" element={<AboutPage />} />
-            <Route path="properties" element={<PropertiesPage />} />
-            <Route path="properties/:slug" element={<PropertyDetailPage />} />
-            <Route path="services" element={<ServicesPage />} />
-            <Route path="team" element={<TeamPage />} />
-            <Route path="contact" element={<ContactPage />} />
-            <Route path="faq" element={<FaqPage />} />
-            <Route path="privacy" element={<PrivacyPage />} />
-            <Route path="404" element={<NotFoundPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Route>
-          <Route path="admin/login" element={<AdminLoginPage />} />
-          <Route path="admin" element={<AdminDashboardPage />} />
-          <Route path="admin/developments" element={<AdminDevelopmentsPage />} />
-          <Route
-            path="admin/developments/:slug"
-            element={<AdminDevelopmentEditPage />}
-          />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Suspense fallback={<PageFallback />}>
+          <Routes>
+            <Route element={<MainLayout />}>
+              <Route index element={<HomePage />} />
+              <Route path="about" element={<AboutPage />} />
+              <Route path="properties" element={<PropertiesPage />} />
+              <Route path="properties/:slug" element={<PropertyDetailPage />} />
+              <Route path="services" element={<ServicesPage />} />
+              <Route path="team" element={<TeamPage />} />
+              <Route path="contact" element={<ContactPage />} />
+              <Route path="faq" element={<FaqPage />} />
+              <Route path="privacy" element={<PrivacyPage />} />
+              <Route path="404" element={<NotFoundPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
+
+            <Route path="admin/login" element={<AdminLoginPage />} />
+            <Route element={<AdminGuard />}>
+              <Route element={<AdminLayout />}>
+                <Route path="admin" element={<AdminDashboardPage />} />
+                <Route path="admin/pages" element={<AdminPagesPage />} />
+                <Route path="admin/pages/:slug" element={<AdminPageDetailPage />} />
+                <Route
+                  path="admin/pages/:slug/sections/:sectionKey"
+                  element={<AdminPageSectionPage />}
+                />
+                <Route path="admin/properties" element={<AdminPropertiesPage />} />
+                <Route
+                  path="admin/properties/:slug"
+                  element={<AdminPropertyOverviewPage />}
+                />
+                <Route
+                  path="admin/properties/:slug/sections/:sectionKey"
+                  element={<AdminPropertySectionPage />}
+                />
+                <Route
+                  path="admin/properties/:slug/units"
+                  element={<AdminPropertyUnitsPage />}
+                />
+                <Route
+                  path="admin/properties/:slug/media"
+                  element={<AdminPropertyMediaPage />}
+                />
+                <Route
+                  path="admin/properties/:slug/amenities"
+                  element={<AdminPropertyAmenitiesPage />}
+                />
+                <Route path="admin/media" element={<AdminMediaLibraryPage />} />
+                <Route path="admin/inquiries" element={<AdminInquiriesPage />} />
+                <Route path="admin/team" element={<AdminTeamPage />} />
+                <Route path="admin/settings" element={<AdminSettingsPage />} />
+              </Route>
+            </Route>
+
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }

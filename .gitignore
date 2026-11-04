@@ -1,0 +1,6 @@
+# Local audit / repair artifacts (large; do not push to GitHub)
+arthaland-audit/
+arthaland-audit.zip
+arthaland-source-audit.zip
+arthaland-repair-verify/
+*.zip

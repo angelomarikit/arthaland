@@ -21,6 +21,7 @@
 
   --spacing-gutter: 80px;
   --spacing-gutter-mobile: 24px;
+  --site-header-h: 82px;
 
   --text-display-xl: 121px;
   --text-display-l: 94px;
@@ -244,5 +245,9 @@
   .btn-tile:hover {
     border-color: color-mix(in srgb, var(--color-ink) 30%, transparent);
     background: var(--color-surface-soft);
+  }
+
+  .hero-under-header {
+    margin-top: calc(-1 * var(--site-header-h));
   }
 }

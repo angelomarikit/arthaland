@@ -34,15 +34,15 @@ export function SiteHeader({ embedded = false }: SiteHeaderProps) {
   return (
     <>
       <header
-        className={`sticky top-0 z-30 border-b transition-colors duration-500 ${
+        className={`sticky top-0 z-30 h-[var(--site-header-h)] transition-[background-color,box-shadow,backdrop-filter] duration-500 ${
           onHero
-            ? 'border-transparent bg-gradient-to-b from-ink/45 to-transparent'
+            ? 'bg-transparent shadow-none [&_nav]:drop-shadow-[0_1px_10px_rgba(0,0,0,0.35)]'
             : scrolled || !embedded
-              ? 'border-border bg-surface/95 shadow-sm backdrop-blur-md'
-              : 'border-transparent bg-surface'
+              ? 'bg-surface/95 shadow-sm backdrop-blur-md'
+              : 'bg-surface'
         }`}
       >
-        <Container className="flex h-[82px] items-center justify-between gap-4 px-6 md:px-8">
+        <Container className="flex h-full items-center justify-between gap-4 px-6 md:px-8">
           <Link to="/" className="flex min-w-0 shrink-0 items-center">
             <SiteLogo inverted={!onHero} />
           </Link>

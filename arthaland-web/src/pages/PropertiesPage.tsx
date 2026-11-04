@@ -11,14 +11,15 @@ import { developmentAssets } from '../config/developmentAssets'
 import type { AvailabilityStatus, DevelopmentCategory } from '../domain/development/types'
 import {
   filterDevelopments,
-  getPortfolioDevelopments,
-  getPrimaryFeaturedDevelopment,
-} from '../data/repositories/developmentRepository'
+  usePublicDevelopmentsList,
+} from '../hooks/usePublicDevelopments'
 
 export function PropertiesPage() {
-  const all = getPortfolioDevelopments()
+  const { items: all, state, source } = usePublicDevelopmentsList()
   const regions = [...new Set(all.map((d) => d.region))]
-  const spotlight = getPrimaryFeaturedDevelopment()
+  const spotlight =
+    all.find((d) => d.featured && d.publicationStatus === 'published') ??
+    all.find((d) => d.publicationStatus === 'published')
   const [searchParams] = useSearchParams()
   const [query, setQuery] = useState(() => searchParams.get('q') ?? '')
   const [region, setRegion] = useState('')
@@ -48,7 +49,17 @@ export function PropertiesPage() {
   return (
     <>
       <SiteHeader embedded />
-      <section className="relative min-h-[58vh] overflow-hidden bg-ink text-surface md:min-h-[65vh]">
+      {state === 'loading' && (
+        <div className="border-b border-border bg-surface-soft py-3 text-center text-sm text-title-muted">
+          Loading portfolio…
+        </div>
+      )}
+      {source === 'local' && state === 'ready' && import.meta.env.VITE_CMS_SOURCE === 'supabase' && (
+        <div className="border-b border-amber-200 bg-amber-50 py-2 text-center text-xs text-amber-950">
+          Showing local fallback — confirm Supabase migration and published developments.
+        </div>
+      )}
+      <section className="hero-under-header relative min-h-[58vh] overflow-hidden bg-ink text-surface md:min-h-[65vh]">
         <img
           src={developmentAssets.propertiesHero}
           alt=""
