@@ -13,8 +13,6 @@ export function CinematicHero() {
   const desktopVideoRef = useRef<HTMLVideoElement>(null)
   const mobileVideoRef = useRef<HTMLVideoElement>(null)
   const sectionRef = useRef<HTMLElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
-  const overlayRef = useRef<HTMLDivElement>(null)
   const [videoReady, setVideoReady] = useState(false)
 
   const { hero } = siteConfig
@@ -37,11 +35,8 @@ export function CinematicHero() {
       observer = new IntersectionObserver(
         ([entry]) => {
           nodes.forEach((el) => {
-            if (!entry?.isIntersecting) {
-              el.pause()
-            } else {
-              void el.play().catch(() => undefined)
-            }
+            if (!entry?.isIntersecting) el.pause()
+            else void el.play().catch(() => undefined)
           })
         },
         { threshold: 0.08 },
@@ -59,9 +54,7 @@ export function CinematicHero() {
     if (reduceMotion) return
     initGsap()
     const section = sectionRef.current
-    const content = contentRef.current
-    const overlay = overlayRef.current
-    if (!section || !content || !overlay) return
+    if (!section) return
 
     const ctx = gsap.context(() => {
       gsap.from('[data-hero-line]', {
@@ -89,18 +82,6 @@ export function CinematicHero() {
         delay: 1.1,
         ease: motionEase.editorial,
       })
-
-      gsap
-        .timeline({
-          scrollTrigger: {
-            trigger: section,
-            start: 'top top',
-            end: '+=60%',
-            scrub: 0.25,
-          },
-        })
-        .to(content, { opacity: 0, y: -32, ease: 'none' }, 0)
-        .to(overlay, { opacity: 0.72, ease: 'none' }, 0)
     }, section)
 
     return () => ctx.revert()
@@ -153,7 +134,6 @@ export function CinematicHero() {
           />
 
           <div
-            ref={overlayRef}
             className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/20 via-ink/40 to-ink/85"
             aria-hidden
           />
@@ -162,10 +142,7 @@ export function CinematicHero() {
             aria-hidden
           />
 
-          <div
-            ref={contentRef}
-            className="relative z-10 flex min-h-[min(782px,92vh)] flex-col justify-end px-6 pb-24 pt-28 md:px-10 md:pb-28 lg:px-20 lg:pb-32"
-          >
+          <div className="relative z-10 flex min-h-[min(782px,92vh)] flex-col justify-end px-6 pb-24 pt-28 md:px-10 md:pb-28 lg:px-20 lg:pb-32">
             <div className="mx-auto w-full max-w-[1200px]">
               <p
                 data-hero-fade

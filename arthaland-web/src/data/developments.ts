@@ -46,8 +46,8 @@ export const developments: Development[] = [
     bedroomsRange: 'Limited-edition residences (37 units)',
     featured: true,
     published: true,
-    heroImage: '/assets/properties/eluria/exterior-hero.png',
-    gallery: ['/assets/properties/eluria/exterior-hero.png'],
+    heroImage: '/assets/optimized/eluria-hero.webp',
+    gallery: ['/assets/optimized/eluria-hero.webp'],
     summary:
       'A low-density, multi-certified residential address in Legazpi Village reimagining exclusivity and sustainable living.',
     overview:
@@ -79,8 +79,8 @@ export const developments: Development[] = [
     areaRange: '28–37 sqm',
     featured: true,
     published: true,
-    heroImage: '/assets/properties/una-apartments/exterior-hero.jpeg',
-    gallery: ['/assets/properties/una-apartments/exterior-hero.jpeg'],
+    heroImage: '/assets/optimized/una-apartments-hero.webp',
+    gallery: ['/assets/optimized/una-apartments-hero.webp'],
     summary:
       'Three towers of studio and one-bedroom homes within Sevina Park with sustainability and wellness features.',
     overview:
@@ -111,11 +111,11 @@ export const developments: Development[] = [
     areaRange: '38–318 sqm',
     featured: true,
     published: true,
-    heroImage: '/assets/hero/source/shot3-lucima-facade.jpg',
+    heroImage: '/assets/optimized/lucima-facade.webp',
     gallery: [
-      '/assets/hero/source/shot3-lucima-facade.jpg',
-      '/assets/properties/lucima/exterior-hero.jpg',
-      '/assets/hero/source/shot5-lucima-aerial.jpg',
+      '/assets/optimized/lucima-facade.webp',
+      '/assets/optimized/lucima-exterior.webp',
+      '/assets/optimized/lucima-aerial.webp',
     ],
     summary:
       'A 37-story wellness-led residential tower envisioned as a quadruple-certified sustainable high-rise in Cebu Business Park.',
@@ -205,10 +205,7 @@ export const developments: Development[] = [
     featured: false,
     published: true,
     heroImage: '/assets/properties/sondris/exterior-hero.webp',
-    gallery: [
-      '/assets/properties/sondris/exterior-hero.webp',
-      '/assets/properties/sondris/exterior-hero.png',
-    ],
+    gallery: ['/assets/properties/sondris/exterior-hero.webp'],
     summary:
       'A 37-story green residential tower along Arnaiz Avenue developed by ARTHALAND and Mitsui Fudosan (Asia).',
     overview:

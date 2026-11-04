@@ -90,6 +90,10 @@ async function main() {
     }
   }
 
+  await page.goto(BASE, { waitUntil: 'networkidle', timeout: 90000 })
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await page.waitForTimeout(1500)
+
   let loops = 0
   let lastTime = 0
   for (let i = 0; i < 90; i++) {

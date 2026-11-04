@@ -1,10 +1,10 @@
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { gsap } from '../../animation/gsapSetup'
-import { scrollScrub } from '../../animation/motionTokens'
 import { useGsapScope } from '../../animation/useGsapScope'
 import type { Development } from '../../data/developments'
 import { Button } from '../ui/Button'
+
 type PropertyDetailHeroProps = {
   development: Development
 }
@@ -23,18 +23,6 @@ export function PropertyDetailHero({ development }: PropertyDetailHeroProps) {
         ease: 'power3.out',
         delay: 0.15,
       })
-
-      gsap.to('[data-detail-hero-img]', {
-        yPercent: 8,
-        ease: 'none',
-        force3D: true,
-        scrollTrigger: {
-          trigger: ref.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: scrollScrub.soft,
-        },
-      })
     },
     [development.slug],
   )
@@ -42,10 +30,11 @@ export function PropertyDetailHero({ development }: PropertyDetailHeroProps) {
   return (
     <section ref={ref} className="relative min-h-[72vh] overflow-hidden bg-ink text-surface">
       <img
-        data-detail-hero-img
         src={development.heroImage}
         alt=""
         className="absolute inset-0 size-full object-cover"
+        fetchPriority="high"
+        decoding="async"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/20" />
 

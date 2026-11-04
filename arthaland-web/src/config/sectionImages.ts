@@ -1,34 +1,34 @@
 /**
- * Unique imagery per homepage section — no repeated Eluria brochure asset.
- * Paths point to verified building photography / renders in public/assets.
+ * Production imagery — optimized WebP under /assets/optimized/.
+ * Originals archived under asset-archive/ (not served).
  */
 export const sectionImages = {
   heroPoster: '/assets/hero/arthaland-hero-poster.webp',
-  editorialIntro: '/assets/hero/source/shot2-una-exterior.jpeg',
-  sustainability: '/assets/properties/lucima/exterior-hero.jpg',
-  lifestyleInterior: '/assets/hero/source/shot4-lucima-interior.jpg',
-  lifestyleExterior: '/assets/hero/source/shot3-lucima-facade.jpg',
+  editorialIntro: '/assets/optimized/una-exterior.webp',
+  sustainability: '/assets/optimized/lucima-exterior.webp',
+  lifestyleInterior: '/assets/optimized/lucima-interior.webp',
+  lifestyleExterior: '/assets/optimized/lucima-facade.webp',
   lifestyleWellness: '/assets/properties/sondris/exterior-hero.webp',
   gallery: {
-    col1a: '/assets/hero/source/shot3-lucima-facade.jpg',
-    col1b: '/assets/properties/una-apartments/exterior-hero.jpeg',
+    col1a: '/assets/optimized/lucima-facade.webp',
+    col1b: '/assets/optimized/una-exterior.webp',
     col2a: '/assets/properties/sondris/exterior-hero.webp',
-    col2b: '/assets/hero/source/shot5-lucima-aerial.jpg',
-    col3a: '/assets/hero/source/shot4-lucima-interior.jpg',
-    col3b: '/assets/properties/lucima/exterior-hero.jpg',
+    col2b: '/assets/optimized/lucima-aerial.webp',
+    col3a: '/assets/optimized/lucima-interior.webp',
+    col3b: '/assets/optimized/lucima-exterior.webp',
   },
   services: [
-    '/assets/hero/source/shot2-una-exterior.jpeg',
-    '/assets/properties/lucima/exterior-hero.jpg',
+    '/assets/optimized/una-exterior.webp',
+    '/assets/optimized/lucima-exterior.webp',
     '/assets/properties/sondris/exterior-hero.webp',
-    '/assets/hero/source/shot5-lucima-aerial.jpg',
+    '/assets/optimized/lucima-aerial.webp',
   ],
-  aboutHero: '/assets/hero/source/shot5-lucima-aerial.jpg',
-  aboutEditorial: '/assets/hero/source/shot3-lucima-facade.jpg',
-  aboutInterior: '/assets/hero/source/shot4-lucima-interior.jpg',
-  contactBg: '/assets/hero/source/shot3-lucima-facade.jpg',
-  closingCta: '/assets/hero/source/shot5-lucima-aerial.jpg',
-  inquirySide: '/assets/properties/una-apartments/exterior-hero.jpeg',
+  aboutHero: '/assets/optimized/lucima-aerial.webp',
+  aboutEditorial: '/assets/optimized/lucima-facade.webp',
+  aboutInterior: '/assets/optimized/lucima-interior.webp',
+  contactBg: '/assets/optimized/lucima-facade.webp',
+  closingCta: '/assets/optimized/lucima-aerial.webp',
+  inquirySide: '/assets/optimized/una-apartments-hero.webp',
 } as const
 
 export const socialLinks = {

@@ -9,7 +9,7 @@ const featured = getPublishedDevelopments()
 
 /**
  * Premium horizontal gallery without ScrollTrigger pin.
- * Native scroll-snap keeps cards visible and avoids pin/blackout failures with Lenis.
+ * Native scroll-snap horizontal gallery (no pin).
  */
 export function FeaturedHorizontalShowcase() {
   return (
@@ -25,7 +25,6 @@ export function FeaturedHorizontalShowcase() {
       </Container>
 
       <div
-        data-lenis-prevent
         className="section-x mt-10 flex snap-x snap-mandatory gap-8 overflow-x-auto overscroll-x-contain pb-6 pt-2 [-ms-overflow-style:none] [scrollbar-width:thin] lg:mt-12 lg:gap-10 lg:pb-10 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-surface/30"
         aria-label="Featured developments gallery"
       >
