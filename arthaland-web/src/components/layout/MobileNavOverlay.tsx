@@ -11,15 +11,7 @@ type MobileNavOverlayProps = {
   onClose: () => void
 }
 
-const mainLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'Properties', href: '/properties' },
-  { label: 'About Us', href: '/about' },
-  { label: 'Services', href: '/services' },
-  { label: 'Our Team', href: '/team' },
-  { label: 'Contact', href: '/contact' },
-  { label: 'FAQ', href: '/faq' },
-]
+const mainLinks = siteConfig.nav.pagesMenu
 
 export function MobileNavOverlay({ open, onClose }: MobileNavOverlayProps) {
   const panelRef = useRef<HTMLDivElement>(null)
