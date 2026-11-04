@@ -1,17 +1,28 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { getPublishedDevelopments } from '../../data/developments'
+import { getFeaturedDevelopments } from '../../data/developments'
+import { usePublicDevelopmentsList } from '../../hooks/usePublicDevelopments'
+import type { Development } from '../../domain/development/types'
 import { Container } from '../ui/Container'
 import { Eyebrow } from '../ui/Eyebrow'
-
-const featured = getPublishedDevelopments()
-  .filter((d) => d.featured)
-  .slice(0, 5)
 
 /**
  * Premium horizontal gallery without ScrollTrigger pin.
  * Native scroll-snap horizontal gallery (no pin).
  */
 export function FeaturedHorizontalShowcase() {
+  const { items, state, source } = usePublicDevelopmentsList()
+
+  const featured = useMemo(() => {
+    if (state === 'ready' && source === 'supabase' && items.length > 0) {
+      return items
+        .filter((d) => d.publicationStatus === 'published' && d.featured)
+        .sort((a, b) => a.displayOrder - b.displayOrder)
+        .slice(0, 5)
+    }
+    return getFeaturedDevelopments().slice(0, 5)
+  }, [items, state, source])
+
   return (
     <section className="bg-ink text-surface py-20 md:py-24 xl:py-28">
       <Container className="section-x">
@@ -37,7 +48,7 @@ export function FeaturedHorizontalShowcase() {
 }
 
 type FeaturedCardProps = {
-  dev: (typeof featured)[number]
+  dev: Development
   index: number
 }
 
