@@ -1,13 +1,46 @@
+import { useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { SiteHeader } from '../components/layout/SiteHeader'
 import { Container } from '../components/ui/Container'
 import { Eyebrow } from '../components/ui/Eyebrow'
 import { FeaturedUnitCard } from '../components/featuredUnit/FeaturedUnitCard'
+import { FeaturedUnitsSearch } from '../components/featuredUnit/FeaturedUnitsSearch'
 import { Button } from '../components/ui/Button'
 import { usePublicFeaturedUnits } from '../hooks/usePublicFeaturedUnits'
+import {
+  filterFeaturedUnits,
+  uniqueDevelopmentNames,
+} from '../lib/featuredUnitsSearch'
 import { PageConsultCta } from '../components/page/PageConsultCta'
 
 export function FeaturedUnitsPage() {
   const { items, loading } = usePublicFeaturedUnits()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [query, setQuery] = useState(() => searchParams.get('q') ?? '')
+  const [development, setDevelopment] = useState(() => searchParams.get('dev') ?? '')
+
+  const developments = useMemo(() => uniqueDevelopmentNames(items), [items])
+
+  const filtered = useMemo(
+    () => filterFeaturedUnits(items, query, development),
+    [items, query, development],
+  )
+
+  function updateQuery(value: string) {
+    setQuery(value)
+    const next = new URLSearchParams(searchParams)
+    if (value.trim()) next.set('q', value.trim())
+    else next.delete('q')
+    setSearchParams(next, { replace: true })
+  }
+
+  function updateDevelopment(value: string) {
+    setDevelopment(value)
+    const next = new URLSearchParams(searchParams)
+    if (value) next.set('dev', value)
+    else next.delete('dev')
+    setSearchParams(next, { replace: true })
+  }
 
   return (
     <>
@@ -41,13 +74,43 @@ export function FeaturedUnitsPage() {
               </Button>
             </div>
           ) : (
-            <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {items.map((unit) => (
-                <li key={unit.id} className="flex">
-                  <FeaturedUnitCard unit={unit} />
-                </li>
-              ))}
-            </ul>
+            <>
+              <FeaturedUnitsSearch
+                query={query}
+                onQueryChange={updateQuery}
+                development={development}
+                onDevelopmentChange={updateDevelopment}
+                developments={developments}
+                resultCount={filtered.length}
+                totalCount={items.length}
+              />
+              {filtered.length === 0 ? (
+                <div className="border border-dashed border-border bg-surface-soft p-8 text-center">
+                  <p className="text-lg font-medium">No listings match your search</p>
+                  <p className="mt-2 text-sm text-title-muted">
+                    Try a different keyword or clear the development filter.
+                  </p>
+                  <button
+                    type="button"
+                    className="text-nav-primary mt-6 underline underline-offset-4"
+                    onClick={() => {
+                      updateQuery('')
+                      updateDevelopment('')
+                    }}
+                  >
+                    Clear search
+                  </button>
+                </div>
+              ) : (
+                <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                  {filtered.map((unit) => (
+                    <li key={unit.id} className="flex">
+                      <FeaturedUnitCard unit={unit} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
           )}
         </Container>
       </section>
