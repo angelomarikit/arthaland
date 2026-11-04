@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
+import { DocumentHead } from './components/seo/DocumentHead'
 import { AdminGuard } from './components/admin/AdminGuard'
 import { AdminLayout } from './components/admin/AdminLayout'
 import { MainLayout } from './components/layout/MainLayout'
@@ -119,6 +120,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <DocumentHead />
         <Suspense fallback={<PageFallback />}>
           <Routes>
             <Route element={<MainLayout />}>

@@ -4,6 +4,14 @@ export const siteConfig = {
     logoMarkSrc: '/assets/brand/arthaland-mark.png',
     logoLockupSrc: '/assets/brand/arthaland-logo-lockup.png',
   },
+  seo: {
+    title: 'ARTHALAND — Building Sustainable Legacies',
+    description:
+      'Exceptional residential and commercial developments across the Philippines. Explore the ARTHALAND portfolio.',
+    ogImage: '/assets/brand/arthaland-og.jpg',
+    ogImageAlt:
+      'ARTHALAND — Exceptional spaces for a better tomorrow. Residential, commercial, and sustainable developments.',
+  },
   social: {
     facebook: 'https://www.facebook.com/arthaland',
   },
