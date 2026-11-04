@@ -18,6 +18,23 @@ export function AdminPagesPage() {
     <div>
       <AdminBreadcrumbs items={[{ label: 'Pages' }]} />
       <h1 className="text-2xl font-medium">Website pages</h1>
+      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-title-muted">
+        Edit the main marketing pages visitors see — Home, About, Services, Contact,
+        and Our Team. Open a page, pick a section (hero, story block, call-to-action,
+        and so on), then update headings, paragraphs, and photos without touching code.
+      </p>
+      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-title-muted">
+        <strong className="font-medium text-ink">Property pages</strong> (Eluria, Lucima,
+        etc.) are managed under{' '}
+        <Link to="/admin/properties" className="underline">
+          All Developments
+        </Link>
+        , not here. Use{' '}
+        <Link to="/admin/inquiries" className="underline">
+          Inquiries
+        </Link>{' '}
+        for form submissions.
+      </p>
       {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
       <ul className="mt-8 space-y-3">
         {pages.map((p) => (

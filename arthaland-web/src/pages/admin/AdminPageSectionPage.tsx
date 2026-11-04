@@ -64,8 +64,10 @@ export function AdminPageSectionPage() {
         ]}
       />
       <h1 className="text-2xl font-medium capitalize">{title}</h1>
-      <p className="mt-2 text-sm text-title-muted">
-        Edit text and images with the fields below — nothing technical required.
+      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-title-muted">
+        Fill in the fields below like a simple document: small label, main heading,
+        optional supporting line, body text, and an optional photo. Click{' '}
+        <strong className="font-medium text-ink">Save section</strong> when finished.
       </p>
 
       {!sectionId && (
