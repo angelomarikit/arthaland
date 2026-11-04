@@ -1,38 +1,15 @@
-import { useRef } from 'react'
-import { gsap } from '../../animation/gsapSetup'
-import { useGsapScope } from '../../animation/useGsapScope'
 import { Button } from '../ui/Button'
 import { sectionImages } from '../../config/sectionImages'
 import { SplitTextReveal } from '../motion/SplitTextReveal'
 
 export function ClosingCtaSection() {
-  const ref = useRef<HTMLElement>(null)
-
-  useGsapScope(
-    ref,
-    () => {
-      gsap.from('[data-cta-bg]', {
-        scale: 1.08,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: ref.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 0.8,
-        },
-      })
-    },
-    [],
-  )
-
   return (
-    <section ref={ref} className="relative overflow-hidden bg-ink text-surface">
+    <section className="relative overflow-hidden bg-ink text-surface">
       <div className="absolute inset-0 overflow-hidden">
         <img
-          data-cta-bg
           src={sectionImages.closingCta}
           alt=""
-          className="size-full scale-110 object-cover opacity-50 will-change-transform"
+          className="size-full object-cover opacity-50"
           loading="lazy"
         />
         <div className="absolute inset-0 bg-ink/55" />

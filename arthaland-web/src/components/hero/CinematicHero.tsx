@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useReducedMotion } from 'motion/react'
 import { ChevronDown } from 'lucide-react'
 import { gsap, initGsap } from '../../animation/gsapSetup'
-import { motionDuration, motionEase, scrollScrub } from '../../animation/motionTokens'
+import { motionDuration, motionEase } from '../../animation/motionTokens'
 import { heroAssets } from '../../config/assets'
 import { siteConfig } from '../../config/site'
 import { SiteHeader } from '../layout/SiteHeader'
@@ -73,12 +73,12 @@ export function CinematicHero() {
           scrollTrigger: {
             trigger: section,
             start: 'top top',
-            end: 'bottom top',
-            scrub: scrollScrub.soft,
+            end: '+=60%',
+            scrub: 0.35,
           },
         })
-        .to(content, { opacity: 0, y: -48, ease: 'none' }, 0)
-        .to(overlay, { opacity: 0.75, ease: 'none' }, 0)
+        .to(content, { opacity: 0, y: -32, ease: 'none' }, 0)
+        .to(overlay, { opacity: 0.72, ease: 'none' }, 0)
     }, section)
 
     return () => ctx.revert()

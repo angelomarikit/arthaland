@@ -1,8 +1,5 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { gsap, ScrollTrigger } from '../../animation/gsapSetup'
-import { breakpoints } from '../../animation/motionTokens'
-import { useGsapScope } from '../../animation/useGsapScope'
 import { sectionImages } from '../../config/sectionImages'
 import { Container } from '../ui/Container'
 import { Eyebrow } from '../ui/Eyebrow'
@@ -31,35 +28,9 @@ const services = serviceCopy.map((s, i) => ({
   image: sectionImages.services[i]!,
 }))
 
+/** Static services block — no scroll pin/scrub (was causing jank with Lenis). */
 export function ServicesPinnedSection() {
   const [active, setActive] = useState(0)
-  const pinRef = useRef<HTMLDivElement>(null)
-
-  useGsapScope(
-    pinRef,
-    () => {
-      const mm = gsap.matchMedia()
-
-      mm.add(breakpoints.desktop, () => {
-        ScrollTrigger.create({
-          trigger: pinRef.current,
-          start: 'top top',
-          end: `+=${services.length * 55}%`,
-          pin: true,
-          scrub: true,
-          onUpdate: (self) => {
-            const idx = Math.min(
-              services.length - 1,
-              Math.floor(self.progress * services.length),
-            )
-            setActive(idx)
-          },
-        })
-      })
-    },
-    [],
-  )
-
   const current = services[active]!
 
   return (
@@ -75,7 +46,7 @@ export function ServicesPinnedSection() {
         </p>
       </Container>
 
-      <div ref={pinRef} className="section-x pb-20 pt-12 md:pb-28 md:pt-16">
+      <div className="section-x pb-20 pt-12 md:pb-28 md:pt-16">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="relative aspect-[4/5] overflow-hidden bg-ink-soft max-lg:order-2">
             {services.map((s, i) => (
@@ -83,23 +54,28 @@ export function ServicesPinnedSection() {
                 key={s.title}
                 src={s.image}
                 alt=""
-                className={`absolute inset-0 size-full object-cover transition-opacity duration-700 ${i === active ? 'opacity-100' : 'opacity-0'}`}
-                loading="lazy"
+                className={`absolute inset-0 size-full object-cover transition-opacity duration-500 ${i === active ? 'opacity-100' : 'opacity-0'}`}
+                loading={i === 0 ? 'eager' : 'lazy'}
               />
             ))}
           </div>
 
           <div className="flex flex-col justify-center max-lg:order-1">
-            <div className="mb-8 hidden gap-2 lg:flex">
-              {services.map((_, i) => (
-                <span
-                  key={i}
-                  className={`h-0.5 flex-1 transition-colors ${i <= active ? 'bg-accent' : 'bg-border-on-dark'}`}
+            <div className="mb-8 hidden gap-2 lg:flex" role="tablist" aria-label="Services">
+              {services.map((s, i) => (
+                <button
+                  key={s.title}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === active}
+                  onClick={() => setActive(i)}
+                  className={`h-0.5 flex-1 transition-colors ${i <= active ? 'bg-accent' : 'bg-border-on-dark'} ${i === active ? 'ring-1 ring-accent/40' : ''}`}
+                  title={s.title}
                 />
               ))}
             </div>
 
-            <div className="lg:min-h-[280px]">
+            <div className="lg:min-h-[280px]" role="tabpanel">
               <p className="text-sm text-[#bababa]">
                 {String(active + 1).padStart(2, '0')}
               </p>

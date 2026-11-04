@@ -1,7 +1,3 @@
-import { useRef } from 'react'
-import { gsap } from '../../animation/gsapSetup'
-import { breakpoints, scrollScrub } from '../../animation/motionTokens'
-import { useGsapScope } from '../../animation/useGsapScope'
 import { sectionImages } from '../../config/sectionImages'
 import { Container } from '../ui/Container'
 import { Eyebrow } from '../ui/Eyebrow'
@@ -13,53 +9,10 @@ const stats = [
   { label: 'Net zero portfolio target', value: '2030' },
 ]
 
+/** Static layout — width/height scrub caused layout thrashing during scroll. */
 export function SustainabilityExpandSection() {
-  const wrapRef = useRef<HTMLDivElement>(null)
-  const mediaRef = useRef<HTMLDivElement>(null)
-  const copyRef = useRef<HTMLDivElement>(null)
-
-  useGsapScope(
-    wrapRef,
-    () => {
-      const mm = gsap.matchMedia()
-
-      mm.add(breakpoints.desktop, () => {
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: wrapRef.current,
-            start: 'top 70%',
-            end: 'bottom top',
-            scrub: scrollScrub.soft,
-          },
-        })
-
-        tl.fromTo(
-          mediaRef.current,
-          {
-            width: '72%',
-            height: '58vh',
-            borderRadius: '2px',
-          },
-          {
-            width: '100%',
-            height: '100vh',
-            borderRadius: 0,
-            ease: 'none',
-          },
-          0,
-        ).fromTo(
-          copyRef.current,
-          { opacity: 0, y: 48 },
-          { opacity: 1, y: 0, ease: 'none' },
-          0.35,
-        )
-      })
-    },
-    [],
-  )
-
   return (
-    <section ref={wrapRef} className="relative bg-surface-soft py-24 md:py-32">
+    <section className="relative bg-surface-soft py-24 md:py-32">
       <Container className="section-x mb-10 lg:hidden">
         <Eyebrow>Sustainability</Eyebrow>
         <h2 className="text-heading-2 mt-4 max-w-[18ch]">
@@ -71,11 +24,7 @@ export function SustainabilityExpandSection() {
       </Container>
 
       <Container className="section-x flex justify-center">
-        <div
-          ref={mediaRef}
-          className="relative mx-auto w-full overflow-hidden lg:will-change-[width,height]"
-          style={{ height: 'min(52vh, 480px)' }}
-        >
+        <div className="relative mx-auto w-full overflow-hidden lg:min-h-[min(85vh,720px)]">
           <img
             src={sectionImages.sustainability}
             alt=""
@@ -85,12 +34,9 @@ export function SustainabilityExpandSection() {
             fetchPriority="high"
           />
           <div className="absolute inset-0 bg-ink/35" />
-          <div
-            ref={copyRef}
-            className="relative hidden h-full min-h-[min(52vh,480px)] flex-col justify-end p-8 text-surface md:p-14 lg:flex lg:min-h-0"
-          >
+          <div className="relative flex min-h-[min(52vh,480px)] flex-col justify-end p-8 text-surface md:p-14 lg:min-h-[min(85vh,720px)]">
             <Eyebrow dark>Sustainability</Eyebrow>
-            <h2 className="text-heading-2 mt-4 max-w-[18ch]">
+            <h2 className="text-heading-2 mt-4 max-w-[18ch] max-lg:hidden">
               Certified developments with measurable environmental performance
             </h2>
             <p className="mt-4 max-w-xl text-sm text-surface/85 md:text-base">

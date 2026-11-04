@@ -23,10 +23,12 @@ export function ScrollMotionProvider({ children }: ScrollMotionProviderProps) {
       document.documentElement.classList.add('lenis', 'lenis-smooth')
       document.documentElement.style.scrollBehavior = 'auto'
 
+      // Lerp-only (no duration) — duration-based easing feels laggy behind the wheel.
       const lenis = new Lenis({
-        duration: 1.05,
+        lerp: 0.12,
         smoothWheel: true,
         syncTouch: false,
+        wheelMultiplier: 0.95,
       })
       lenisRef.current = lenis
 
@@ -37,7 +39,6 @@ export function ScrollMotionProvider({ children }: ScrollMotionProviderProps) {
       }
       tickerRef.current = ticker
       gsap.ticker.add(ticker)
-      gsap.ticker.lagSmoothing(0)
     }
 
     return () => {

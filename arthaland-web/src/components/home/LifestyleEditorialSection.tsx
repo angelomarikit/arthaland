@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { gsap } from '../../animation/gsapSetup'
-import { motionDuration, motionEase, breakpoints } from '../../animation/motionTokens'
+import { motionDuration, motionEase } from '../../animation/motionTokens'
 import { useGsapScope } from '../../animation/useGsapScope'
 import { Container } from '../ui/Container'
 import { Eyebrow } from '../ui/Eyebrow'
@@ -42,29 +42,6 @@ export function LifestyleEditorialSection() {
         scrollTrigger: { trigger: ref.current, start: 'top 78%' },
       })
 
-      const mm = gsap.matchMedia()
-      mm.add(breakpoints.desktop, () => {
-        gsap.to('[data-float-a]', {
-          y: -28,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: ref.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 0.6,
-          },
-        })
-        gsap.to('[data-float-b]', {
-          y: 20,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: ref.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 0.6,
-          },
-        })
-      })
     },
     [],
   )
@@ -85,12 +62,10 @@ export function LifestyleEditorialSection() {
         </p>
 
         <div className="mt-16 grid gap-6 lg:grid-cols-12 lg:gap-8">
-          {layers.map((layer, i) => (
+          {layers.map((layer) => (
             <div
               key={layer.src}
               className={layer.className}
-              data-float-a={i === 0 ? true : undefined}
-              data-float-b={i === 2 ? true : undefined}
             >
               <ImageMaskReveal delay={layer.delay} className="aspect-[4/5] lg:aspect-auto lg:h-full lg:min-h-[320px]">
                 <img
