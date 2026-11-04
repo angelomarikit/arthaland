@@ -64,6 +64,8 @@ export const developments: Development[] = [
       'LEED precertified Gold (among other registrations)',
     ],
     officialUrl: 'https://arthaland.com/properties/eluria',
+    sourceNote:
+      'Hero image is official hospitality creative; authorized Eluria exterior photography pending.',
   },
   {
     slug: 'una-apartments',

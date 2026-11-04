@@ -38,7 +38,7 @@ export const assetRegistry: AssetRecord[] = [
     filename: 'public/assets/hero/arthaland-hero-desktop.mp4',
     category: 'hero',
     source:
-      'Higgsfield seedance_2_5 job 6cf95371-d1e5-4fe9-b0fb-1e80197c3bff · Eluria exterior reference',
+      'Higgsfield seedance_2_5 job 0c015658-2b25-49c7-8198-6f988f567dd0 · Lucima facade reference',
     license: 'Higgsfield user generation terms — project use only',
     resolution: '1920×1080, 16:9, ~8.25s (loop-bridge)',
     type: 'video',
