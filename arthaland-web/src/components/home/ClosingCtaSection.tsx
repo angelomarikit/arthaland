@@ -27,10 +27,7 @@ export function ClosingCtaSection() {
           Request a viewing or send a message — our sales team will respond with
           verified development information.
         </p>
-        <Button
-          href="/contact"
-          className="mt-10 bg-surface-alt text-ink hover:bg-accent hover:text-ink"
-        >
+        <Button href="/contact" className="mt-10">
           Get in Touch
         </Button>
       </div>

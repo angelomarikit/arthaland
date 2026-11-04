@@ -1,8 +1,8 @@
 export const siteConfig = {
   brand: {
     name: 'ARTHALAND',
-    tagline: 'Property Sales Team',
     logoMarkSrc: '/assets/brand/arthaland-mark.png',
+    logoLockupSrc: '/assets/brand/arthaland-logo-lockup.png',
   },
   social: {
     facebook: 'https://www.facebook.com/arthaland',
@@ -23,6 +23,7 @@ export const siteConfig = {
       { label: 'Services', href: '/services' },
       { label: 'Our Team', href: '/team' },
       { label: 'Contact', href: '/contact' },
+      { label: 'FAQ', href: '/faq' },
       { label: 'Privacy', href: '/privacy' },
     ],
     cta: { label: 'Get in Touch', href: '/contact' },
@@ -43,6 +44,7 @@ export const siteConfig = {
       { label: 'Services', href: '/services' },
       { label: 'Our Team', href: '/team' },
       { label: 'Contact', href: '/contact' },
+      { label: 'FAQ', href: '/faq' },
       { label: 'Privacy', href: '/privacy' },
     ],
     services: [

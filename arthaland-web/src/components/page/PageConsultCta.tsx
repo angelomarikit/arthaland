@@ -28,10 +28,7 @@ export function PageConsultCta({
           {title}
         </h2>
         <p className="mx-auto mt-5 max-w-lg text-surface/80">{body}</p>
-        <Button
-          href="/contact"
-          className="mt-10 bg-surface-alt text-ink hover:bg-accent hover:text-ink"
-        >
+        <Button href="/contact" className="mt-10">
           Get in Touch
         </Button>
       </Container>

@@ -23,6 +23,9 @@ const TeamPage = lazy(() =>
 const ContactPage = lazy(() =>
   import('./pages/ContactPage').then((m) => ({ default: m.ContactPage })),
 )
+const FaqPage = lazy(() =>
+  import('./pages/FaqPage').then((m) => ({ default: m.FaqPage })),
+)
 const PrivacyPage = lazy(() =>
   import('./pages/PrivacyPage').then((m) => ({ default: m.PrivacyPage })),
 )
@@ -37,6 +40,16 @@ const AdminLoginPage = lazy(() =>
 const AdminDashboardPage = lazy(() =>
   import('./pages/admin/AdminDashboardPage').then((m) => ({
     default: m.AdminDashboardPage,
+  })),
+)
+const AdminDevelopmentsPage = lazy(() =>
+  import('./pages/admin/AdminDevelopmentsPage').then((m) => ({
+    default: m.AdminDevelopmentsPage,
+  })),
+)
+const AdminDevelopmentEditPage = lazy(() =>
+  import('./pages/admin/AdminDevelopmentEditPage').then((m) => ({
+    default: m.AdminDevelopmentEditPage,
   })),
 )
 
@@ -57,12 +70,18 @@ export default function App() {
             <Route path="services" element={<ServicesPage />} />
             <Route path="team" element={<TeamPage />} />
             <Route path="contact" element={<ContactPage />} />
+            <Route path="faq" element={<FaqPage />} />
             <Route path="privacy" element={<PrivacyPage />} />
             <Route path="404" element={<NotFoundPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
           <Route path="admin/login" element={<AdminLoginPage />} />
           <Route path="admin" element={<AdminDashboardPage />} />
+          <Route path="admin/developments" element={<AdminDevelopmentsPage />} />
+          <Route
+            path="admin/developments/:slug"
+            element={<AdminDevelopmentEditPage />}
+          />
         </Routes>
       </Suspense>
     </BrowserRouter>

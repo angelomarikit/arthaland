@@ -27,6 +27,7 @@ export const sectionImages = {
   aboutEditorial: '/assets/optimized/lucima-facade.webp',
   aboutInterior: '/assets/optimized/lucima-interior.webp',
   contactBg: '/assets/optimized/lucima-interior.webp',
+  contactPanel: '/assets/optimized/lucima-facade.webp',
   closingCta: '/assets/optimized/lucima-aerial.webp',
   inquirySide: '/assets/optimized/una-apartments-hero.webp',
   propertiesHero: '/assets/optimized/lucima-aerial.webp',

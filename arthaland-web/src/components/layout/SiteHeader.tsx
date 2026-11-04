@@ -3,10 +3,11 @@ import { Link, useLocation } from 'react-router-dom'
 import { Menu } from 'lucide-react'
 import { FacebookIcon } from '../icons/FacebookIcon'
 import { siteConfig } from '../../config/site'
-import { LogoMark } from '../brand/LogoMark'
+import { SiteLogo } from '../brand/SiteLogo'
 import { Button } from '../ui/Button'
 import { Container } from '../ui/Container'
 import { MobileNavOverlay } from './MobileNavOverlay'
+import { PropertiesNavMenu } from './PropertiesNavMenu'
 
 type SiteHeaderProps = {
   embedded?: boolean
@@ -15,7 +16,7 @@ type SiteHeaderProps = {
 export function SiteHeader({ embedded = false }: SiteHeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const { brand, nav } = siteConfig
+  const { nav } = siteConfig
   const location = useLocation()
   const onHero = embedded && !scrolled
 
@@ -33,30 +34,17 @@ export function SiteHeader({ embedded = false }: SiteHeaderProps) {
   return (
     <>
       <header
-        className={
-          embedded
-            ? `absolute inset-x-0 top-0 z-30 transition-colors duration-500 ${scrolled ? 'bg-surface/95 shadow-sm backdrop-blur-md' : 'bg-gradient-to-b from-ink/40 to-transparent'}`
-            : `sticky top-0 z-30 border-b transition-colors duration-500 ${scrolled ? 'border-border bg-surface/95 backdrop-blur-md' : 'border-transparent bg-surface'}`
-        }
+        className={`sticky top-0 z-30 border-b transition-colors duration-500 ${
+          onHero
+            ? 'border-transparent bg-gradient-to-b from-ink/45 to-transparent'
+            : scrolled || !embedded
+              ? 'border-border bg-surface/95 shadow-sm backdrop-blur-md'
+              : 'border-transparent bg-surface'
+        }`}
       >
         <Container className="flex h-[82px] items-center justify-between gap-4 px-6 md:px-8">
-          <Link to="/" className="flex min-w-0 items-center gap-3">
-            <LogoMark
-              className="h-11 w-11 shrink-0 md:h-[45px] md:w-[45px]"
-              inverted={!onHero}
-            />
-            <span className="flex min-w-0 flex-col gap-0.5 leading-none">
-              <span
-                className={`truncate text-[clamp(1.25rem,4vw,2rem)] font-bold tracking-[-0.05em] ${onHero ? 'text-surface' : 'text-ink'}`}
-              >
-                {brand.name}
-              </span>
-              <span
-                className={`text-nav truncate text-[11px] uppercase tracking-[0.64px] ${onHero ? 'text-surface/70' : 'text-title-muted'}`}
-              >
-                {brand.tagline}
-              </span>
-            </span>
+          <Link to="/" className="flex min-w-0 shrink-0 items-center">
+            <SiteLogo inverted={!onHero} />
           </Link>
 
           <nav
@@ -64,6 +52,9 @@ export function SiteHeader({ embedded = false }: SiteHeaderProps) {
             aria-label="Primary"
           >
             {nav.primary.map((item) => {
+              if (item.href === '/properties') {
+                return <PropertiesNavMenu key={item.href} onHero={onHero} />
+              }
               const active = location.pathname === item.href
               return (
                 <Link
@@ -86,11 +77,8 @@ export function SiteHeader({ embedded = false }: SiteHeaderProps) {
             </a>
             <Button
               href={nav.cta.href}
-              className={
-                onHero
-                  ? 'border border-surface/40 bg-transparent px-8 py-4 text-surface hover:bg-surface hover:text-ink'
-                  : 'px-8 py-4'
-              }
+              variant={onHero ? 'outlineOnDark' : 'default'}
+              size="compact"
             >
               {nav.cta.label}
             </Button>

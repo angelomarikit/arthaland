@@ -18,7 +18,7 @@ export function LogoMark({ className = '', inverted = false }: LogoMarkProps) {
       width={120}
       height={120}
       decoding="async"
-      className={`object-contain ${inverted ? 'invert' : ''} ${className}`}
+      className={`block size-full max-h-full max-w-full object-contain object-[50%_46%] ${inverted ? 'invert' : ''} ${className}`}
     />
   )
 }

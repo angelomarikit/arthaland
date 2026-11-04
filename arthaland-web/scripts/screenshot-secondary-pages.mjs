@@ -9,7 +9,12 @@ const base = process.env.PREVIEW_URL ?? 'http://127.0.0.1:4173'
 
 const routes = [
   { name: 'properties', path: '/properties' },
+  { name: 'properties-featured-eluria', path: '/properties#featured' },
+  { name: 'property-eluria', path: '/properties/eluria' },
   { name: 'property-lucima', path: '/properties/lucima' },
+  { name: 'property-liv-coming-soon', path: '/properties/liv' },
+  { name: 'admin-developments', path: '/admin/developments' },
+  { name: 'admin-development-edit-eluria', path: '/admin/developments/eluria' },
   { name: 'about', path: '/about' },
   { name: 'services', path: '/services' },
   { name: 'team', path: '/team' },

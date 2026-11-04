@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useReducedMotion } from 'motion/react'
+import { Button } from '../ui/Button'
 import { ChevronDown } from 'lucide-react'
 import { gsap, initGsap } from '../../animation/gsapSetup'
 import { motionDuration, motionEase } from '../../animation/motionTokens'
@@ -178,18 +178,10 @@ export function CinematicHero() {
                 data-hero-fade
                 className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center"
               >
-                <Link
-                  to={hero.primaryCta.href}
-                  className="text-button inline-flex items-center justify-center bg-surface-alt px-[43px] py-[25px] text-ink transition-colors hover:bg-ink hover:text-surface"
-                >
-                  {hero.primaryCta.label}
-                </Link>
-                <Link
-                  to={hero.secondaryCta.href}
-                  className="text-button inline-flex items-center justify-center border border-surface/40 px-[43px] py-[25px] text-surface backdrop-blur-sm transition-colors hover:border-surface hover:bg-surface/10"
-                >
+                <Button href={hero.primaryCta.href}>{hero.primaryCta.label}</Button>
+                <Button href={hero.secondaryCta.href} variant="outlineOnDark">
                   {hero.secondaryCta.label}
-                </Link>
+                </Button>
               </div>
             </div>
           </div>

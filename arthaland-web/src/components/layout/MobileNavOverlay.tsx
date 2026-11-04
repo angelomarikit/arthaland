@@ -18,6 +18,7 @@ const mainLinks = [
   { label: 'Services', href: '/services' },
   { label: 'Our Team', href: '/team' },
   { label: 'Contact', href: '/contact' },
+  { label: 'FAQ', href: '/faq' },
 ]
 
 export function MobileNavOverlay({ open, onClose }: MobileNavOverlayProps) {
@@ -108,7 +109,7 @@ export function MobileNavOverlay({ open, onClose }: MobileNavOverlayProps) {
         <div className="border-t border-border p-6">
           <Link
             to={siteConfig.nav.cta.href}
-            className="text-button flex min-h-[52px] items-center justify-center bg-ink text-surface"
+            className="text-button flex min-h-[52px] items-center justify-center border border-ink bg-ink text-surface transition-colors hover:bg-ink-soft"
             onClick={onClose}
           >
             {siteConfig.nav.cta.label}

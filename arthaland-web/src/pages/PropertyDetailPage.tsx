@@ -7,12 +7,19 @@ import { FadeInWhenVisible } from '../components/page/FadeInWhenVisible'
 import { PageConsultCta } from '../components/page/PageConsultCta'
 import { PropertyCard } from '../components/property/PropertyCard'
 import { PropertyDetailHero } from '../components/property/PropertyDetailHero'
+import { PropertyFloorPlansSection } from '../components/property/PropertyFloorPlansSection'
 import { PropertyGallery } from '../components/property/PropertyGallery'
-import { getDevelopment, getPublishedDevelopments } from '../data/developments'
+import { PropertyUnitTypesSection } from '../components/property/PropertyUnitTypesSection'
+import { PropertyVideoSection } from '../components/property/PropertyVideoSection'
+import {
+  getDevelopmentBySlug,
+  getPortfolioDevelopments,
+  getUnitTypesByDevelopment,
+} from '../data/repositories/developmentRepository'
 
 export function PropertyDetailPage() {
   const { slug } = useParams()
-  const development = slug ? getDevelopment(slug) : undefined
+  const development = slug ? getDevelopmentBySlug(slug) : undefined
 
   if (!development) {
     return (
@@ -21,7 +28,8 @@ export function PropertyDetailPage() {
         <Container className="section-x py-32">
           <h1 className="text-heading-2">Development not found</h1>
           <p className="mt-4 text-title-muted">
-            This listing is unpublished or unavailable.
+            This listing is unpublished, in draft, or unavailable on the sales
+            channel.
           </p>
           <Button href="/properties" className="mt-8">
             Back to Properties
@@ -31,14 +39,20 @@ export function PropertyDetailPage() {
     )
   }
 
-  const related = getPublishedDevelopments()
-    .filter((d) => d.slug !== development.slug && d.region === development.region)
+  const units = getUnitTypesByDevelopment(development.id)
+  const related = getPortfolioDevelopments()
+    .filter(
+      (d) =>
+        d.slug !== development.slug &&
+        d.publicationStatus === 'published' &&
+        d.region === development.region,
+    )
     .slice(0, 3)
-
-  const fallbackRelated = getPublishedDevelopments()
-    .filter((d) => d.slug !== development.slug)
+  const fallbackRelated = getPortfolioDevelopments()
+    .filter(
+      (d) => d.slug !== development.slug && d.publicationStatus === 'published',
+    )
     .slice(0, 3)
-
   const relatedList = related.length > 0 ? related : fallbackRelated
 
   return (
@@ -46,12 +60,33 @@ export function PropertyDetailPage() {
       <SiteHeader embedded />
       <PropertyDetailHero development={development} />
 
+      {development.publicationStatus === 'coming_soon' && (
+        <div className="border-b border-border bg-surface-soft py-4">
+          <Container className="section-x text-center text-sm text-title-muted">
+            Full sales listing coming soon — contact the team for verified
+            information in the meantime.
+          </Container>
+        </div>
+      )}
+
+      {development.usesIllustrativeImagery && (
+        <div className="border-b border-amber-200/80 bg-amber-50 py-3">
+          <Container className="section-x text-center text-xs uppercase tracking-wider text-amber-950/80">
+            Illustrative imagery — not verified photography of {development.name}
+          </Container>
+        </div>
+      )}
+
       <section className="py-16 md:py-24">
         <Container className="section-x grid gap-12 lg:grid-cols-12">
           <FadeInWhenVisible className="lg:col-span-7">
             <Eyebrow>Introduction</Eyebrow>
-            <h2 className="text-heading-3 mt-4">A considered address in {development.region}</h2>
-            <p className="mt-6 leading-relaxed text-title-muted">{development.overview}</p>
+            <h2 className="text-heading-3 mt-4">
+              A considered address in {development.region}
+            </h2>
+            <p className="mt-6 leading-relaxed text-title-muted">
+              {development.fullDescription}
+            </p>
             {development.sourceNote && (
               <p className="mt-6 border-l-2 border-border pl-4 text-sm text-title-muted">
                 {development.sourceNote}
@@ -60,7 +95,7 @@ export function PropertyDetailPage() {
           </FadeInWhenVisible>
           <FadeInWhenVisible className="lg:col-span-5">
             <div className="border border-border bg-surface-soft p-8 md:p-10">
-              <h3 className="text-lg font-medium">Development highlights</h3>
+              <h3 className="text-lg font-medium">Property highlights</h3>
               <dl className="mt-6 space-y-5 text-sm">
                 <div>
                   <dt className="text-title-muted">Location</dt>
@@ -68,10 +103,14 @@ export function PropertyDetailPage() {
                 </div>
                 <div>
                   <dt className="text-title-muted">Category</dt>
-                  <dd className="mt-1 text-base">{development.type}</dd>
+                  <dd className="mt-1 text-base capitalize">{development.category}</dd>
                 </div>
                 <div>
-                  <dt className="text-title-muted">Status</dt>
+                  <dt className="text-title-muted">Type</dt>
+                  <dd className="mt-1 text-base">{development.propertyType}</dd>
+                </div>
+                <div>
+                  <dt className="text-title-muted">Availability</dt>
                   <dd className="mt-1 text-base">{development.status}</dd>
                 </div>
                 {development.bedroomsRange && (
@@ -111,28 +150,46 @@ export function PropertyDetailPage() {
         </Container>
       </section>
 
+      <PropertyUnitTypesSection units={units} />
+      <PropertyFloorPlansSection units={units} />
+
       <section className="py-16 md:py-24">
         <Container className="section-x grid gap-16 lg:grid-cols-2">
           <FadeInWhenVisible>
-            <Eyebrow>Amenities & lifestyle</Eyebrow>
+            <Eyebrow>Amenities</Eyebrow>
             <h2 className="text-heading-3 mt-4">Spaces for everyday living</h2>
-            <ul className="editorial-list mt-8 space-y-4 text-title-muted">
-              {development.amenities.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
+            {development.amenities.length > 0 ? (
+              <ul className="editorial-list mt-8 space-y-4 text-title-muted">
+                {development.amenities.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-6 text-title-muted">
+                Amenity details will be published when verified for this
+                development.
+              </p>
+            )}
           </FadeInWhenVisible>
           <FadeInWhenVisible>
             <Eyebrow>Sustainability</Eyebrow>
             <h2 className="text-heading-3 mt-4">Verified commitments</h2>
-            <ul className="editorial-list mt-8 space-y-4 text-title-muted">
-              {development.sustainability.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
+            {development.sustainability.length > 0 ? (
+              <ul className="editorial-list mt-8 space-y-4 text-title-muted">
+                {development.sustainability.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-6 text-title-muted">
+                Sustainability information pending authorized materials.
+              </p>
+            )}
           </FadeInWhenVisible>
         </Container>
       </section>
+
+      <PropertyVideoSection development={development} />
 
       <section className="bg-ink py-16 text-surface md:py-20">
         <Container className="section-x grid gap-8 md:grid-cols-3">
@@ -140,16 +197,12 @@ export function PropertyDetailPage() {
             <Eyebrow dark>Location</Eyebrow>
             <h2 className="text-heading-3 mt-4">{development.location}</h2>
             <p className="mt-4 max-w-xl text-surface/75">
-              Situated in {development.region}. For maps, transport links, and
-              neighborhood context, refer to the official ARTHALAND development
-              page or speak with our sales team.
+              Refer to the official ARTHALAND development page for maps and
+              neighborhood context, or speak with our sales team.
             </p>
           </div>
           <div className="flex items-end">
-            <Button
-              href={development.officialUrl}
-              className="border border-surface/30 bg-transparent text-surface hover:bg-surface hover:text-ink"
-            >
+            <Button href={development.officialUrl} variant="outlineOnDark" size="compact">
               View on arthaland.com
             </Button>
           </div>
@@ -173,8 +226,8 @@ export function PropertyDetailPage() {
       )}
 
       <PageConsultCta
-        title={`Inquire about ${development.name}`}
-        body="Share your questions or request a viewing. Our sales team responds with verified information from ARTHALAND."
+        title={`Request a viewing — ${development.name}`}
+        body="Share your questions or schedule a consultation. Our sales team responds with verified information from ARTHALAND."
       />
     </>
   )

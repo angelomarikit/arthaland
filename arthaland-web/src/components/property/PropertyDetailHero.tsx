@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import type { Development } from '../../data/developments'
 import { Button } from '../ui/Button'
 
@@ -35,17 +34,14 @@ export function PropertyDetailHero({ development }: PropertyDetailHeroProps) {
           {development.priceLabel}
         </p>
         <div className="mt-8 flex animate-fade-up flex-wrap gap-4 animation-delay-150">
-          <Button href="/contact" className="bg-surface-alt text-ink hover:bg-accent">
-            Request a Viewing
-          </Button>
-          <Link
-            to={development.officialUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-button inline-flex items-center border border-surface/40 px-6 py-4 transition-colors hover:bg-surface hover:text-ink"
+          <Button href="/contact">Request a Viewing</Button>
+          <Button
+            href={development.officialUrl}
+            variant="outlineOnDark"
+            size="compact"
           >
             Official ARTHALAND Page
-          </Link>
+          </Button>
         </div>
       </div>
     </section>

@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import type { Development } from '../../data/developments'
 import { Button } from '../ui/Button'
 import { Eyebrow } from '../ui/Eyebrow'
@@ -34,20 +33,16 @@ export function FeaturedDevelopmentSpotlight({
           </p>
           <p className="mt-4 text-sm font-medium text-surface">{development.priceLabel}</p>
           <div className="mt-8 flex flex-wrap gap-4">
-            <Button
-              href={`/properties/${development.slug}`}
-              className="bg-surface-alt text-ink hover:bg-accent"
-            >
+            <Button href={`/properties/${development.slug}`}>
               Explore Development
             </Button>
-            <Link
-              to={development.officialUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-button inline-flex items-center border border-surface/35 px-6 py-4 transition-colors hover:bg-surface hover:text-ink"
+            <Button
+              href={development.officialUrl}
+              variant="outlineOnDark"
+              size="compact"
             >
               Official page
-            </Link>
+            </Button>
           </div>
         </div>
       </div>

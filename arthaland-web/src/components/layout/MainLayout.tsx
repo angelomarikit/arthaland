@@ -3,6 +3,7 @@ import { ScrollMotionProvider } from '../motion/ScrollMotionProvider'
 import { PageTransition } from './PageTransition'
 import { ScrollToTop } from './ScrollToTop'
 import { SiteFooter } from './SiteFooter'
+import { SupportWidget } from '../support/SupportWidget'
 
 export function MainLayout() {
   return (
@@ -12,6 +13,7 @@ export function MainLayout() {
         <Outlet />
         <SiteFooter />
       </PageTransition>
+      <SupportWidget />
     </ScrollMotionProvider>
   )
 }
