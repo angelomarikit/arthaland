@@ -1,12 +1,16 @@
 import { Link } from 'react-router-dom'
 import { ArrowUpRight } from 'lucide-react'
 import type { FeaturedUnit } from '../../domain/featuredUnit/types'
+import { getFeaturedUnitPhotos } from '../../lib/featuredUnitPhotos'
 
 type FeaturedUnitCardProps = {
   unit: FeaturedUnit
 }
 
 export function FeaturedUnitCard({ unit }: FeaturedUnitCardProps) {
+  const photos = getFeaturedUnitPhotos(unit)
+  const cover = photos[0]
+  const photoCount = photos.length
   const statusLabel =
     unit.status === 'reserved' ? 'Reserved' : unit.status === 'sold' ? 'Sold' : 'Available'
 
@@ -16,9 +20,9 @@ export function FeaturedUnitCard({ unit }: FeaturedUnitCardProps) {
       className="group flex h-full flex-col overflow-hidden border border-border bg-surface transition-colors hover:border-ink/30"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-surface-muted">
-        {unit.heroImage ? (
+        {cover ? (
           <img
-            src={unit.heroImage}
+            src={cover}
             alt=""
             className="size-full object-cover transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transition-none"
             loading="lazy"
@@ -28,14 +32,25 @@ export function FeaturedUnitCard({ unit }: FeaturedUnitCardProps) {
             Photo coming soon
           </div>
         )}
-        <span className="text-button absolute left-4 top-4 border border-border/80 bg-surface/95 px-3 py-1.5 backdrop-blur-sm">
-          {statusLabel}
-        </span>
+        {unit.isSampleGuide ? (
+          <span className="text-[10px] absolute left-3 top-3 border border-amber-200 bg-amber-50/95 px-2 py-1 font-medium uppercase tracking-wider text-amber-950 backdrop-blur-sm">
+            Sample guide
+          </span>
+        ) : (
+          <span className="text-button absolute left-3 top-3 border border-border/80 bg-surface/95 px-3 py-1.5 backdrop-blur-sm">
+            {statusLabel}
+          </span>
+        )}
+        {photoCount > 1 && (
+          <span className="text-button absolute bottom-3 right-3 bg-ink/75 px-2 py-1 text-surface">
+            {photoCount} photos
+          </span>
+        )}
       </div>
       <div className="flex flex-1 flex-col p-5 md:p-6">
         <p className="text-eyebrow text-title-muted">{unit.developmentName}</p>
         <h3 className="text-heading-3 mt-2 line-clamp-2">{unit.title}</h3>
-        <p className="mt-2 text-sm text-title-muted">{unit.location}</p>
+        <p className="mt-2 text-sm text-title-muted line-clamp-1">{unit.location}</p>
         <dl className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm text-title-muted">
           {unit.unitLabel ? (
             <div>

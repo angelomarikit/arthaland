@@ -1,4 +1,7 @@
-import { featuredUnitsSeed } from '../../data/seed/featuredUnits.seed'
+import {
+  featuredUnitsSeed,
+  getFeaturedUnitGuideSamples,
+} from '../../data/seed/featuredUnits.seed'
 import type { FeaturedUnit, FeaturedUnitStatus } from '../../domain/featuredUnit/types'
 import { getSupabaseClient } from '../supabase/client'
 import type { DbFeaturedUnit } from '../supabase/database.types'
@@ -28,9 +31,20 @@ function mapRow(row: DbFeaturedUnit): FeaturedUnit {
   }
 }
 
+function mergeGuideWithListings(dbRows: FeaturedUnit[]): FeaturedUnit[] {
+  const guides = getFeaturedUnitGuideSamples()
+  const guideSlugs = new Set(guides.map((g) => g.slug))
+  const fromDb = dbRows.filter((r) => !guideSlugs.has(r.slug))
+  return [...guides, ...fromDb].sort((a, b) => {
+    if (a.isSampleGuide && !b.isSampleGuide) return -1
+    if (!a.isSampleGuide && b.isSampleGuide) return 1
+    return a.displayOrder - b.displayOrder
+  })
+}
+
 export async function fetchPublicFeaturedUnits(): Promise<FeaturedUnit[]> {
   const supabase = getSupabaseClient()
-  if (!supabase) return featuredUnitsSeed.filter((u) => u.published)
+  if (!supabase) return getFeaturedUnitGuideSamples()
 
   const { data, error } = await supabase
     .from('featured_units')
@@ -40,16 +54,15 @@ export async function fetchPublicFeaturedUnits(): Promise<FeaturedUnit[]> {
     .order('display_order', { ascending: true })
 
   if (error) throw error
-  const rows = (data ?? []) as DbFeaturedUnit[]
-  if (rows.length === 0) return featuredUnitsSeed.filter((u) => u.published)
-  return rows.map(mapRow)
+  const rows = ((data ?? []) as DbFeaturedUnit[]).map(mapRow)
+  return mergeGuideWithListings(rows)
 }
 
 export async function fetchFeaturedUnitBySlug(slug: string): Promise<FeaturedUnit | null> {
+  const sample =
+    featuredUnitsSeed.find((u) => u.slug === slug && u.published) ?? null
   const supabase = getSupabaseClient()
-  if (!supabase) {
-    return featuredUnitsSeed.find((u) => u.slug === slug && u.published) ?? null
-  }
+  if (!supabase) return sample
 
   const { data, error } = await supabase
     .from('featured_units')
@@ -59,10 +72,8 @@ export async function fetchFeaturedUnitBySlug(slug: string): Promise<FeaturedUni
     .maybeSingle()
 
   if (error) throw error
-  if (!data) {
-    return featuredUnitsSeed.find((u) => u.slug === slug && u.published) ?? null
-  }
-  return mapRow(data as DbFeaturedUnit)
+  if (data) return mapRow(data as DbFeaturedUnit)
+  return sample
 }
 
 export async function fetchAdminFeaturedUnits(): Promise<FeaturedUnit[]> {

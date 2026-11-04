@@ -57,9 +57,15 @@ export function AdminFeaturedUnitsPage() {
               <span className="text-title-muted">
                 {u.published ? 'Published' : 'Draft'} · {u.status}
               </span>
-              <Link to={`/admin/featured-units/${u.id}`} className="underline">
-                Edit
-              </Link>
+                {u.isSampleGuide ? (
+                  <Link to={`/featured-units/${u.slug}`} className="underline" target="_blank" rel="noreferrer">
+                    View on site
+                  </Link>
+                ) : (
+                  <Link to={`/admin/featured-units/${u.id}`} className="underline">
+                    Edit
+                  </Link>
+                )}
             </div>
           </li>
         ))}

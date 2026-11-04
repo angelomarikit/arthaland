@@ -3,6 +3,8 @@ export type FeaturedUnitStatus = 'available' | 'reserved' | 'sold'
 export type FeaturedUnit = {
   id: string
   slug: string
+  /** Shown on site as format examples until replaced by real CMS listings. */
+  isSampleGuide?: boolean
   title: string
   developmentName: string
   location: string

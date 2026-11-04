@@ -54,7 +54,7 @@ export function FeaturedUnitsPage() {
           </h1>
           <p className="mt-6 max-w-xl text-lg text-surface/80">
             Curated resale and developer inventory posted by the ARTHALAND sales team —
-            photos, specs, and pricing guidance in one place.
+            browse photos like a property booking site, then inquire on the unit you want.
           </p>
         </Container>
       </section>
@@ -75,6 +75,10 @@ export function FeaturedUnitsPage() {
             </div>
           ) : (
             <>
+              <p className="mb-6 max-w-2xl text-sm text-title-muted">
+                Listings marked <strong className="font-medium text-ink">Sample guide</strong> show
+                the format to follow when you add real units in the admin CMS.
+              </p>
               <FeaturedUnitsSearch
                 query={query}
                 onQueryChange={updateQuery}

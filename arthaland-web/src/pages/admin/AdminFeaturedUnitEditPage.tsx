@@ -1,15 +1,15 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { AdminBreadcrumbs } from '../../components/admin/AdminBreadcrumbs'
-import { MediaUploadZone } from '../../components/admin/MediaUploadZone'
+import { FeaturedUnitPhotosUpload } from '../../components/admin/FeaturedUnitPhotosUpload'
 import type { FeaturedUnitStatus } from '../../domain/featuredUnit/types'
+import { getFeaturedUnitPhotos } from '../../lib/featuredUnitPhotos'
 import {
   createFeaturedUnit,
   fetchAdminFeaturedUnit,
   updateFeaturedUnit,
   type FeaturedUnitInput,
 } from '../../lib/cms/featuredUnitsApi'
-import { mediaPublicUrl, uploadMediaWithMetadata } from '../../lib/cms/mediaUpload'
 
 function slugify(text: string) {
   return text
@@ -28,7 +28,6 @@ export function AdminFeaturedUnitEditPage() {
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
 
-  const [slug, setSlug] = useState('')
   const [title, setTitle] = useState('')
   const [developmentName, setDevelopmentName] = useState('')
   const [location, setLocation] = useState('')
@@ -40,11 +39,12 @@ export function AdminFeaturedUnitEditPage() {
   const [floor, setFloor] = useState('')
   const [description, setDescription] = useState('')
   const [highlightsText, setHighlightsText] = useState('')
-  const [heroImage, setHeroImage] = useState('')
-  const [galleryText, setGalleryText] = useState('')
+  const [photos, setPhotos] = useState<string[]>([])
   const [status, setStatus] = useState<FeaturedUnitStatus>('available')
   const [published, setPublished] = useState(false)
   const [displayOrder, setDisplayOrder] = useState(0)
+
+  const uploadFolderSlug = slugify(title) || 'draft'
 
   useEffect(() => {
     if (isNew) return
@@ -55,7 +55,10 @@ export function AdminFeaturedUnitEditPage() {
           setError('Listing not found')
           return
         }
-        setSlug(u.slug)
+        if (u.isSampleGuide) {
+          setError('Sample guide listings are edited in code — duplicate this format in a new listing.')
+          return
+        }
         setTitle(u.title)
         setDevelopmentName(u.developmentName)
         setLocation(u.location)
@@ -67,8 +70,7 @@ export function AdminFeaturedUnitEditPage() {
         setFloor(u.floor ?? '')
         setDescription(u.description)
         setHighlightsText(u.highlights.join('\n'))
-        setHeroImage(u.heroImage)
-        setGalleryText(u.gallery.join('\n'))
+        setPhotos(getFeaturedUnitPhotos(u))
         setStatus(u.status)
         setPublished(u.published)
         setDisplayOrder(u.displayOrder)
@@ -78,8 +80,9 @@ export function AdminFeaturedUnitEditPage() {
   }, [id, isNew])
 
   function buildInput(): FeaturedUnitInput {
+    const base = slugify(title) || `listing-${Date.now()}`
     return {
-      slug: slug || slugify(title),
+      slug: base,
       title,
       developmentName,
       location,
@@ -94,11 +97,8 @@ export function AdminFeaturedUnitEditPage() {
         .split('\n')
         .map((s) => s.trim())
         .filter(Boolean),
-      heroImage,
-      gallery: galleryText
-        .split('\n')
-        .map((s) => s.trim())
-        .filter(Boolean),
+      heroImage: photos[0] ?? '',
+      gallery: photos,
       status,
       published,
       displayOrder,
@@ -107,6 +107,10 @@ export function AdminFeaturedUnitEditPage() {
 
   async function onSave(e: FormEvent) {
     e.preventDefault()
+    if (photos.length === 0) {
+      setError('Add at least one photo for this unit.')
+      return
+    }
     setSaving(true)
     setError(null)
     setMessage(null)
@@ -141,29 +145,23 @@ export function AdminFeaturedUnitEditPage() {
       />
       <h1 className="text-2xl font-medium">{isNew ? 'New featured unit' : 'Edit listing'}</h1>
       <p className="mt-2 text-sm text-title-muted">
-        Published listings appear on the public marketplace. Use clear photos and verified pricing
-        language.
+        Match the sample listings on the public page: multiple photos, clear specs, and published
+        when ready for buyers.
       </p>
 
       <form onSubmit={onSave} className="mt-8 space-y-4 rounded-2xl border border-border bg-surface p-6">
+        <FeaturedUnitPhotosUpload
+          photos={photos}
+          onChange={setPhotos}
+          listingSlug={uploadFolderSlug}
+        />
+
         <label className="block text-sm">
           Listing title
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            onBlur={() => {
-              if (!slug && title) setSlug(slugify(title))
-            }}
             className="mt-1 w-full rounded-xl border border-border px-3 py-2"
-            required
-          />
-        </label>
-        <label className="block text-sm">
-          URL slug
-          <input
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-border px-3 py-2 font-mono text-xs"
             required
           />
         </label>
@@ -256,35 +254,6 @@ export function AdminFeaturedUnitEditPage() {
             value={highlightsText}
             onChange={(e) => setHighlightsText(e.target.value)}
             className="mt-1 w-full rounded-xl border border-border px-3 py-2 text-sm"
-          />
-        </label>
-
-        <MediaUploadZone
-          label="Cover photo"
-          accept="image"
-          previewUrl={heroImage || undefined}
-          helperText="Main marketplace image."
-          onUpload={async (file, onProgress) => {
-            const media = await uploadMediaWithMetadata({
-              file,
-              bucket: 'arthaland-images',
-              folder: 'featured-units',
-              placement: 'hero',
-              published: true,
-              onProgress,
-            })
-            setHeroImage(mediaPublicUrl(media))
-          }}
-        />
-
-        <label className="block text-sm">
-          Gallery image URLs (one per line)
-          <textarea
-            rows={3}
-            value={galleryText}
-            onChange={(e) => setGalleryText(e.target.value)}
-            placeholder="Add extra photos after upload, or paste URLs"
-            className="mt-1 w-full rounded-xl border border-border px-3 py-2 font-mono text-xs"
           />
         </label>
 
