@@ -91,11 +91,6 @@ const AdminPageSectionPage = lazy(() =>
     default: m.AdminPageSectionPage,
   })),
 )
-const AdminMediaLibraryPage = lazy(() =>
-  import('./pages/admin/AdminMediaLibraryPage').then((m) => ({
-    default: m.AdminMediaLibraryPage,
-  })),
-)
 const AdminInquiriesPage = lazy(() =>
   import('./pages/admin/AdminInquiriesPage').then((m) => ({
     default: m.AdminInquiriesPage,
@@ -174,7 +169,6 @@ export default function App() {
                   path="admin/properties/:slug/amenities"
                   element={<AdminPropertyAmenitiesPage />}
                 />
-                <Route path="admin/media" element={<AdminMediaLibraryPage />} />
                 <Route path="admin/inquiries" element={<AdminInquiriesPage />} />
                 <Route path="admin/team" element={<AdminTeamPage />} />
                 <Route path="admin/settings" element={<AdminSettingsPage />} />

@@ -50,7 +50,7 @@ const homeAndPages: SiteImageEntry[] = [
     'Full-screen background on the homepage while the hero video loads',
     'Home',
     'Home hero is the background video in code — replace poster in Media Library when CMS video is wired',
-    '/admin/media',
+    '/admin/site-images',
     '/',
   ),
   editorial(
@@ -200,7 +200,7 @@ const homeAndPages: SiteImageEntry[] = [
     'Small image beside the floating help widget (if shown)',
     'Site-wide',
     'Media Library',
-    '/admin/media',
+    '/admin/site-images',
   ),
 ]
 

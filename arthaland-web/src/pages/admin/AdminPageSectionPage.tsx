@@ -1,8 +1,16 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useParams } from 'react-router-dom'
 import { AdminBreadcrumbs } from '../../components/admin/AdminBreadcrumbs'
 import { MediaUploadZone } from '../../components/admin/MediaUploadZone'
-import { fetchPageSections, updatePageSection } from '../../lib/cms/pagesApi'
+import {
+  formatSectionPreview,
+  getLivePageSections,
+} from '../../config/pageContentRegistry'
+import {
+  fetchPageSections,
+  updatePageSection,
+  upsertPageSection,
+} from '../../lib/cms/pagesApi'
 import { uploadMediaWithMetadata, mediaPublicUrl } from '../../lib/cms/mediaUpload'
 
 type SectionContent = {
@@ -15,8 +23,14 @@ type SectionContent = {
 
 export function AdminPageSectionPage() {
   const { slug = '', sectionKey = '' } = useParams()
+  const liveSection = useMemo(
+    () => getLivePageSections(slug).find((s) => s.sectionKey === sectionKey),
+    [slug, sectionKey],
+  )
   const [sectionId, setSectionId] = useState('')
-  const [content, setContent] = useState<SectionContent>({})
+  const [sectionType, setSectionType] = useState(liveSection?.sectionType ?? 'richtext')
+  const [displayOrder, setDisplayOrder] = useState(liveSection?.displayOrder ?? 0)
+  const [content, setContent] = useState<SectionContent>(liveSection?.content ?? {})
   const [published, setPublished] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -27,24 +41,39 @@ export function AdminPageSectionPage() {
       const sec = sections.find((s) => s.section_key === sectionKey)
       if (sec) {
         setSectionId(sec.id)
+        setSectionType(sec.section_type)
+        setDisplayOrder(sec.display_order)
         setContent((sec.content as SectionContent) ?? {})
         setPublished(sec.published)
+      } else if (liveSection) {
+        setSectionType(liveSection.sectionType)
+        setDisplayOrder(liveSection.displayOrder)
+        setContent(liveSection.content)
       }
     })
-  }, [slug, sectionKey])
+  }, [slug, sectionKey, liveSection])
 
   async function onSave(e: FormEvent) {
     e.preventDefault()
-    if (!sectionId) return
     setSaving(true)
     setError(null)
     setMessage(null)
     try {
-      await updatePageSection(sectionId, {
-        content: content as Record<string, unknown>,
-        published,
-      })
-      setMessage('Saved successfully.')
+      const payload = content as Record<string, unknown>
+      if (sectionId) {
+        await updatePageSection(sectionId, { content: payload, published })
+      } else {
+        const id = await upsertPageSection({
+          pageSlug: slug,
+          sectionKey,
+          sectionType,
+          content: payload,
+          published,
+          displayOrder,
+        })
+        setSectionId(id)
+      }
+      setMessage('Saved to the CMS. The live site still uses built-in text until this section is connected.')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Save failed')
     } finally {
@@ -52,7 +81,8 @@ export function AdminPageSectionPage() {
     }
   }
 
-  const title = sectionKey.replace(/-/g, ' ')
+  const title = liveSection?.label ?? sectionKey.replace(/-/g, ' ')
+  const livePreview = liveSection ? formatSectionPreview(liveSection.content, 400) : null
 
   return (
     <div className="max-w-2xl">
@@ -63,19 +93,20 @@ export function AdminPageSectionPage() {
           { label: title },
         ]}
       />
-      <h1 className="text-2xl font-medium capitalize">{title}</h1>
-      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-title-muted">
-        Fill in the fields below like a simple document: small label, main heading,
-        optional supporting line, body text, and an optional photo. Click{' '}
-        <strong className="font-medium text-ink">Save section</strong> when finished.
-      </p>
+      <h1 className="text-2xl font-medium">{title}</h1>
 
-      {!sectionId && (
-        <p className="mt-4 text-sm text-title-muted">
-          This section is not in the database yet. Run the CMS setup script or ask
-          your developer to add a row for “{sectionKey}” on page “{slug}”.
-        </p>
-      )}
+      {livePreview ? (
+        <div className="mt-4 rounded-xl bg-surface-soft px-4 py-3 text-sm">
+          <p className="text-[10px] font-medium uppercase tracking-wider text-title-muted">
+            On the website now
+          </p>
+          <p className="mt-2 leading-relaxed text-ink">{livePreview}</p>
+        </div>
+      ) : null}
+
+      <p className="mt-3 text-sm leading-relaxed text-title-muted">
+        Fields below start from the live copy. Edit and save to store updates in the CMS.
+      </p>
 
       <form onSubmit={onSave} className="mt-6 space-y-4 rounded-2xl border border-border bg-surface p-6">
         <label className="block text-sm">
@@ -118,7 +149,7 @@ export function AdminPageSectionPage() {
           label="Section photo"
           accept="image"
           previewUrl={content.imageUrl}
-          helperText="Upload replaces the image for this section on the website."
+          helperText="Optional — for when this section is wired to the live page."
           onUpload={async (file, onProgress) => {
             const media = await uploadMediaWithMetadata({
               file,
@@ -139,14 +170,14 @@ export function AdminPageSectionPage() {
             checked={published}
             onChange={(e) => setPublished(e.target.checked)}
           />
-          Show this section on the live website
+          Mark as published in CMS (for future live connection)
         </label>
 
         {error && <p className="text-sm text-red-700">{error}</p>}
         {message && <p className="text-sm text-emerald-800">{message}</p>}
         <button
           type="submit"
-          disabled={saving || !sectionId}
+          disabled={saving}
           className="rounded-xl bg-ink px-5 py-2.5 text-sm text-surface disabled:opacity-50"
         >
           {saving ? 'Saving…' : 'Save section'}

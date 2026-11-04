@@ -2,7 +2,6 @@ import type { LucideIcon } from 'lucide-react'
 import {
   Building2,
   FileText,
-  ImageIcon,
   LayoutDashboard,
   Mail,
   Map,
@@ -34,7 +33,6 @@ export const adminNavGroups: AdminNavGroup[] = [
     items: [
       { label: 'Where images appear', href: '/admin/site-images', icon: Map },
       { label: 'Pages', href: '/admin/pages', icon: FileText },
-      { label: 'Media Library', href: '/admin/media', icon: ImageIcon },
     ],
   },
   {
