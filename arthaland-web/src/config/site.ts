@@ -2,8 +2,7 @@ export const siteConfig = {
   brand: {
     name: 'ARTHALAND',
     tagline: 'Property Sales Team',
-    /** Future: ARTHALAND team logo URL */
-    logoMarkSrc: undefined as string | undefined,
+    logoMarkSrc: '/assets/brand/arthaland-mark.png',
   },
   social: {
     facebook: 'https://www.facebook.com/arthaland',

@@ -26,9 +26,21 @@ export const sectionImages = {
   aboutHero: '/assets/optimized/lucima-aerial.webp',
   aboutEditorial: '/assets/optimized/lucima-facade.webp',
   aboutInterior: '/assets/optimized/lucima-interior.webp',
-  contactBg: '/assets/optimized/lucima-facade.webp',
+  contactBg: '/assets/optimized/lucima-interior.webp',
   closingCta: '/assets/optimized/lucima-aerial.webp',
   inquirySide: '/assets/optimized/una-apartments-hero.webp',
+  propertiesHero: '/assets/optimized/lucima-aerial.webp',
+  propertiesIntro: '/assets/optimized/lucima-exterior.webp',
+  servicesHero: '/assets/optimized/una-exterior.webp',
+  servicesConsultation: '/assets/optimized/lucima-interior.webp',
+  servicesDiscovery: '/assets/optimized/lucima-facade.webp',
+  servicesUnits: '/assets/optimized/una-apartments-hero.webp',
+  servicesViewing: '/assets/properties/sondris/exterior-hero.webp',
+  servicesProcess: '/assets/optimized/lucima-aerial.webp',
+  teamHero: '/assets/optimized/lucima-facade.webp',
+  teamLeadership: '/assets/optimized/lucima-exterior.webp',
+  aboutVision: '/assets/optimized/lucima-aerial.webp',
+  aboutLiving: '/assets/optimized/una-exterior.webp',
 } as const
 
 export const socialLinks = {

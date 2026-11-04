@@ -1,11 +1,15 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { gsap } from '../animation/gsapSetup'
-import { useGsapScope } from '../animation/useGsapScope'
 import { SiteHeader } from '../components/layout/SiteHeader'
 import { Container } from '../components/ui/Container'
+import { FadeInWhenVisible } from '../components/page/FadeInWhenVisible'
+import { PageConsultCta } from '../components/page/PageConsultCta'
 import { PropertyCard } from '../components/property/PropertyCard'
+import { PropertyFilters } from '../components/property/PropertyFilters'
+import { FeaturedDevelopmentSpotlight } from '../components/property/FeaturedDevelopmentSpotlight'
+import { sectionImages } from '../config/sectionImages'
 import {
+  getPrimaryFeaturedDevelopment,
   getPublishedDevelopments,
   type DevelopmentStatus,
   type PropertyType,
@@ -14,8 +18,8 @@ import {
 const regions = [...new Set(getPublishedDevelopments().map((d) => d.region))]
 
 export function PropertiesPage() {
-  const pageRef = useRef<HTMLElement>(null)
   const all = getPublishedDevelopments()
+  const spotlight = getPrimaryFeaturedDevelopment()
   const [searchParams] = useSearchParams()
   const [query, setQuery] = useState(() => searchParams.get('q') ?? '')
   const [region, setRegion] = useState('')
@@ -45,111 +49,114 @@ export function PropertiesPage() {
     return list
   }, [all, query, region, type, status, sort])
 
-  useGsapScope(
-    pageRef,
-    () => {
-      gsap.from('[data-property-card]', {
-        y: 36,
-        opacity: 0,
-        duration: 0.65,
-        stagger: 0.08,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '[data-property-grid]',
-          start: 'top 88%',
-        },
-      })
-    },
-    [filtered.map((d) => d.slug).join(',')],
-  )
+  const showSpotlight =
+    Boolean(spotlight) && filtered.some((d) => d.slug === spotlight!.slug)
+  const gridItems =
+    showSpotlight && spotlight
+      ? filtered.filter((d) => d.slug !== spotlight.slug)
+      : filtered
 
   return (
     <>
-      <SiteHeader />
-      <section ref={pageRef} className="bg-surface pb-20 pt-24 md:pb-40 md:pt-36">
-        <Container className="section-x">
-          <p className="text-eyebrow text-title-muted">Properties</p>
-          <h1 className="text-heading-2 mt-4 max-w-[20ch]">
-            Verified ARTHALAND developments
+      <SiteHeader embedded />
+      <section className="relative min-h-[58vh] overflow-hidden bg-ink text-surface md:min-h-[65vh]">
+        <img
+          src={sectionImages.propertiesHero}
+          alt=""
+          className="absolute inset-0 size-full object-cover"
+          fetchPriority="high"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/20" />
+        <Container className="section-x relative flex min-h-[58vh] flex-col justify-end pb-14 pt-32 md:min-h-[65vh] md:pb-20 md:pt-40">
+          <p className="text-eyebrow text-surface/70">Properties</p>
+          <h1 className="text-display-l mt-5 max-w-[14ch] animate-fade-up">
+            <span className="block">Discover a More</span>
+            <span className="block">Considered Way of Living.</span>
           </h1>
-          <p className="mt-4 max-w-2xl text-title-muted">
-            Curated listings from the official ARTHALAND portfolio. Pricing and unit
-            availability are shown only when verified on arthaland.com.
+          <p className="mt-6 max-w-xl text-lg text-surface/80 animate-fade-up animation-delay-150">
+            Verified ARTHALAND residential developments — curated for discerning
+            buyers seeking thoughtful design and sustainable places to live.
           </p>
+        </Container>
+      </section>
 
-          <div className="mt-10 grid gap-4 border border-border bg-surface-soft p-4 md:grid-cols-2 lg:grid-cols-5 lg:gap-3 lg:p-6">
-            <input
-              type="search"
-              placeholder="Search developments"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="min-h-[48px] border border-border bg-surface px-3 lg:col-span-2"
-              aria-label="Search"
-            />
-            <select
-              value={region}
-              onChange={(e) => setRegion(e.target.value)}
-              className="min-h-[48px] border border-border bg-surface px-3"
-              aria-label="Location"
-            >
-              <option value="">All locations</option>
-              {regions.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </select>
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value as PropertyType | '')}
-              className="min-h-[48px] border border-border bg-surface px-3"
-              aria-label="Property type"
-            >
-              <option value="">All types</option>
-              <option value="Residential Condominium">Condominium</option>
-              <option value="Apartment">Apartment</option>
-              <option value="Mixed-Use">Mixed-Use</option>
-              <option value="Villa">Villa</option>
-            </select>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value as DevelopmentStatus | '')}
-              className="min-h-[48px] border border-border bg-surface px-3"
-              aria-label="Availability"
-            >
-              <option value="">All status</option>
-              <option value="Pre-Selling">Pre-Selling</option>
-              <option value="Under Construction">Under Construction</option>
-              <option value="Completed">Completed</option>
-              <option value="Inquire for Availability">Inquire for Availability</option>
-            </select>
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as 'featured' | 'name')}
-              className="min-h-[48px] border border-border bg-surface px-3 md:col-span-2 lg:col-span-1"
-              aria-label="Sort"
-            >
-              <option value="featured">Featured first</option>
-              <option value="name">Name A–Z</option>
-            </select>
-          </div>
-
-          <p className="mt-6 text-sm text-title-muted">
-            {filtered.length} development{filtered.length === 1 ? '' : 's'}
-          </p>
-
-          <div
-            data-property-grid
-            className="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-3"
-          >
-            {filtered.map((development) => (
-              <div key={development.slug} data-property-card>
-                <PropertyCard development={development} />
+      <section className="border-b border-border bg-surface py-16 md:py-20">
+        <Container className="section-x">
+          <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
+            <FadeInWhenVisible className="lg:col-span-5">
+              <p className="text-eyebrow text-title-muted">Portfolio</p>
+              <h2 className="text-heading-3 mt-4">
+                Residences shaped by architecture and sustainability
+              </h2>
+              <p className="mt-5 max-w-md leading-relaxed text-title-muted">
+                Pricing and unit availability appear only when verified on
+                arthaland.com. Our sales team can confirm current details for
+                each development.
+              </p>
+            </FadeInWhenVisible>
+            <FadeInWhenVisible className="lg:col-span-7">
+              <div className="aspect-[16/10] overflow-hidden">
+                <img
+                  src={sectionImages.propertiesIntro}
+                  alt=""
+                  className="size-full object-cover"
+                  loading="lazy"
+                />
               </div>
-            ))}
+            </FadeInWhenVisible>
           </div>
         </Container>
       </section>
+
+      {showSpotlight && spotlight && (
+        <section className="section-x py-16 md:py-20">
+          <Container>
+            <FeaturedDevelopmentSpotlight development={spotlight} />
+          </Container>
+        </section>
+      )}
+
+      <section className="bg-surface-soft pb-24 pt-8 md:pb-32">
+        <Container className="section-x">
+          <PropertyFilters
+            query={query}
+            onQueryChange={setQuery}
+            region={region}
+            onRegionChange={setRegion}
+            type={type}
+            onTypeChange={setType}
+            status={status}
+            onStatusChange={setStatus}
+            sort={sort}
+            onSortChange={setSort}
+            regions={regions}
+          />
+
+          <p className="mt-8 text-sm text-title-muted">
+            {filtered.length} development{filtered.length === 1 ? '' : 's'}
+          </p>
+
+          {filtered.length === 0 ? (
+            <div className="mt-16 border border-border bg-surface px-8 py-16 text-center">
+              <h2 className="text-heading-3">No developments match your filters</h2>
+              <p className="mx-auto mt-4 max-w-md text-title-muted">
+                Try adjusting location, type, or status — or contact our sales team
+                for guidance across the ARTHALAND portfolio.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-12 grid gap-12 md:grid-cols-2 md:gap-x-10 md:gap-y-16">
+              {gridItems.map((development) => (
+                <FadeInWhenVisible key={development.slug}>
+                  <PropertyCard development={development} />
+                </FadeInWhenVisible>
+              ))}
+            </div>
+          )}
+        </Container>
+      </section>
+
+      <PageConsultCta />
     </>
   )
 }

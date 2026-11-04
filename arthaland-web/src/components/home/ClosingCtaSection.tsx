@@ -24,8 +24,8 @@ export function ClosingCtaSection() {
           triggerStart="top 88%"
         />
         <p className="mx-auto mt-8 max-w-lg text-surface/85">
-          Request a viewing or send a message. Submissions save to Supabase when
-          configured.
+          Request a viewing or send a message — our sales team will respond with
+          verified development information.
         </p>
         <Button
           href="/contact"

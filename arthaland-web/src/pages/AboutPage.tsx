@@ -1,140 +1,194 @@
-import { useRef } from 'react'
-import { gsap } from '../animation/gsapSetup'
-import { useGsapScope } from '../animation/useGsapScope'
 import { SiteHeader } from '../components/layout/SiteHeader'
 import { Button } from '../components/ui/Button'
 import { Container } from '../components/ui/Container'
 import { Eyebrow } from '../components/ui/Eyebrow'
-import { ImageMaskReveal } from '../components/motion/ImageMaskReveal'
-import { SplitTextReveal } from '../components/motion/SplitTextReveal'
-import { ClosingCtaSection } from '../components/home/ClosingCtaSection'
+import { FadeInWhenVisible } from '../components/page/FadeInWhenVisible'
+import { PageConsultCta } from '../components/page/PageConsultCta'
 import { sectionImages } from '../config/sectionImages'
 
+const sustainabilityStats = [
+  {
+    value: '34%',
+    label: 'Water savings',
+    note: 'Corporate portfolio target: 20%',
+  },
+  {
+    value: '54%',
+    label: 'Energy savings',
+    note: 'Corporate portfolio target: 40%',
+  },
+  {
+    value: '97%',
+    label: 'GHG emissions avoided',
+    note: 'Toward 100% target by 2030',
+  },
+]
+
 export function AboutPage() {
-  const openRef = useRef<HTMLElement>(null)
-
-  useGsapScope(
-    openRef,
-    () => {
-      gsap.from('[data-about-stat]', {
-        y: 24,
-        opacity: 0,
-        stagger: 0.1,
-        duration: 0.7,
-        scrollTrigger: { trigger: openRef.current, start: 'top 75%' },
-      })
-    },
-    [],
-  )
-
   return (
     <>
       <SiteHeader embedded />
-      <section
-        ref={openRef}
-        className="relative min-h-[70vh] overflow-hidden bg-ink text-surface"
-      >
+      <section className="relative min-h-[70vh] overflow-hidden bg-ink text-surface">
         <img
           src={sectionImages.aboutHero}
           alt=""
-          className="absolute inset-0 size-full object-cover opacity-45"
+          className="absolute inset-0 size-full object-cover opacity-50"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/25" />
         <Container className="section-x relative flex min-h-[70vh] flex-col justify-end pb-20 pt-32">
           <Eyebrow dark>About ARTHALAND</Eyebrow>
-          <SplitTextReveal
-            as="h1"
-            lines={['Building sustainable', 'legacies']}
-            className="text-display-l mt-6 max-w-[14ch] text-surface"
-            lineClassName="text-display-l"
-            triggerStart="top 85%"
-          />
+          <h1 className="text-display-l mt-6 max-w-[14ch] animate-fade-up">
+            <span className="block">Building Beyond</span>
+            <span className="block">Expectations.</span>
+          </h1>
         </Container>
       </section>
 
-      <section className="section-x py-20 md:py-28">
-        <Container className="grid gap-12 lg:grid-cols-2">
-          <div>
-            <Eyebrow>Company</Eyebrow>
-            <h2 className="text-heading-3 mt-4">Factual summary (official site)</h2>
+      <section className="py-20 md:py-28">
+        <Container className="section-x grid gap-12 lg:grid-cols-2 lg:gap-16">
+          <FadeInWhenVisible>
+            <Eyebrow>Who we are</Eyebrow>
+            <h2 className="text-heading-3 mt-4">
+              Boutique developments with sustainability at the core
+            </h2>
             <p className="mt-6 leading-relaxed text-title-muted">
               ARTHALAND Corporation is a publicly listed Philippine real estate
-              developer (PSE) focused on boutique, sustainable residential and
-              commercial developments. The company states that its portfolio is
-              100% certified as sustainable by local and global organizations,
-              with a stated commitment to a net zero development portfolio by
-              2030.
+              developer focused on thoughtfully scaled residential and commercial
+              projects. The company reports that its portfolio is certified as
+              sustainable by local and global organizations, with a stated
+              commitment to a net-zero development portfolio by 2030.
             </p>
-            <p className="mt-4 text-sm text-title-muted">
-              Source:{' '}
+            <p className="mt-4 leading-relaxed text-title-muted">
+              Learn more on the corporate site at{' '}
               <a
                 href="https://arthaland.com/"
-                className="underline"
+                className="text-ink underline underline-offset-4"
                 target="_blank"
                 rel="noreferrer"
               >
                 arthaland.com
               </a>
-              . Mission/vision statements will be inserted via CMS when approved
-              for this sales channel.
+              .
             </p>
-          </div>
-          <ImageMaskReveal className="aspect-[4/5] lg:aspect-square">
-            <img
-              src={sectionImages.aboutEditorial}
-              alt=""
-              className="size-full object-cover"
-            />
-          </ImageMaskReveal>
+          </FadeInWhenVisible>
+          <FadeInWhenVisible>
+            <div className="aspect-[4/5] overflow-hidden lg:aspect-[5/6]">
+              <img
+                src={sectionImages.aboutEditorial}
+                alt=""
+                className="size-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          </FadeInWhenVisible>
         </Container>
       </section>
 
-      <section className="bg-surface-soft py-20">
+      <section className="relative overflow-hidden bg-ink py-24 text-surface md:py-32">
+        <img
+          src={sectionImages.aboutVision}
+          alt=""
+          className="absolute inset-0 size-full object-cover opacity-35"
+        />
+        <div className="absolute inset-0 bg-ink/55" />
+        <Container className="section-x relative max-w-3xl">
+          <FadeInWhenVisible>
+            <Eyebrow dark>Architectural vision</Eyebrow>
+            <h2 className="text-heading-2 mt-4">
+              Design that respects light, landscape, and long-term living
+            </h2>
+            <p className="mt-6 text-lg leading-relaxed text-surface/80">
+              From low-density addresses in Makati to wellness-led towers in Cebu
+              and garden communities in Laguna, ARTHALAND pairs architectural
+              rigor with environments meant to be lived in — not merely viewed.
+            </p>
+          </FadeInWhenVisible>
+        </Container>
+      </section>
+
+      <section className="bg-surface-soft py-20 md:py-28">
         <Container className="section-x">
-          <Eyebrow>Highlights</Eyebrow>
-          <h2 className="text-heading-3 mt-4">December 2025 (corporate site)</h2>
-          <ul className="mt-10 grid gap-8 sm:grid-cols-3">
-            {[
-              '34% water savings (target 20%)',
-              '54% energy savings (target 40%)',
-              '97% greenhouse gas emissions avoided (target 100% by 2030)',
-            ].map((item) => (
-              <li
-                key={item}
-                data-about-stat
-                className="border-t border-border pt-6 text-title-muted"
-              >
-                {item}
-              </li>
+          <FadeInWhenVisible>
+            <Eyebrow>Sustainability</Eyebrow>
+            <h2 className="text-heading-3 mt-4">
+              Measured progress across the portfolio
+            </h2>
+            <p className="mt-4 max-w-2xl text-title-muted">
+              Figures below reflect corporate reporting published on arthaland.com
+              (December 2025). Individual developments may publish additional
+              certifications and targets.
+            </p>
+          </FadeInWhenVisible>
+          <ul className="mt-14 grid gap-10 sm:grid-cols-3">
+            {sustainabilityStats.map((stat) => (
+              <FadeInWhenVisible key={stat.label}>
+                <li className="border-t border-border pt-8">
+                  <p className="text-display-m">{stat.value}</p>
+                  <p className="mt-3 text-lg font-medium">{stat.label}</p>
+                  <p className="mt-2 text-sm text-title-muted">{stat.note}</p>
+                </li>
+              </FadeInWhenVisible>
             ))}
           </ul>
         </Container>
       </section>
 
       <section className="py-20 md:py-28">
-        <Container className="section-x grid gap-12 lg:grid-cols-2">
-          <ImageMaskReveal delay={0.1} className="order-2 aspect-[4/3] lg:order-1">
-            <img
-              src={sectionImages.aboutInterior}
-              alt=""
-              className="size-full object-cover"
-            />
-          </ImageMaskReveal>
-          <div className="order-1 flex flex-col justify-center lg:order-2">
-            <Eyebrow>Sales team</Eyebrow>
-            <h2 className="text-heading-3 mt-4">Supervised by Mr. Gary Lee</h2>
-            <p className="mt-4 max-w-xl text-title-muted">
-              This website supports the ARTHALAND property sales team. Team
-              biographies and photos will appear here when provided — editable via
-              the admin CMS without code changes.
+        <Container className="section-x grid gap-12 lg:grid-cols-2 lg:items-center">
+          <FadeInWhenVisible className="order-2 lg:order-1">
+            <div className="aspect-[4/3] overflow-hidden">
+              <img
+                src={sectionImages.aboutLiving}
+                alt=""
+                className="size-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          </FadeInWhenVisible>
+          <FadeInWhenVisible className="order-1 lg:order-2">
+            <Eyebrow>Approach to living</Eyebrow>
+            <h2 className="text-heading-3 mt-4">
+              Wellness, community, and responsible design
+            </h2>
+            <p className="mt-6 leading-relaxed text-title-muted">
+              Potager gardens, efficient envelopes, and amenity programs that
+              encourage movement and connection recur across ARTHALAND projects.
+              The intent is residential environments that feel calm, durable, and
+              aligned with how people actually live.
             </p>
-            <Button href="/contact" className="mt-8">
-              Get in Touch
-            </Button>
-          </div>
+          </FadeInWhenVisible>
         </Container>
       </section>
 
-      <ClosingCtaSection />
+      <section className="border-t border-border bg-surface-soft py-20 md:py-28">
+        <Container className="section-x grid gap-12 lg:grid-cols-2">
+          <FadeInWhenVisible>
+            <div className="aspect-[4/3] overflow-hidden">
+              <img
+                src={sectionImages.aboutInterior}
+                alt=""
+                className="size-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          </FadeInWhenVisible>
+          <FadeInWhenVisible className="flex flex-col justify-center">
+            <Eyebrow>Sales team channel</Eyebrow>
+            <h2 className="text-heading-3 mt-4">Supervised by Mr. Gary Lee</h2>
+            <p className="mt-6 max-w-xl leading-relaxed text-title-muted">
+              This website is the ARTHALAND property sales team channel — distinct
+              from the corporate site. Mr. Gary Lee supervises the team assisting
+              buyers with development information, viewings where available, and
+              inquiry follow-up.
+            </p>
+            <Button href="/contact" className="mt-8">
+              Request a Consultation
+            </Button>
+          </FadeInWhenVisible>
+        </Container>
+      </section>
+
+      <PageConsultCta />
     </>
   )
 }

@@ -1,15 +1,24 @@
-/** Avenlo-style mark placeholder until ARTHALAND logo is supplied. */
-export function LogoMark({ className = '' }: { className?: string }) {
+import { siteConfig } from '../../config/site'
+
+type LogoMarkProps = {
+  className?: string
+  /** When true, renders dark mark (for light headers). Default: white mark for hero/video. */
+  inverted?: boolean
+}
+
+/** Official ARTHALAND ring mark (transparent PNG). */
+export function LogoMark({ className = '', inverted = false }: LogoMarkProps) {
+  const src = siteConfig.brand.logoMarkSrc ?? '/assets/brand/arthaland-mark.png'
+
   return (
-    <svg
-      viewBox="0 0 39 45"
-      className={className}
+    <img
+      src={src}
+      alt=""
       aria-hidden
-      fill="currentColor"
-    >
-      <rect x="4" y="18" width="7" height="27" rx="2" />
-      <rect x="16" y="10" width="7" height="35" rx="2" />
-      <rect x="28" y="4" width="7" height="41" rx="2" />
-    </svg>
+      width={120}
+      height={120}
+      decoding="async"
+      className={`object-contain ${inverted ? 'invert' : ''} ${className}`}
+    />
   )
 }

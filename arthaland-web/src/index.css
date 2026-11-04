@@ -138,4 +138,44 @@
       padding-inline: var(--spacing-gutter);
     }
   }
+
+  .animate-fade-up {
+    animation: fade-up 0.85s ease-out both;
+  }
+
+  .animation-delay-150 {
+    animation-delay: 150ms;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-up {
+      animation: none;
+    }
+  }
+
+  .editorial-list li {
+    position: relative;
+    padding-left: 1.25rem;
+  }
+
+  .editorial-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 6px;
+    height: 6px;
+    background: var(--color-ink);
+  }
 }

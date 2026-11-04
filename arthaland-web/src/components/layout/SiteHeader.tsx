@@ -42,7 +42,8 @@ export function SiteHeader({ embedded = false }: SiteHeaderProps) {
         <Container className="flex h-[82px] items-center justify-between gap-4 px-6 md:px-8">
           <Link to="/" className="flex min-w-0 items-center gap-3">
             <LogoMark
-              className={`h-[45px] w-[39px] shrink-0 ${onHero ? 'text-surface' : 'text-ink'}`}
+              className="h-11 w-11 shrink-0 md:h-[45px] md:w-[45px]"
+              inverted={!onHero}
             />
             <span className="flex min-w-0 flex-col gap-0.5 leading-none">
               <span

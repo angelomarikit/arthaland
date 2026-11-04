@@ -234,3 +234,8 @@ export function getDevelopment(slug: string): Development | undefined {
 export function getPublishedDevelopments(): Development[] {
   return developments.filter((d) => d.published)
 }
+
+export function getPrimaryFeaturedDevelopment(): Development | undefined {
+  const published = getPublishedDevelopments()
+  return published.find((d) => d.featured) ?? published[0]
+}
