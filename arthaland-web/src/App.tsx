@@ -10,6 +10,11 @@ import { HomePage } from './pages/HomePage'
 const AboutPage = lazy(() =>
   import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })),
 )
+const CertificationsPage = lazy(() =>
+  import('./pages/CertificationsPage').then((m) => ({
+    default: m.CertificationsPage,
+  })),
+)
 const PropertiesPage = lazy(() =>
   import('./pages/PropertiesPage').then((m) => ({ default: m.PropertiesPage })),
 )
@@ -144,6 +149,7 @@ export default function App() {
             <Route element={<MainLayout />}>
               <Route index element={<HomePage />} />
               <Route path="about" element={<AboutPage />} />
+              <Route path="certifications" element={<CertificationsPage />} />
               <Route path="properties" element={<PropertiesPage />} />
               <Route path="properties/:slug" element={<PropertyDetailPage />} />
               <Route path="featured-units" element={<FeaturedUnitsPage />} />

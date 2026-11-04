@@ -15,9 +15,9 @@ export function HomePage() {
   return (
     <>
       <CinematicHero />
-      <CertificationLogoMarquee />
       <PropertyDiscoveryBar />
       <EditorialIntroSection />
+      <CertificationLogoMarquee />
       <FeaturedHorizontalShowcase />
       <SustainabilityExpandSection />
       <LifestyleEditorialSection />
