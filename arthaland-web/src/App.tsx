@@ -27,6 +27,14 @@ const TeamPage = lazy(() =>
 const ContactPage = lazy(() =>
   import('./pages/ContactPage').then((m) => ({ default: m.ContactPage })),
 )
+const FeaturedUnitsPage = lazy(() =>
+  import('./pages/FeaturedUnitsPage').then((m) => ({ default: m.FeaturedUnitsPage })),
+)
+const FeaturedUnitDetailPage = lazy(() =>
+  import('./pages/FeaturedUnitDetailPage').then((m) => ({
+    default: m.FeaturedUnitDetailPage,
+  })),
+)
 const FaqPage = lazy(() =>
   import('./pages/FaqPage').then((m) => ({ default: m.FaqPage })),
 )
@@ -106,6 +114,16 @@ const AdminSettingsPage = lazy(() =>
     default: m.AdminSettingsPage,
   })),
 )
+const AdminFeaturedUnitsPage = lazy(() =>
+  import('./pages/admin/AdminFeaturedUnitsPage').then((m) => ({
+    default: m.AdminFeaturedUnitsPage,
+  })),
+)
+const AdminFeaturedUnitEditPage = lazy(() =>
+  import('./pages/admin/AdminFeaturedUnitEditPage').then((m) => ({
+    default: m.AdminFeaturedUnitEditPage,
+  })),
+)
 const AdminSiteImagesPage = lazy(() =>
   import('./pages/admin/AdminSiteImagesPage').then((m) => ({
     default: m.AdminSiteImagesPage,
@@ -128,6 +146,8 @@ export default function App() {
               <Route path="about" element={<AboutPage />} />
               <Route path="properties" element={<PropertiesPage />} />
               <Route path="properties/:slug" element={<PropertyDetailPage />} />
+              <Route path="featured-units" element={<FeaturedUnitsPage />} />
+              <Route path="featured-units/:slug" element={<FeaturedUnitDetailPage />} />
               <Route path="services" element={<ServicesPage />} />
               <Route path="team" element={<TeamPage />} />
               <Route path="contact" element={<ContactPage />} />
@@ -168,6 +188,11 @@ export default function App() {
                 <Route
                   path="admin/properties/:slug/amenities"
                   element={<AdminPropertyAmenitiesPage />}
+                />
+                <Route path="admin/featured-units" element={<AdminFeaturedUnitsPage />} />
+                <Route
+                  path="admin/featured-units/:id"
+                  element={<AdminFeaturedUnitEditPage />}
                 />
                 <Route path="admin/inquiries" element={<AdminInquiriesPage />} />
                 <Route path="admin/team" element={<AdminTeamPage />} />

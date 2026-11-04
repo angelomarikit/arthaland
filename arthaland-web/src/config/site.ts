@@ -27,6 +27,7 @@ export const siteConfig = {
     primary: [
       { label: 'Home', href: '/' },
       { label: 'Properties', href: '/properties' },
+      { label: 'Featured Units', href: '/featured-units' },
       { label: 'About Us', href: '/about' },
       { label: 'Services', href: '/services' },
       { label: 'Our Team', href: '/team' },
@@ -35,6 +36,7 @@ export const siteConfig = {
     pagesMenu: [
       { label: 'Home', href: '/' },
       { label: 'Properties', href: '/properties' },
+      { label: 'Featured Units', href: '/featured-units' },
       { label: 'About Us', href: '/about' },
       { label: 'Services', href: '/services' },
       { label: 'Our Team', href: '/team' },
@@ -57,6 +59,7 @@ export const siteConfig = {
       { label: 'Home', href: '/' },
       { label: 'About', href: '/about' },
       { label: 'Properties', href: '/properties' },
+      { label: 'Featured Units', href: '/featured-units' },
       { label: 'Services', href: '/services' },
       { label: 'Our Team', href: '/team' },
       { label: 'Contact', href: '/contact' },

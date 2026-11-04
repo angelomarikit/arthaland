@@ -5,6 +5,7 @@ import type {
   DevelopmentRecord,
   UnitType,
 } from '../../domain/development/types'
+import { isSoldOutDevelopment } from '../../config/developments'
 import {
   developmentMediaSeed,
   developmentSeed,
@@ -40,22 +41,26 @@ export function getDevelopments(): Development[] {
 export function getPortfolioDevelopments(): Development[] {
   return getDevelopments().filter(
     (d) =>
-      d.publicationStatus === 'published' || d.publicationStatus === 'coming_soon',
+      !isSoldOutDevelopment(d.slug) &&
+      (d.publicationStatus === 'published' || d.publicationStatus === 'coming_soon'),
   )
 }
 
-/** Main navigation — all 10 default developments, grouped by category. */
+/** Main navigation — active developments only (excludes sold out). */
 export function getNavigationDevelopments(): Development[] {
-  return getDevelopments()
+  return getDevelopments().filter((d) => !isSoldOutDevelopment(d.slug))
 }
 
 export function getPublishedDevelopments(): Development[] {
   return getDevelopments().filter((d) => d.publicationStatus === 'published')
 }
 
-/** Inquiry / contact forms — full portfolio list (matches main nav). */
+/** Inquiry / contact forms — active developments (excludes sold out). */
 export function getInquiryFormDevelopments(): Development[] {
-  return getDevelopments()
+  return getNavigationDevelopments().filter(
+    (d) =>
+      d.publicationStatus === 'published' || d.publicationStatus === 'coming_soon',
+  )
 }
 
 export function getFeaturedDevelopments(): Development[] {

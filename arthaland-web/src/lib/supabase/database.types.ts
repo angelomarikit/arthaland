@@ -144,3 +144,26 @@ export type DbSiteSetting = {
   value: Record<string, unknown>
   updated_at: string
 }
+
+export type DbFeaturedUnit = {
+  id: string
+  slug: string
+  title: string
+  development_name: string
+  location: string
+  unit_label: string
+  price_label: string
+  area_sqm: number | null
+  bedrooms: string | null
+  bathrooms: string | null
+  floor: string | null
+  description: string
+  highlights: string[] | null
+  hero_image: string | null
+  gallery: string[] | null
+  status: string
+  published: boolean
+  display_order: number
+  created_at: string
+  updated_at: string
+}

@@ -11,6 +11,7 @@ import { PropertyFloorPlansSection } from '../components/property/PropertyFloorP
 import { PropertyGallery } from '../components/property/PropertyGallery'
 import { PropertyUnitTypesSection } from '../components/property/PropertyUnitTypesSection'
 import { PropertyVideoSection } from '../components/property/PropertyVideoSection'
+import { isSoldOutDevelopment } from '../config/developments'
 import { getPortfolioDevelopments, getUnitTypesByDevelopment } from '../data/repositories/developmentRepository'
 import { usePublicDevelopment, usePublicDevelopmentsList } from '../hooks/usePublicDevelopments'
 
@@ -30,14 +31,14 @@ export function PropertyDetailPage() {
     )
   }
 
-  if (!development) {
+  if (!development || (slug && isSoldOutDevelopment(slug))) {
     return (
       <>
         <SiteHeader />
         <Container className="section-x py-32">
           <h1 className="text-heading-2">Development not found</h1>
           <p className="mt-4 text-title-muted">
-            This listing is unpublished, in draft, or unavailable on the sales
+            This listing is sold out, unpublished, or unavailable on the sales
             channel.
           </p>
           <Button href="/properties" className="mt-8">

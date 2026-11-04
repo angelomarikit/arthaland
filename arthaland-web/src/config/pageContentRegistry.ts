@@ -392,12 +392,38 @@ const teamSections: LivePageSection[] = [
   },
 ]
 
+const featuredUnitsSections: LivePageSection[] = [
+  {
+    sectionKey: 'hero',
+    label: 'Page hero',
+    sectionType: 'hero',
+    displayOrder: 1,
+    content: {
+      eyebrow: 'Marketplace',
+      title: 'Featured units for sale',
+      body: 'Curated resale and developer inventory posted by the ARTHALAND sales team.',
+    },
+  },
+  {
+    sectionKey: 'listings-grid',
+    label: 'Listing cards',
+    sectionType: 'list',
+    displayOrder: 2,
+    content: {
+      title: 'Marketplace grid',
+      body: 'Each card is a featured unit managed under Admin → Featured units.',
+    },
+    note: 'Individual listings are not edited on Pages — use Featured units in admin.',
+  },
+]
+
 const registry: Record<string, LivePageSection[]> = {
   home: homeSections,
   about: aboutSections,
   services: servicesSections,
   contact: contactSections,
   team: teamSections,
+  'featured-units': featuredUnitsSections,
 }
 
 export function getLivePageSections(pageSlug: string): LivePageSection[] {

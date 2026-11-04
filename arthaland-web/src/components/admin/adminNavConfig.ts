@@ -6,6 +6,7 @@ import {
   Mail,
   Map,
   Settings,
+  Store,
   Users,
 } from 'lucide-react'
 
@@ -40,6 +41,7 @@ export const adminNavGroups: AdminNavGroup[] = [
     label: 'Properties',
     items: [
       { label: 'All Developments', href: '/admin/properties', icon: Building2 },
+      { label: 'Featured units', href: '/admin/featured-units', icon: Store },
     ],
   },
   {
