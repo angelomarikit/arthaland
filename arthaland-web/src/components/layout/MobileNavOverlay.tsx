@@ -88,7 +88,7 @@ export function MobileNavOverlay({ open, onClose }: MobileNavOverlayProps) {
               key={item.href}
               data-nav-item
               to={item.href}
-              className="text-heading-3 border-b border-border py-4"
+              className="text-heading-3 border-b border-border py-4 uppercase tracking-[0.06em]"
               onClick={onClose}
             >
               {item.label}
@@ -109,7 +109,7 @@ export function MobileNavOverlay({ open, onClose }: MobileNavOverlayProps) {
         <div className="border-t border-border p-6">
           <Link
             to={siteConfig.nav.cta.href}
-            className="text-button flex min-h-[52px] items-center justify-center border border-ink bg-ink text-surface transition-colors hover:bg-ink-soft"
+            className="text-button flex min-h-[52px] items-center justify-center border border-ink bg-ink uppercase tracking-[0.12em] text-surface transition-colors hover:bg-ink-soft"
             onClick={onClose}
           >
             {siteConfig.nav.cta.label}

@@ -60,7 +60,7 @@ export function SiteHeader({ embedded = false }: SiteHeaderProps) {
                 <Link
                   key={item.href}
                   to={item.href}
-                  className={`text-nav transition-opacity hover:opacity-70 ${onHero ? 'text-surface' : 'text-ink'} ${active ? 'underline underline-offset-8' : ''}`}
+                  className={`text-nav-primary transition-opacity hover:opacity-70 ${onHero ? 'text-surface' : 'text-ink'} ${active ? 'underline underline-offset-8' : ''}`}
                 >
                   {item.label}
                 </Link>
@@ -79,6 +79,7 @@ export function SiteHeader({ embedded = false }: SiteHeaderProps) {
               href={nav.cta.href}
               variant={onHero ? 'outlineOnDark' : 'default'}
               size="compact"
+              className="uppercase tracking-[0.12em]"
             >
               {nav.cta.label}
             </Button>

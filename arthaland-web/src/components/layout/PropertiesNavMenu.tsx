@@ -36,7 +36,7 @@ export function PropertiesNavMenu({ onHero }: PropertiesNavMenuProps) {
     <div ref={ref} className="relative hidden lg:block">
       <button
         type="button"
-        className={`text-nav inline-flex items-center gap-1 transition-opacity ${linkClass} ${active ? 'underline underline-offset-8' : ''}`}
+        className={`text-nav-primary inline-flex items-center gap-1 transition-opacity ${linkClass} ${active ? 'underline underline-offset-8' : ''}`}
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
