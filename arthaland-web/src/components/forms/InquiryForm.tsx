@@ -195,7 +195,7 @@ export function InquiryForm({ source, className = '' }: InquiryFormProps) {
           <a href="/privacy" className="underline">
             Privacy
           </a>{' '}
-          and the official ARTHALAND site for corporate policies.
+          for how we handle your information.
         </span>
       </label>
       {errors.privacy && (

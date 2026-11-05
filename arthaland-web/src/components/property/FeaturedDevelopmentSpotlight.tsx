@@ -36,13 +36,6 @@ export function FeaturedDevelopmentSpotlight({
             <Button href={`/properties/${development.slug}`}>
               Explore Development
             </Button>
-            <Button
-              href={development.officialUrl}
-              variant="outlineOnDark"
-              size="compact"
-            >
-              Official page
-            </Button>
           </div>
         </div>
       </div>

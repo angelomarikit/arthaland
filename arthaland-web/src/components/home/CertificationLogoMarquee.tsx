@@ -14,7 +14,7 @@ export function CertificationLogoMarquee() {
         ARTHALAND developments pursue internationally recognized sustainability certifications
         including EDGE, BERDE, LEED, and WELL.
       </p>
-      <div className="cert-marquee-viewport relative left-1/2 w-screen max-w-none -translate-x-1/2 overflow-hidden">
+      <div className="cert-marquee-viewport relative left-1/2 w-full max-w-[100vw] -translate-x-1/2 overflow-hidden">
         <ul className="cert-marquee-inner flex w-max items-center">
           {marqueeLogos.map((logo, index) => (
             <li

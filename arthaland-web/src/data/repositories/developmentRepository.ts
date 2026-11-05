@@ -6,6 +6,8 @@ import type {
   UnitType,
 } from '../../domain/development/types'
 import { isSoldOutDevelopment } from '../../config/developments'
+import { applyPropertyTurnoverSchedule } from '../../config/propertyTurnoverSchedule'
+import { sanitizeOfficialUrl } from '../../lib/corporateSiteUrl'
 import {
   developmentMediaSeed,
   developmentSeed,
@@ -20,15 +22,16 @@ function toView(record: DevelopmentRecord): Development {
 
   const uniqueGallery = [...new Set(gallery.length ? gallery : [record.heroImage])]
 
-  return {
+  return applyPropertyTurnoverSchedule({
     ...record,
+    officialUrl: sanitizeOfficialUrl(record.officialUrl),
     summary: record.shortDescription,
     overview: record.fullDescription,
     published: record.publicationStatus === 'published',
     status: record.availabilityStatus,
     type: record.propertyType,
     gallery: uniqueGallery,
-  }
+  })
 }
 
 export function getDevelopments(): Development[] {

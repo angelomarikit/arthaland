@@ -10,7 +10,7 @@ export const faqItems: FaqItem[] = [
   },
   {
     q: 'Are prices and units always available online?',
-    a: 'We show pricing only when it is verified on arthaland.com. Otherwise you will see “Price Upon Request” or “Inquire for Availability.”',
+    a: 'We show pricing only when it is verified and published for this sales channel. Otherwise you will see “Price Upon Request” or “Inquire for Availability.”',
   },
   {
     q: 'How do I request a viewing?',
@@ -18,7 +18,7 @@ export const faqItems: FaqItem[] = [
   },
   {
     q: 'Is this the official ARTHALAND corporate website?',
-    a: 'No. This is a dedicated property sales channel. Corporate information remains at arthaland.com.',
+    a: 'No. This is a dedicated property sales channel focused on development inquiries, viewings, and buyer guidance.',
   },
   {
     q: 'What sustainability commitments does ARTHALAND highlight?',

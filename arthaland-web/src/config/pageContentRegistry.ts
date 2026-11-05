@@ -62,7 +62,7 @@ const homeSections: LivePageSection[] = [
     content: {
       eyebrow: 'Sustainability',
       title: 'Certified developments with measurable environmental performance',
-      body: 'Figures below are corporate highlights from arthaland.com (December 2025).',
+      body: 'Figures below are corporate portfolio highlights (December 2025).',
     },
   },
   {
@@ -173,7 +173,7 @@ const aboutSections: LivePageSection[] = [
     content: {
       eyebrow: 'Sustainability',
       title: 'Measured progress across the portfolio',
-      body: 'Figures reflect corporate reporting published on arthaland.com (December 2025).',
+      body: 'Figures reflect ARTHALAND corporate portfolio reporting (December 2025).',
     },
   },
   {

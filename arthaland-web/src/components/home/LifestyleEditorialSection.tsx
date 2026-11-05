@@ -60,7 +60,7 @@ export function LifestyleEditorialSection() {
         </h2>
         <p className="mt-8 max-w-xl text-title-muted whitespace-pre-line">
           {copy.body ??
-            'Editorial glimpses from verified ARTHALAND project photography — interiors, landscapes, and residential facades as published on the official site.'}
+            'Editorial glimpses from verified ARTHALAND project photography — interiors, landscapes, and residential facades.'}
         </p>
 
         <div className="mt-16 grid gap-6 lg:grid-cols-12 lg:gap-8">

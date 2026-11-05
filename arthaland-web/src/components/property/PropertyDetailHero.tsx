@@ -21,6 +21,11 @@ export function PropertyDetailHero({ development }: PropertyDetailHeroProps) {
         <p className="text-eyebrow animate-fade-up text-surface/70">
           {development.status} · {development.type}
         </p>
+        {development.turnoverSchedule?.summary && (
+          <p className="mt-3 animate-fade-up text-sm text-surface/80 animation-delay-150">
+            {development.turnoverSchedule.summary}
+          </p>
+        )}
         <h1 className="text-display-l mt-4 max-w-[16ch] animate-fade-up animation-delay-150">
           {development.name}
         </h1>
@@ -35,13 +40,6 @@ export function PropertyDetailHero({ development }: PropertyDetailHeroProps) {
         </p>
         <div className="mt-8 flex animate-fade-up flex-wrap gap-4 animation-delay-150">
           <Button href="/contact">Request a Viewing</Button>
-          <Button
-            href={development.officialUrl}
-            variant="outlineOnDark"
-            size="compact"
-          >
-            Official ARTHALAND Page
-          </Button>
         </div>
       </div>
     </section>

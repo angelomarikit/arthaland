@@ -16,6 +16,8 @@ import { buildMergedSectionMap } from '../lib/cms/pageContentMerge'
 import { fetchPublicPageSections } from '../lib/cms/pagesApi'
 import { pathToPageSlug } from '../lib/cms/routePageSlug'
 import { isSupabaseConfigured } from '../lib/supabase/config'
+import { clampScrollToDocument, scrollToLocationHash } from '../lib/scrollReset'
+import { ScrollTrigger } from '../animation/gsapSetup'
 
 type PageContentContextValue = {
   pageSlug: string | null
@@ -56,6 +58,14 @@ export function PageContentProvider({ children }: { children: ReactNode }) {
         if (cancelled) return
         setMerged(buildMergedSectionMap(pageSlug, rows))
         setReady(true)
+        requestAnimationFrame(() => {
+          if (cancelled) return
+          ScrollTrigger.refresh(false)
+          clampScrollToDocument()
+          if (typeof window !== 'undefined' && window.location.hash) {
+            scrollToLocationHash(window.location.hash)
+          }
+        })
       })
       .catch(() => {
         if (cancelled) return
@@ -66,7 +76,7 @@ export function PageContentProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true
     }
-  }, [pageSlug, cms, pathname])
+  }, [pageSlug, cms])
 
   const getSection = useCallback(
     (sectionKey: string): PageSectionContent => {

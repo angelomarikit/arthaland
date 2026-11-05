@@ -1,3 +1,5 @@
+import { applyPropertyTurnoverSchedule } from '../../config/propertyTurnoverSchedule'
+import { sanitizeOfficialUrl } from '../corporateSiteUrl'
 import type { Development, DevelopmentCategory, PropertyType } from '../../domain/development/types'
 import type { DbCmsMedia, DbDevelopment } from '../supabase/database.types'
 import { mediaPublicUrl } from './mediaUpload'
@@ -43,7 +45,7 @@ export function mapDbDevelopment(
 
   const pub = publicationStatus(row)
 
-  return {
+  return applyPropertyTurnoverSchedule({
     id: row.id,
     slug: row.slug,
     name: row.name,
@@ -66,7 +68,7 @@ export function mapDbDevelopment(
     areaRange: row.area_range ?? undefined,
     amenities: Array.isArray(row.amenities) ? row.amenities : [],
     sustainability: Array.isArray(row.sustainability) ? row.sustainability : [],
-    officialUrl: row.official_url ?? '',
+    officialUrl: sanitizeOfficialUrl(row.official_url),
     sourceNote: row.source_note ?? undefined,
     usesIllustrativeImagery: Boolean(row.uses_illustrative_imagery),
     videoUrl: row.video_url ?? undefined,
@@ -81,5 +83,5 @@ export function mapDbDevelopment(
       (row.availability_status ?? row.status ?? 'Inquire for Availability') as Development['availabilityStatus'],
     type: asPropertyType(row.property_type ?? row.type),
     gallery,
-  }
+  })
 }

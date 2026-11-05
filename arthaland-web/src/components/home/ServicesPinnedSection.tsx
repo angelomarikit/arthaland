@@ -8,7 +8,7 @@ import { Eyebrow } from '../ui/Eyebrow'
 const serviceCopy = [
   {
     title: 'Property Consultation',
-    body: 'Development overview, unit-type guidance, and verified pricing where published on arthaland.com.',
+    body: 'Development overview, unit-type guidance, and verified pricing where published for this sales channel.',
   },
   {
     title: 'Development Information',

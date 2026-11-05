@@ -40,7 +40,7 @@ const serviceSections = [
 
 const processSteps = [
   { step: '01', title: 'Share your interest', body: 'Tell us which development or lifestyle priorities matter most.' },
-  { step: '02', title: 'Review verified materials', body: 'We align on facts from arthaland.com and official brochures.' },
+  { step: '02', title: 'Review verified materials', body: 'We align on facts from published brochures and authorized development materials.' },
   { step: '03', title: 'Compare options', body: 'Explore unit types and timelines where published.' },
   { step: '04', title: 'Coordinate next steps', body: 'Viewings, follow-up, and orientation — subject to ARTHALAND terms and your advisors.' },
 ]

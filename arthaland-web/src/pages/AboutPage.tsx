@@ -68,18 +68,6 @@ export function AboutPage() {
               {who.body ??
                 'ARTHALAND Corporation is a publicly listed Philippine real estate developer focused on thoughtfully scaled residential and commercial projects. The company reports that its portfolio is certified as sustainable by local and global organizations, with a stated commitment to a net-zero development portfolio by 2030.'}
             </p>
-            <p className="mt-4 leading-relaxed text-title-muted">
-              Learn more on the corporate site at{' '}
-              <a
-                href="https://arthaland.com/"
-                className="text-ink underline underline-offset-4"
-                target="_blank"
-                rel="noreferrer"
-              >
-                arthaland.com
-              </a>
-              .
-            </p>
           </FadeInWhenVisible>
           <FadeInWhenVisible>
             <div className="aspect-[4/5] overflow-hidden lg:aspect-[5/6]">
@@ -124,7 +112,7 @@ export function AboutPage() {
             </h2>
             <p className="mt-4 max-w-2xl text-title-muted whitespace-pre-line">
               {statsSection.body ??
-                'Figures below reflect corporate reporting published on arthaland.com (December 2025). Individual developments may publish additional certifications and targets.'}
+                'Figures below reflect ARTHALAND corporate portfolio reporting (December 2025). Individual developments may publish additional certifications and targets.'}
             </p>
           </FadeInWhenVisible>
           <ul className="mt-14 grid gap-10 sm:grid-cols-3">

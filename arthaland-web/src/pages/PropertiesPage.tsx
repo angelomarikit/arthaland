@@ -89,7 +89,7 @@ export function PropertiesPage() {
                 Ten developments. One sustainable vision.
               </h2>
               <p className="mt-5 max-w-md leading-relaxed text-title-muted">
-                Published listings show verified details from arthaland.com.
+                Published listings show verified details from authorized ARTHALAND materials.
                 Coming-soon and draft projects appear only when appropriate for
                 this sales channel.
               </p>

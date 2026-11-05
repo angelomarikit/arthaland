@@ -134,6 +134,23 @@ export function PropertyDetailPage() {
                   <dt className="text-title-muted">Availability</dt>
                   <dd className="mt-1 text-base">{development.status}</dd>
                 </div>
+                {development.turnoverSchedule &&
+                  development.turnoverSchedule.milestones.length > 0 && (
+                    <div>
+                      <dt className="text-title-muted">Turnover</dt>
+                      <dd className="mt-2 space-y-2 text-base">
+                        {development.turnoverSchedule.milestones.map((item) => (
+                          <div
+                            key={`${item.label}-${item.date}`}
+                            className="flex flex-wrap justify-between gap-x-4 gap-y-1 border-b border-border pb-2 last:border-0 last:pb-0"
+                          >
+                            <span>{item.label}</span>
+                            <span className="text-title-muted">{item.date}</span>
+                          </div>
+                        ))}
+                      </dd>
+                    </div>
+                  )}
                 {development.bedroomsRange && (
                   <div>
                     <dt className="text-title-muted">Residences</dt>
@@ -213,20 +230,16 @@ export function PropertyDetailPage() {
       <PropertyVideoSection development={development} />
 
       <section className="bg-ink py-16 text-surface md:py-20">
-        <Container className="section-x grid gap-8 md:grid-cols-3">
-          <div className="md:col-span-2">
-            <Eyebrow dark>Location</Eyebrow>
-            <h2 className="text-heading-3 mt-4">{development.location}</h2>
-            <p className="mt-4 max-w-xl text-surface/75">
-              Refer to the official ARTHALAND development page for maps and
-              neighborhood context, or speak with our sales team.
-            </p>
-          </div>
-          <div className="flex items-end">
-            <Button href={development.officialUrl} variant="outlineOnDark" size="compact">
-              View on arthaland.com
-            </Button>
-          </div>
+        <Container className="section-x max-w-3xl">
+          <Eyebrow dark>Location</Eyebrow>
+          <h2 className="text-heading-3 mt-4">{development.location}</h2>
+          <p className="mt-4 max-w-xl text-surface/75">
+            For maps, neighborhood context, and viewing arrangements, contact our
+            sales team — we will share verified details for this development.
+          </p>
+          <Button href="/contact" variant="outlineOnDark" size="compact" className="mt-8">
+            Get in Touch
+          </Button>
         </Container>
       </section>
 

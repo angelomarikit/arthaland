@@ -23,7 +23,7 @@ export function SustainabilityExpandSection() {
         </h2>
         <p className="mt-4 text-title-muted">
           {copy.body ??
-            'Figures below are corporate highlights from arthaland.com (December 2025).'}
+            'Figures below are corporate portfolio highlights (December 2025).'}
         </p>
       </Container>
 
@@ -45,7 +45,7 @@ export function SustainabilityExpandSection() {
             </h2>
             <p className="mt-4 max-w-xl text-sm text-surface/85 md:text-base">
               {copy.body ??
-                'Figures below are corporate highlights published on arthaland.com (December 2025). Individual projects may exceed these targets.'}
+                'Figures below are corporate portfolio highlights (December 2025). Individual projects may exceed these targets.'}
             </p>
             <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {stats.map((stat) => (

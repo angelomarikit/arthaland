@@ -1,6 +1,11 @@
 import { useEffect, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import { initGsap, ScrollTrigger } from '../../animation/gsapSetup'
+import {
+  applyRouteScrollReset,
+  disableBrowserScrollRestoration,
+  scrollToTopInstant,
+} from '../../lib/scrollReset'
 
 type ScrollMotionProviderProps = {
   children: ReactNode
@@ -12,19 +17,31 @@ export function ScrollMotionProvider({ children }: ScrollMotionProviderProps) {
 
   useEffect(() => {
     initGsap()
+    disableBrowserScrollRestoration()
     document.documentElement.classList.remove('lenis', 'lenis-smooth')
     document.documentElement.style.scrollBehavior = 'auto'
 
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted && !window.location.hash) {
+        applyRouteScrollReset('')
+      }
+    }
+    window.addEventListener('pageshow', onPageShow)
+
     return () => {
+      window.removeEventListener('pageshow', onPageShow)
       ScrollTrigger.getAll().forEach((t) => t.kill())
     }
   }, [])
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' in window ? ('instant' as ScrollBehavior) : 'auto' })
-    const id = requestAnimationFrame(() => ScrollTrigger.refresh(false))
-    return () => cancelAnimationFrame(id)
-  }, [location.pathname])
+    applyRouteScrollReset(location.hash)
+    const t = window.setTimeout(() => {
+      if (!location.hash) scrollToTopInstant()
+      ScrollTrigger.refresh(false)
+    }, 0)
+    return () => window.clearTimeout(t)
+  }, [location.pathname, location.hash])
 
   return children
 }

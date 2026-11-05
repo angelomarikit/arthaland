@@ -33,6 +33,18 @@ export interface DevelopmentSEO {
   ogImage?: string
 }
 
+export type TurnoverMilestone = {
+  label: string
+  date: string
+}
+
+/** Sales / construction turnover timing shown on property detail pages. */
+export type TurnoverSchedule = {
+  /** Short line for hero or cards, e.g. "Estimated turnover Q3 2031". */
+  summary?: string
+  milestones: TurnoverMilestone[]
+}
+
 export interface DevelopmentRecord {
   id: string
   slug: string
@@ -62,6 +74,7 @@ export interface DevelopmentRecord {
   videoUrl?: string
   videoPoster?: string
   seo?: DevelopmentSEO
+  turnoverSchedule?: TurnoverSchedule
   createdAt: string
   updatedAt: string
 }
