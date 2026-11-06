@@ -227,8 +227,6 @@ export function PropertyDetailPage() {
         </Container>
       </section>
 
-      <PropertyVideoSection development={development} />
-
       <section className="bg-ink py-16 text-surface md:py-20">
         <Container className="section-x max-w-3xl">
           <Eyebrow dark>Location</Eyebrow>
@@ -258,6 +256,8 @@ export function PropertyDetailPage() {
           </Container>
         </section>
       )}
+
+      <PropertyVideoSection development={development} />
 
       <PageConsultCta
         title={`Request a viewing — ${development.name}`}

@@ -8,7 +8,13 @@ import {
   fetchDevelopmentSections,
   updateDevelopment,
 } from '../../lib/cms/developmentsApi'
-import { replaceDevelopmentHeroMedia } from '../../lib/cms/mediaUpload'
+import {
+  replaceDevelopmentHeroMedia,
+  replaceDevelopmentShowcaseVideo,
+  replaceDevelopmentShowcaseVideoPoster,
+  clearDevelopmentShowcaseVideo,
+  clearDevelopmentShowcaseVideoPosterOnly,
+} from '../../lib/cms/mediaUpload'
 import type { DbDevelopment, DbDevelopmentSection } from '../../lib/supabase/database.types'
 
 export function AdminPropertyOverviewPage() {
@@ -214,6 +220,48 @@ export function AdminPropertyOverviewPage() {
               const refreshed = await fetchAdminDevelopment(slug)
               setDev(refreshed)
             }}
+          />
+
+          <MediaUploadZone
+            label="Showcase video (property page bottom)"
+            accept="video"
+            previewUrl={dev.video_url ?? undefined}
+            helperText="MP4, WebM, or MOV — max 100 MB. Stored in arthaland-videos; public page shows this near the bottom after Related."
+            onUpload={async (file, onProgress) => {
+              await replaceDevelopmentShowcaseVideo(dev.id, dev.slug, file, onProgress)
+              const refreshed = await fetchAdminDevelopment(slug)
+              setDev(refreshed)
+            }}
+            onRemove={
+              dev.video_url
+                ? async () => {
+                    await clearDevelopmentShowcaseVideo(dev.id)
+                    const refreshed = await fetchAdminDevelopment(slug)
+                    setDev(refreshed)
+                  }
+                : undefined
+            }
+          />
+
+          <MediaUploadZone
+            label="Video poster (optional)"
+            accept="image"
+            previewUrl={dev.video_poster ?? undefined}
+            helperText="Thumbnail before play — JPEG/PNG/WebP, max 15 MB. Clear showcase video above to remove poster too."
+            onUpload={async (file, onProgress) => {
+              await replaceDevelopmentShowcaseVideoPoster(dev.id, dev.slug, file, onProgress)
+              const refreshed = await fetchAdminDevelopment(slug)
+              setDev(refreshed)
+            }}
+            onRemove={
+              dev.video_poster
+                ? async () => {
+                    await clearDevelopmentShowcaseVideoPosterOnly(dev.id)
+                    const refreshed = await fetchAdminDevelopment(slug)
+                    setDev(refreshed)
+                  }
+                : undefined
+            }
           />
 
           <div className="rounded-2xl border border-border bg-surface p-6">

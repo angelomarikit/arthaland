@@ -190,6 +190,26 @@ export async function uploadMediaWithMetadata(
   return data as DbCmsMedia
 }
 
+export async function forceDeleteCmsMedia(media: DbCmsMedia): Promise<void> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return
+  await supabase.storage.from(media.bucket_id).remove([media.storage_path])
+  await supabase.from('cms_media').delete().eq('id', media.id)
+}
+
+async function deleteCmsMediaByPlacement(developmentId: string, placement: string): Promise<void> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return
+  const { data: rows } = await supabase
+    .from('cms_media')
+    .select('*')
+    .eq('development_id', developmentId)
+    .eq('placement', placement)
+  for (const row of rows ?? []) {
+    await forceDeleteCmsMedia(row as DbCmsMedia)
+  }
+}
+
 export async function deleteMediaIfUnreferenced(media: DbCmsMedia): Promise<void> {
   const supabase = getSupabaseClient()
   if (!supabase) return
@@ -255,6 +275,127 @@ export async function replaceDevelopmentHeroMedia(
   }
 
   return { media, publicUrl }
+}
+
+export async function replaceDevelopmentShowcaseVideo(
+  developmentId: string,
+  developmentSlug: string,
+  file: File,
+  onProgress?: (p: UploadProgress) => void,
+): Promise<{ media: DbCmsMedia; publicUrl: string }> {
+  const supabase = getSupabaseClient()
+  if (!supabase) throw new Error('Supabase is not configured.')
+
+  await deleteCmsMediaByPlacement(developmentId, 'showcase_video')
+
+  const media = await uploadMediaWithMetadata({
+    file,
+    bucket: 'arthaland-videos',
+    folder: `developments/${developmentId}/showcase`,
+    developmentId,
+    developmentSlug,
+    placement: 'showcase_video',
+    published: true,
+    onProgress,
+  })
+
+  const publicUrl = getStoragePublicUrl(media.bucket_id, media.storage_path)
+  if (!publicUrl) throw new Error('Could not resolve public URL.')
+
+  const { error: devError } = await supabase
+    .from('developments')
+    .update({
+      video_url: publicUrl,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', developmentId)
+
+  if (devError) {
+    await forceDeleteCmsMedia(media)
+    throw devError
+  }
+
+  return { media, publicUrl }
+}
+
+export async function replaceDevelopmentShowcaseVideoPoster(
+  developmentId: string,
+  developmentSlug: string,
+  file: File,
+  onProgress?: (p: UploadProgress) => void,
+): Promise<{ media: DbCmsMedia; publicUrl: string }> {
+  const supabase = getSupabaseClient()
+  if (!supabase) throw new Error('Supabase is not configured.')
+
+  const { data: existingPoster } = await supabase
+    .from('cms_media')
+    .select('*')
+    .eq('development_id', developmentId)
+    .eq('placement', 'showcase_video_poster')
+    .maybeSingle()
+
+  if (existingPoster) {
+    await forceDeleteCmsMedia(existingPoster as DbCmsMedia)
+  }
+
+  const media = await uploadMediaWithMetadata({
+    file,
+    bucket: 'arthaland-images',
+    folder: `developments/${developmentId}/showcase`,
+    developmentId,
+    developmentSlug,
+    placement: 'showcase_video_poster',
+    published: true,
+    onProgress,
+  })
+
+  const publicUrl = getStoragePublicUrl(media.bucket_id, media.storage_path)
+  if (!publicUrl) throw new Error('Could not resolve public URL.')
+
+  const { error: devError } = await supabase
+    .from('developments')
+    .update({
+      video_poster: publicUrl,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', developmentId)
+
+  if (devError) {
+    await forceDeleteCmsMedia(media)
+    throw devError
+  }
+
+  return { media, publicUrl }
+}
+
+export async function clearDevelopmentShowcaseVideo(developmentId: string): Promise<void> {
+  const supabase = getSupabaseClient()
+  if (!supabase) throw new Error('Supabase is not configured.')
+  await deleteCmsMediaByPlacement(developmentId, 'showcase_video')
+  await deleteCmsMediaByPlacement(developmentId, 'showcase_video_poster')
+  const { error } = await supabase
+    .from('developments')
+    .update({
+      video_url: null,
+      video_poster: null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', developmentId)
+  if (error) throw error
+}
+
+export async function clearDevelopmentShowcaseVideoPosterOnly(developmentId: string): Promise<void> {
+  const supabase = getSupabaseClient()
+  if (!supabase) throw new Error('Supabase is not configured.')
+  await deleteCmsMediaByPlacement(developmentId, 'showcase_video_poster')
+  const { error } = await supabase
+    .from('developments')
+    .update({
+      video_poster: null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', developmentId)
+  if (error) throw error
 }
 
 export function mediaPublicUrl(media: Pick<DbCmsMedia, 'bucket_id' | 'storage_path'>): string {

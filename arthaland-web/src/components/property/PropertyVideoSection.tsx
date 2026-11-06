@@ -14,8 +14,8 @@ export function PropertyVideoSection({ development }: PropertyVideoSectionProps)
         <Eyebrow>Project film</Eyebrow>
         <h2 className="text-heading-3 mt-4">Showcase video</h2>
         <p className="mt-3 max-w-xl text-sm text-title-muted">
-          Presented as a project showcase — not a continuous walkthrough of a
-          specific unit unless noted on the official source.
+          Project showcase — overview of the address and lifestyle (not a unit-specific
+          walk-through unless noted).
         </p>
         <div className="relative mt-8 aspect-video overflow-hidden bg-ink">
           <video
