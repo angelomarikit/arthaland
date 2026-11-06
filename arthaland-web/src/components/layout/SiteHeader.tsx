@@ -18,8 +18,6 @@ export function SiteHeader({ embedded = false }: SiteHeaderProps) {
   const [scrolled, setScrolled] = useState(false)
   const { nav } = siteConfig
   const location = useLocation()
-  const onHero = embedded && !scrolled
-
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 48)
     onScroll()
@@ -34,33 +32,29 @@ export function SiteHeader({ embedded = false }: SiteHeaderProps) {
   return (
     <>
       <header
-        className={`sticky top-0 z-30 h-[var(--site-header-h)] transition-[background-color,box-shadow,backdrop-filter] duration-500 ${
-          onHero
-            ? 'bg-transparent shadow-none [&_nav]:drop-shadow-[0_1px_10px_rgba(0,0,0,0.35)]'
-            : scrolled || !embedded
-              ? 'bg-surface/95 shadow-sm backdrop-blur-md'
-              : 'bg-surface'
+        className={`sticky top-0 z-30 h-[var(--site-header-h)] border-b border-border bg-surface transition-shadow duration-500 ${
+          scrolled || !embedded ? 'shadow-sm' : 'shadow-none'
         }`}
       >
         <Container className="flex h-full items-center justify-between gap-4 px-6 md:px-8">
           <Link to="/" className="flex min-w-0 shrink-0 items-center">
-            <SiteLogo inverted={!onHero} />
+            <SiteLogo />
           </Link>
 
           <nav
-            className="hidden items-center gap-6 xl:gap-8 lg:flex"
+            className="hidden items-center gap-6 text-ink xl:gap-8 lg:flex"
             aria-label="Primary"
           >
             {nav.primary.map((item) => {
               if (item.href === '/properties') {
-                return <PropertiesNavMenu key={item.href} onHero={onHero} />
+                return <PropertiesNavMenu key={item.href} />
               }
               const active = location.pathname === item.href
               return (
                 <Link
                   key={item.href}
                   to={item.href}
-                  className={`text-nav-primary transition-opacity hover:opacity-70 ${onHero ? 'text-surface' : 'text-ink'} ${active ? 'underline underline-offset-8' : ''}`}
+                  className={`text-nav-primary text-ink transition-opacity hover:opacity-70 ${active ? 'underline underline-offset-8' : ''}`}
                 >
                   {item.label}
                 </Link>
@@ -70,14 +64,14 @@ export function SiteHeader({ embedded = false }: SiteHeaderProps) {
               href={siteConfig.social.facebook}
               target="_blank"
               rel="noopener noreferrer"
-              className={`transition-opacity hover:opacity-70 ${onHero ? 'text-surface' : 'text-ink'}`}
+              className="text-ink transition-opacity hover:opacity-70"
               aria-label="ARTHALAND on Facebook"
             >
               <FacebookIcon className="size-5" />
             </a>
             <Button
               href={nav.cta.href}
-              variant={onHero ? 'outlineOnDark' : 'default'}
+              variant="default"
               size="compact"
               className="uppercase tracking-[0.12em]"
             >
@@ -87,7 +81,7 @@ export function SiteHeader({ embedded = false }: SiteHeaderProps) {
 
           <button
             type="button"
-            className={`flex size-11 items-center justify-center border lg:hidden ${onHero ? 'border-surface/40 text-surface' : 'border-border text-ink'}`}
+            className="flex size-11 items-center justify-center border border-border text-ink lg:hidden"
             aria-label="Open menu"
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen(true)}

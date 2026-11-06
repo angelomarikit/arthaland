@@ -3,11 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { ChevronDown } from 'lucide-react'
 import { getNavigationDevelopments } from '../../data/repositories/developmentRepository'
 
-type PropertiesNavMenuProps = {
-  onHero: boolean
-}
-
-export function PropertiesNavMenu({ onHero }: PropertiesNavMenuProps) {
+export function PropertiesNavMenu() {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const location = useLocation()
@@ -16,10 +12,6 @@ export function PropertiesNavMenu({ onHero }: PropertiesNavMenuProps) {
   const commercial = developments.filter((d) => d.category === 'commercial')
   const mixed = developments.filter((d) => d.category === 'mixed-use')
   const active = location.pathname.startsWith('/properties')
-  const linkClass = onHero
-    ? 'text-surface hover:opacity-70'
-    : 'text-ink hover:opacity-70'
-
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
       if (!ref.current?.contains(e.target as Node)) setOpen(false)
@@ -36,7 +28,7 @@ export function PropertiesNavMenu({ onHero }: PropertiesNavMenuProps) {
     <div ref={ref} className="relative hidden lg:block">
       <button
         type="button"
-        className={`text-nav-primary inline-flex items-center gap-1 transition-opacity ${linkClass} ${active ? 'underline underline-offset-8' : ''}`}
+        className={`text-nav-primary inline-flex items-center gap-1 text-ink transition-opacity hover:opacity-70 ${active ? 'underline underline-offset-8' : ''}`}
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
