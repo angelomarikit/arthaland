@@ -16,8 +16,8 @@ import {
 } from '../components/forms/formStyles'
 import { siteConfig } from '../config/site'
 import { sectionImages } from '../config/sectionImages'
-import { getInquiryFormDevelopments } from '../data/developments'
 import { submitInquiry } from '../lib/inquiries'
+import { useInquiryDevelopments } from '../hooks/usePublicDevelopments'
 import { usePageSection } from '../contexts/PageContentContext'
 import { titleToDisplayLines } from '../lib/cms/pageContentMerge'
 
@@ -45,6 +45,7 @@ function FormCorners() {
 }
 
 export function ContactPage() {
+  const { items: inquiryDevelopments, state: inquiryDevsState } = useInquiryDevelopments()
   const hero = usePageSection('hero')
   const panel = usePageSection('consultation-panel')
   const heroLines = titleToDisplayLines(hero.title, [
@@ -244,10 +245,15 @@ export function ContactPage() {
                     <select
                       id="development"
                       className={`${formInputUnderlineClass} cursor-pointer`}
+                      disabled={inquiryDevsState === 'loading'}
                       {...register('development')}
                     >
-                      <option value="">Optional — select a development</option>
-                      {getInquiryFormDevelopments().map((d) => (
+                      <option value="">
+                        {inquiryDevsState === 'loading'
+                          ? 'Loading developments…'
+                          : 'Optional — select a development'}
+                      </option>
+                      {inquiryDevelopments.map((d) => (
                         <option key={d.slug} value={d.slug}>
                           {d.name}
                         </option>

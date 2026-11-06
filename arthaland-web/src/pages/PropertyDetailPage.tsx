@@ -12,12 +12,16 @@ import { PropertyGallery } from '../components/property/PropertyGallery'
 import { PropertyUnitTypesSection } from '../components/property/PropertyUnitTypesSection'
 import { PropertyVideoSection } from '../components/property/PropertyVideoSection'
 import { isSoldOutDevelopment } from '../config/developments'
-import { getPortfolioDevelopments, getUnitTypesByDevelopment } from '../data/repositories/developmentRepository'
-import { usePublicDevelopment, usePublicDevelopmentsList } from '../hooks/usePublicDevelopments'
+import { useSupabaseCms } from '../lib/supabase/config'
+import {
+  usePublicDevelopmentDetail,
+  usePublicDevelopmentsList,
+} from '../hooks/usePublicDevelopments'
 
 export function PropertyDetailPage() {
   const { slug } = useParams()
-  const { development, state, source } = usePublicDevelopment(slug)
+  const cms = useSupabaseCms()
+  const { development, units, state } = usePublicDevelopmentDetail(slug)
   const { items: portfolioList } = usePublicDevelopmentsList()
 
   if (state === 'loading') {
@@ -49,8 +53,7 @@ export function PropertyDetailPage() {
     )
   }
 
-  const units = getUnitTypesByDevelopment(development.id)
-  const list = portfolioList.length ? portfolioList : getPortfolioDevelopments()
+  const list = portfolioList
   const related = list
     .filter(
       (d) =>
@@ -69,10 +72,10 @@ export function PropertyDetailPage() {
   return (
     <>
       <SiteHeader embedded />
-      {source === 'local' && state === 'ready' && import.meta.env.VITE_CMS_SOURCE === 'supabase' && (
+      {cms && state === 'error' && (
         <div className="border-b border-amber-200 bg-amber-50 py-2 text-center text-xs text-amber-950">
-          Showing local fallback — hero and copy may not match the CMS. Check Supabase env, RLS,
-          and that this development is published or coming soon.
+          Could not load this development from the CMS. Check your network connection and Supabase
+          configuration.
         </div>
       )}
       <PropertyDetailHero development={development} />

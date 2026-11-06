@@ -1,9 +1,7 @@
-import {
-  featuredUnitsSeed,
-  getFeaturedUnitGuideSamples,
-} from '../../data/seed/featuredUnits.seed'
+import { featuredUnitsSeed, getFeaturedUnitGuideSamples } from '../../data/seed/featuredUnits.seed'
 import type { FeaturedUnit, FeaturedUnitStatus } from '../../domain/featuredUnit/types'
 import { getSupabaseClient } from '../supabase/client'
+import { isSupabaseCmsEnabled } from '../supabase/config'
 import type { DbFeaturedUnit } from '../supabase/database.types'
 
 function mapRow(row: DbFeaturedUnit): FeaturedUnit {
@@ -31,20 +29,10 @@ function mapRow(row: DbFeaturedUnit): FeaturedUnit {
   }
 }
 
-function mergeGuideWithListings(dbRows: FeaturedUnit[]): FeaturedUnit[] {
-  const guides = getFeaturedUnitGuideSamples()
-  const guideSlugs = new Set(guides.map((g) => g.slug))
-  const fromDb = dbRows.filter((r) => !guideSlugs.has(r.slug))
-  return [...guides, ...fromDb].sort((a, b) => {
-    if (a.isSampleGuide && !b.isSampleGuide) return -1
-    if (!a.isSampleGuide && b.isSampleGuide) return 1
-    return a.displayOrder - b.displayOrder
-  })
-}
-
 export async function fetchPublicFeaturedUnits(): Promise<FeaturedUnit[]> {
   const supabase = getSupabaseClient()
-  if (!supabase) return getFeaturedUnitGuideSamples()
+  const cms = isSupabaseCmsEnabled()
+  if (!supabase) return cms ? [] : getFeaturedUnitGuideSamples()
 
   const { data, error } = await supabase
     .from('featured_units')
@@ -54,15 +42,15 @@ export async function fetchPublicFeaturedUnits(): Promise<FeaturedUnit[]> {
     .order('display_order', { ascending: true })
 
   if (error) throw error
-  const rows = ((data ?? []) as DbFeaturedUnit[]).map(mapRow)
-  return mergeGuideWithListings(rows)
+  return ((data ?? []) as DbFeaturedUnit[]).map(mapRow)
 }
 
 export async function fetchFeaturedUnitBySlug(slug: string): Promise<FeaturedUnit | null> {
   const sample =
     featuredUnitsSeed.find((u) => u.slug === slug && u.published) ?? null
   const supabase = getSupabaseClient()
-  if (!supabase) return sample
+  const cms = isSupabaseCmsEnabled()
+  if (!supabase) return cms ? null : sample
 
   const { data, error } = await supabase
     .from('featured_units')
@@ -73,7 +61,7 @@ export async function fetchFeaturedUnitBySlug(slug: string): Promise<FeaturedUni
 
   if (error) throw error
   if (data) return mapRow(data as DbFeaturedUnit)
-  return sample
+  return null
 }
 
 export async function fetchAdminFeaturedUnits(): Promise<FeaturedUnit[]> {

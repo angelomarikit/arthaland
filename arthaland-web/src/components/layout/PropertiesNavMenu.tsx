@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ChevronDown } from 'lucide-react'
-import { getNavigationDevelopments } from '../../data/repositories/developmentRepository'
+import { useNavigationDevelopments } from '../../hooks/usePublicDevelopments'
 
 export function PropertiesNavMenu() {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const location = useLocation()
-  const developments = getNavigationDevelopments()
+  const developments = useNavigationDevelopments()
   const residential = developments.filter((d) => d.category === 'residential')
   const commercial = developments.filter((d) => d.category === 'commercial')
   const mixed = developments.filter((d) => d.category === 'mixed-use')

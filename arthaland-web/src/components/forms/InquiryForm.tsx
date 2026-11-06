@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { getInquiryFormDevelopments } from '../../data/developments'
 import { salesPhoneDisplayList } from '../contact/SalesContactBlock'
 import { submitInquiry } from '../../lib/inquiries'
+import { useInquiryDevelopments } from '../../hooks/usePublicDevelopments'
 import { Button } from '../ui/Button'
 
 const schema = z.object({
@@ -36,7 +36,7 @@ function splitName(fullName: string) {
 }
 
 export function InquiryForm({ source, className = '' }: InquiryFormProps) {
-  const developments = getInquiryFormDevelopments()
+  const { items: developments, state: devsState } = useInquiryDevelopments()
   const {
     register,
     handleSubmit,
@@ -150,9 +150,12 @@ export function InquiryForm({ source, className = '' }: InquiryFormProps) {
         <select
           id={`${source}-development`}
           className="mt-1.5 min-h-[48px] w-full border border-border bg-surface px-3 py-2 outline-none focus:border-ink"
+          disabled={devsState === 'loading'}
           {...register('development')}
         >
-          <option value="">Select a development (optional)</option>
+          <option value="">
+            {devsState === 'loading' ? 'Loading developments…' : 'Select a development (optional)'}
+          </option>
           {developments.map((d) => (
             <option key={d.slug} value={d.slug}>
               {d.name}

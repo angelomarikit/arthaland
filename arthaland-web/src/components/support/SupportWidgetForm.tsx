@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { getInquiryFormDevelopments } from '../../data/developments'
 import { submitInquiry } from '../../lib/inquiries'
+import { useInquiryDevelopments } from '../../hooks/usePublicDevelopments'
 import { Button } from '../ui/Button'
 import {
   formErrorClass,
@@ -28,6 +28,7 @@ function splitName(fullName: string) {
 }
 
 export function SupportWidgetForm({ onSuccess }: { onSuccess?: () => void }) {
+  const { items: developments, state: devsState } = useInquiryDevelopments()
   const {
     register,
     handleSubmit,
@@ -104,9 +105,16 @@ export function SupportWidgetForm({ onSuccess }: { onSuccess?: () => void }) {
         <label className={formLabelClass} htmlFor="widget-development">
           Development (optional)
         </label>
-        <select id="widget-development" className={formInputClass} {...register('development')}>
-          <option value="">Select…</option>
-          {getInquiryFormDevelopments().map((d) => (
+        <select
+          id="widget-development"
+          className={formInputClass}
+          disabled={devsState === 'loading'}
+          {...register('development')}
+        >
+          <option value="">
+            {devsState === 'loading' ? 'Loading…' : 'Select…'}
+          </option>
+          {developments.map((d) => (
             <option key={d.slug} value={d.slug}>
               {d.name}
             </option>

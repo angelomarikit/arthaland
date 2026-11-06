@@ -15,7 +15,7 @@
 5. Set **Vercel** (Preview + Production when ready):
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`
-   - `VITE_CMS_SOURCE=supabase`
+   - Optional: `VITE_CMS_SOURCE=local` only if you explicitly want bundled seed data instead of the database.
 6. Sign in at `/admin/login`.
 
 ## Security
@@ -55,7 +55,7 @@
 
 ## Public site
 
-With `VITE_CMS_SOURCE=supabase`, `/properties` and `/properties/:slug` load published/coming_soon rows from Postgres. Empty/error → local seed fallback with banner.
+When `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set (and `VITE_CMS_SOURCE` is not `local` / `false`), `/properties` and `/properties/:slug` load `published` / `coming_soon` rows from Postgres only — no silent fallback to bundled seed data. If the query fails, the UI shows an error banner. Unit types and floor-plan images come from `cms_unit_types` and `cms_media` (`placement = floor_plan`). Set `VITE_CMS_SOURCE=local` to force the old seed-data behavior for local demos.
 
 Inquiries unchanged: `development_slug` FK to `developments.slug`.
 

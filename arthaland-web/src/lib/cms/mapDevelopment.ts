@@ -1,7 +1,12 @@
 import { applyPropertyTurnoverSchedule } from '../../config/propertyTurnoverSchedule'
 import { sanitizeOfficialUrl } from '../corporateSiteUrl'
-import type { Development, DevelopmentCategory, PropertyType } from '../../domain/development/types'
-import type { DbCmsMedia, DbDevelopment } from '../supabase/database.types'
+import type {
+  Development,
+  DevelopmentCategory,
+  PropertyType,
+  UnitType,
+} from '../../domain/development/types'
+import type { DbCmsMedia, DbDevelopment, DbUnitType } from '../supabase/database.types'
 import { mediaPublicUrl } from './mediaUpload'
 
 function asCategory(v: string | null): DevelopmentCategory {
@@ -27,12 +32,32 @@ function publicationStatus(row: DbDevelopment): Development['publicationStatus']
   return row.published ? 'published' : 'draft'
 }
 
+export function mapDbUnitType(row: DbUnitType, floorPlanImages: string[]): UnitType {
+  return {
+    id: row.id,
+    developmentId: row.development_id,
+    name: row.name,
+    areaMin: row.area_min ?? undefined,
+    areaMax: row.area_max ?? undefined,
+    bedrooms: row.bedrooms ?? undefined,
+    bathrooms: row.bathrooms ?? undefined,
+    floorPlanImages,
+    publicationStatus: row.publication_status,
+    displayOrder: row.display_order,
+  }
+}
+
 export function mapDbDevelopment(
   row: DbDevelopment,
   galleryMedia: DbCmsMedia[] = [],
 ): Development {
   const galleryFromMedia = galleryMedia
-    .filter((m) => m.media_kind === 'image' && m.published)
+    .filter(
+      (m) =>
+        m.media_kind === 'image' &&
+        m.published &&
+        m.placement !== 'floor_plan',
+    )
     .sort((a, b) => a.display_order - b.display_order)
     .map((m) => mediaPublicUrl(m))
 
