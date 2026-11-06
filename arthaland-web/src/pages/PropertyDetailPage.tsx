@@ -17,7 +17,7 @@ import { usePublicDevelopment, usePublicDevelopmentsList } from '../hooks/usePub
 
 export function PropertyDetailPage() {
   const { slug } = useParams()
-  const { development, state } = usePublicDevelopment(slug)
+  const { development, state, source } = usePublicDevelopment(slug)
   const { items: portfolioList } = usePublicDevelopmentsList()
 
   if (state === 'loading') {
@@ -69,6 +69,12 @@ export function PropertyDetailPage() {
   return (
     <>
       <SiteHeader embedded />
+      {source === 'local' && state === 'ready' && import.meta.env.VITE_CMS_SOURCE === 'supabase' && (
+        <div className="border-b border-amber-200 bg-amber-50 py-2 text-center text-xs text-amber-950">
+          Showing local fallback — hero and copy may not match the CMS. Check Supabase env, RLS,
+          and that this development is published or coming soon.
+        </div>
+      )}
       <PropertyDetailHero development={development} />
 
       {development.publicationStatus === 'coming_soon' && (
