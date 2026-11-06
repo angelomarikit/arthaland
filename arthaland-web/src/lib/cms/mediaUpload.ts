@@ -86,6 +86,36 @@ function buildStoragePath(folder: string, ext: string): string {
   return `${segment}/${id}.${ext}`
 }
 
+/** Upload many images sequentially — each file gets its own Storage path + cms_media row. */
+export async function uploadMediaBatch(
+  files: File[],
+  buildInput: (file: File, index: number) => Omit<MediaUploadInput, 'file' | 'onProgress'>,
+  onProgress?: (p: UploadProgress) => void,
+): Promise<DbCmsMedia[]> {
+  const results: DbCmsMedia[] = []
+  const n = files.length
+  if (n === 0) return results
+
+  for (let i = 0; i < n; i++) {
+    const file = files[i]!
+    const partial = buildInput(file, i)
+    const media = await uploadMediaWithMetadata({
+      ...partial,
+      file,
+      onProgress: (p) => {
+        if (!onProgress) return
+        const segmentStart = (i / n) * 100
+        const segmentWeight = 100 / n
+        const scaled = Math.round(segmentStart + (p.percent / 100) * segmentWeight)
+        onProgress({ ...p, percent: Math.min(99, scaled) })
+      },
+    })
+    results.push(media)
+  }
+  onProgress?.({ phase: 'done', percent: 100 })
+  return results
+}
+
 export async function uploadMediaWithMetadata(
   input: MediaUploadInput,
 ): Promise<DbCmsMedia> {

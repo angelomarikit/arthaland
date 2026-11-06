@@ -8,7 +8,7 @@ import {
   updateDevelopment,
   updateMediaRow,
 } from '../../lib/cms/developmentsApi'
-import { uploadMediaWithMetadata, mediaPublicUrl } from '../../lib/cms/mediaUpload'
+import { uploadMediaBatch, mediaPublicUrl } from '../../lib/cms/mediaUpload'
 import type { DbCmsMedia } from '../../lib/supabase/database.types'
 
 export function AdminPropertyMediaPage() {
@@ -44,22 +44,25 @@ export function AdminPropertyMediaPage() {
 
       <div className="mt-6">
         <MediaUploadZone
-          label="Add gallery image"
+          multiple
+          label="Add gallery images (bulk)"
           accept="image"
-          helperText="Drag and drop or upload — creates cms_media row after Storage succeeds."
-          onUpload={async (file, onProgress) => {
-            const order = media.length
-            await uploadMediaWithMetadata({
-              file,
-              bucket: 'arthaland-images',
-              folder: `developments/${devId}/gallery`,
-              developmentId: devId,
-              developmentSlug: slug,
-              placement: 'gallery',
-              displayOrder: order,
-              published: true,
+          helperText="Select or drag many files at once — each image is stored and listed below in order."
+          onUpload={async (files, onProgress) => {
+            const startOrder = media.length
+            await uploadMediaBatch(
+              files,
+              (_file, index) => ({
+                bucket: 'arthaland-images',
+                folder: `developments/${devId}/gallery`,
+                developmentId: devId,
+                developmentSlug: slug,
+                placement: 'gallery',
+                displayOrder: startOrder + index,
+                published: true,
+              }),
               onProgress,
-            })
+            )
             await reload()
           }}
         />

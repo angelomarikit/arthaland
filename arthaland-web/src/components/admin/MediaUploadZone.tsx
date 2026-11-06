@@ -1,51 +1,99 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef, useState, type DragEvent } from 'react'
 import { ImagePlus, Loader2, Trash2 } from 'lucide-react'
 import type { UploadProgress } from '../../lib/cms/mediaUpload'
 import { mediaPublicUrl } from '../../lib/cms/mediaUpload'
 import type { DbCmsMedia } from '../../lib/supabase/database.types'
 
-type MediaUploadZoneProps = {
+type MediaUploadZoneBase = {
   label: string
   accept: 'image' | 'video'
   previewUrl?: string | null
-  onUpload: (file: File, onProgress: (p: UploadProgress) => void) => Promise<void>
   onRemove?: () => Promise<void>
   helperText?: string
+  /** Allow selecting many files at once (also enables drag-and-drop of multiple). */
+  multiple?: boolean
 }
 
-export function MediaUploadZone({
-  label,
-  accept,
-  previewUrl,
-  onUpload,
-  onRemove,
-  helperText,
-}: MediaUploadZoneProps) {
+type MediaUploadZoneSingle = MediaUploadZoneBase & {
+  multiple?: false
+  onUpload: (file: File, onProgress: (p: UploadProgress) => void) => Promise<void>
+}
+
+type MediaUploadZoneBulk = MediaUploadZoneBase & {
+  multiple: true
+  onUpload: (files: File[], onProgress: (p: UploadProgress) => void) => Promise<void>
+}
+
+type MediaUploadZoneProps = MediaUploadZoneSingle | MediaUploadZoneBulk
+
+export function MediaUploadZone(props: MediaUploadZoneProps) {
+  const {
+    label,
+    accept,
+    previewUrl,
+    onRemove,
+    helperText,
+    multiple = false,
+  } = props
   const inputRef = useRef<HTMLInputElement>(null)
   const [progress, setProgress] = useState<UploadProgress>({ phase: 'idle', percent: 0 })
   const [error, setError] = useState<string | null>(null)
   const busy = progress.phase === 'optimizing' || progress.phase === 'uploading' || progress.phase === 'saving'
+  const [dragActive, setDragActive] = useState(false)
 
   const handleFiles = useCallback(
     async (files: FileList | null) => {
-      const file = files?.[0]
-      if (!file) return
+      if (!files?.length) return
       setError(null)
       try {
-        await onUpload(file, setProgress)
+        if (multiple) {
+          const list = [...files]
+          await (props as MediaUploadZoneBulk).onUpload(list, setProgress)
+        } else {
+          const file = files[0]
+          if (!file) return
+          await (props as MediaUploadZoneSingle).onUpload(file, setProgress)
+        }
       } catch (e) {
         setError(e instanceof Error ? e.message : 'Upload failed')
         setProgress({ phase: 'error', percent: 0 })
       }
     },
-    [onUpload],
+    [multiple, props],
   )
 
   const acceptAttr =
     accept === 'image' ? 'image/jpeg,image/png,image/webp,image/avif,image/gif' : 'video/mp4,video/webm,video/quicktime'
 
+  const onDragOver = (e: DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!busy) setDragActive(true)
+  }
+  const onDragLeave = (e: DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+  }
+  const onDrop = (e: DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+    if (busy) return
+    void handleFiles(e.dataTransfer.files)
+  }
+
+  const buttonLabel = previewUrl ? 'Replace' : multiple ? 'Upload images' : 'Upload'
+
   return (
-    <div className="rounded-2xl border border-dashed border-border bg-surface p-4">
+    <div
+      className={`rounded-2xl border border-dashed bg-surface p-4 transition-colors ${
+        dragActive ? 'border-ink/40 bg-surface-soft' : 'border-border'
+      }`}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+      onDrop={onDrop}
+    >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm font-medium">{label}</p>
@@ -59,7 +107,7 @@ export function MediaUploadZone({
             className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface-soft px-3 py-2 text-sm hover:border-ink/30 disabled:opacity-50"
           >
             {busy ? <Loader2 className="size-4 animate-spin" /> : <ImagePlus className="size-4" />}
-            {previewUrl ? 'Replace' : 'Upload'}
+            {buttonLabel}
           </button>
           {previewUrl && onRemove && (
             <button
@@ -79,6 +127,7 @@ export function MediaUploadZone({
         ref={inputRef}
         type="file"
         accept={acceptAttr}
+        multiple={multiple}
         className="sr-only"
         onChange={(e) => void handleFiles(e.target.files)}
       />
