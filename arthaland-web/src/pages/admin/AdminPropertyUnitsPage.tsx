@@ -1,26 +1,49 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { useParams } from 'react-router-dom'
 import { AdminBreadcrumbs } from '../../components/admin/AdminBreadcrumbs'
-import { MediaUploadZone } from '../../components/admin/MediaUploadZone'
-import { fetchAdminDevelopment, fetchUnitTypes, upsertUnitType } from '../../lib/cms/developmentsApi'
-import { uploadMediaWithMetadata } from '../../lib/cms/mediaUpload'
-import type { DbUnitType } from '../../lib/supabase/database.types'
+import { MediaThumb, MediaUploadZone } from '../../components/admin/MediaUploadZone'
+import {
+  fetchAdminDevelopment,
+  fetchDevelopmentMedia,
+  fetchUnitTypes,
+  upsertUnitType,
+} from '../../lib/cms/developmentsApi'
+import { deleteAdminCmsMedia, uploadMediaWithMetadata } from '../../lib/cms/mediaUpload'
+import type { DbCmsMedia, DbUnitType } from '../../lib/supabase/database.types'
 
 export function AdminPropertyUnitsPage() {
   const { slug = '' } = useParams()
   const [devId, setDevId] = useState('')
   const [devName, setDevName] = useState('')
   const [units, setUnits] = useState<DbUnitType[]>([])
+  const [floorPlans, setFloorPlans] = useState<Record<string, DbCmsMedia[]>>({})
+  const [error, setError] = useState<string | null>(null)
+
+  const reload = useCallback(async () => {
+    const dev = await fetchAdminDevelopment(slug)
+    if (dev) {
+      setDevId(dev.id)
+      setDevName(dev.name)
+    }
+    setUnits(await fetchUnitTypes(slug))
+    const all = await fetchDevelopmentMedia(slug)
+    const byUnit: Record<string, DbCmsMedia[]> = {}
+    for (const m of all) {
+      if (m.placement === 'floor_plan' && m.unit_type_id) {
+        const list = byUnit[m.unit_type_id] ?? []
+        list.push(m)
+        byUnit[m.unit_type_id] = list
+      }
+    }
+    for (const id of Object.keys(byUnit)) {
+      byUnit[id]!.sort((a, b) => a.display_order - b.display_order)
+    }
+    setFloorPlans(byUnit)
+  }, [slug])
 
   useEffect(() => {
-    fetchAdminDevelopment(slug).then((dev) => {
-      if (dev) {
-        setDevId(dev.id)
-        setDevName(dev.name)
-      }
-    })
-    fetchUnitTypes(slug).then(setUnits)
-  }, [slug])
+    reload().catch((e: Error) => setError(e.message))
+  }, [reload])
 
   async function addUnit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -37,8 +60,19 @@ export function AdminPropertyUnitsPage() {
       publication_status: 'draft',
       display_order: units.length,
     })
-    setUnits(await fetchUnitTypes(slug))
+    await reload()
     e.currentTarget.reset()
+  }
+
+  async function deleteFloorPlan(media: DbCmsMedia) {
+    if (!window.confirm('Delete this floor plan image?')) return
+    setError(null)
+    try {
+      await deleteAdminCmsMedia(media)
+      await reload()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Delete failed')
+    }
   }
 
   return (
@@ -51,6 +85,7 @@ export function AdminPropertyUnitsPage() {
         ]}
       />
       <h1 className="text-2xl font-medium">Unit types</h1>
+      {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
 
       <form onSubmit={addUnit} className="mt-6 grid max-w-xl gap-3 rounded-2xl border border-border bg-surface p-6">
         <h2 className="text-sm font-medium">Add unit type</h2>
@@ -75,21 +110,46 @@ export function AdminPropertyUnitsPage() {
               <MediaUploadZone
                 label="Floor plan"
                 accept="image"
-                onUpload={async (file, onProgress) => {
-                  await uploadMediaWithMetadata({
-                    file,
-                    bucket: 'arthaland-images',
-                    folder: `developments/${devId}/units/${u.id}/floor-plans`,
-                    developmentId: devId,
-                    developmentSlug: slug,
-                    unitTypeId: u.id,
-                    placement: 'floor_plan',
-                    published: true,
-                    onProgress,
-                  })
+                multiple
+                helperText="Upload one or more floor plans. Delete duplicates below."
+                onUpload={async (files, onProgress) => {
+                  const start = floorPlans[u.id]?.length ?? 0
+                  for (let i = 0; i < files.length; i++) {
+                    await uploadMediaWithMetadata({
+                      file: files[i]!,
+                      bucket: 'arthaland-images',
+                      folder: `developments/${devId}/units/${u.id}/floor-plans`,
+                      developmentId: devId,
+                      developmentSlug: slug,
+                      unitTypeId: u.id,
+                      placement: 'floor_plan',
+                      published: true,
+                      displayOrder: start + i,
+                      onProgress,
+                    })
+                  }
+                  await reload()
                 }}
               />
             </div>
+            {(floorPlans[u.id]?.length ?? 0) > 0 && (
+              <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {(floorPlans[u.id] ?? []).map((m) => (
+                  <li key={m.id} className="overflow-hidden rounded-xl border border-border">
+                    <div className="aspect-[4/3] bg-surface-muted">
+                      <MediaThumb media={m} />
+                    </div>
+                    <button
+                      type="button"
+                      className="w-full border-t border-border py-2 text-xs text-red-800 hover:bg-red-50"
+                      onClick={() => void deleteFloorPlan(m)}
+                    >
+                      Delete
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
         ))}
       </ul>

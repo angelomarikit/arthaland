@@ -14,6 +14,7 @@ import {
   replaceDevelopmentShowcaseVideoPoster,
   clearDevelopmentShowcaseVideo,
   clearDevelopmentShowcaseVideoPosterOnly,
+  clearDevelopmentHeroMedia,
 } from '../../lib/cms/mediaUpload'
 import type { DbDevelopment, DbDevelopmentSection } from '../../lib/supabase/database.types'
 
@@ -220,6 +221,15 @@ export function AdminPropertyOverviewPage() {
               const refreshed = await fetchAdminDevelopment(slug)
               setDev(refreshed)
             }}
+            onRemove={
+              dev.hero_image
+                ? async () => {
+                    await clearDevelopmentHeroMedia(dev.id)
+                    const refreshed = await fetchAdminDevelopment(slug)
+                    setDev(refreshed)
+                  }
+                : undefined
+            }
           />
 
           <MediaUploadZone

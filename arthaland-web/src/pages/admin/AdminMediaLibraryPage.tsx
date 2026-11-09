@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AdminBreadcrumbs } from '../../components/admin/AdminBreadcrumbs'
 import { MediaThumb, MediaUploadZone } from '../../components/admin/MediaUploadZone'
-import { uploadMediaBatch } from '../../lib/cms/mediaUpload'
+import { uploadMediaBatch, deleteAdminCmsMedia } from '../../lib/cms/mediaUpload'
 import { getSupabaseClient } from '../../lib/supabase/client'
 import type { DbCmsMedia } from '../../lib/supabase/database.types'
 
@@ -27,6 +27,17 @@ export function AdminMediaLibraryPage() {
   useEffect(() => {
     reloadLibrary()
   }, [])
+
+  async function deleteItem(item: DbCmsMedia) {
+    if (!window.confirm('Delete this file from storage and the media library?')) return
+    setError(null)
+    try {
+      await deleteAdminCmsMedia(item)
+      reloadLibrary()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Delete failed')
+    }
+  }
 
   return (
     <div>
@@ -78,6 +89,13 @@ export function AdminMediaLibraryPage() {
               )}
             </div>
             <p className="truncate p-2 text-xs text-title-muted">{m.placement ?? m.storage_path}</p>
+            <button
+              type="button"
+              className="w-full border-t border-border px-2 py-2 text-xs text-red-800 hover:bg-red-50"
+              onClick={() => void deleteItem(m)}
+            >
+              Delete
+            </button>
           </div>
         ))}
       </div>

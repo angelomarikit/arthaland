@@ -8,7 +8,7 @@ import {
   updateDevelopment,
   updateMediaRow,
 } from '../../lib/cms/developmentsApi'
-import { uploadMediaBatch, mediaPublicUrl } from '../../lib/cms/mediaUpload'
+import { uploadMediaBatch, mediaPublicUrl, deleteAdminCmsMedia } from '../../lib/cms/mediaUpload'
 import type { DbCmsMedia } from '../../lib/supabase/database.types'
 
 export function AdminPropertyMediaPage() {
@@ -24,6 +24,24 @@ export function AdminPropertyMediaPage() {
     setDevId(dev.id)
     setDevName(dev.name)
     setMedia(await fetchDevelopmentMedia(slug))
+  }
+
+  async function deleteMediaItem(item: DbCmsMedia) {
+    const placement = item.placement ?? 'media'
+    if (
+      !window.confirm(
+        `Delete this ${placement} image from storage? This cannot be undone.`,
+      )
+    ) {
+      return
+    }
+    setError(null)
+    try {
+      await deleteAdminCmsMedia(item)
+      await reload()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Delete failed')
+    }
   }
 
   useEffect(() => {
@@ -75,6 +93,9 @@ export function AdminPropertyMediaPage() {
               <MediaThumb media={m} />
             </div>
             <div className="space-y-2 p-3 text-sm">
+              <p className="text-xs text-title-muted">
+                {m.placement ?? '—'} · order {m.display_order}
+              </p>
               <input
                 defaultValue={m.alt_text ?? ''}
                 placeholder="Alt text"
@@ -120,6 +141,13 @@ export function AdminPropertyMediaPage() {
                   }}
                 >
                   Set as cover
+                </button>
+                <button
+                  type="button"
+                  className="rounded-lg border border-red-200 px-2 py-1 text-xs text-red-800 hover:bg-red-50"
+                  onClick={() => void deleteMediaItem(m)}
+                >
+                  Delete
                 </button>
               </div>
             </div>

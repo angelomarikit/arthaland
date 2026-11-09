@@ -197,6 +197,114 @@ export async function forceDeleteCmsMedia(media: DbCmsMedia): Promise<void> {
   await supabase.from('cms_media').delete().eq('id', media.id)
 }
 
+/** Deletes one cms_media row + Storage object and clears development URLs/ FKs that pointed at it. */
+export async function deleteAdminCmsMedia(media: DbCmsMedia): Promise<void> {
+  const supabase = getSupabaseClient()
+  if (!supabase) throw new Error('Supabase is not configured.')
+
+  const publicUrl = mediaPublicUrl(media)
+
+  if (media.development_id) {
+    const { data: dev, error: devErr } = await supabase
+      .from('developments')
+      .select(
+        'id, hero_media_id, hero_image, cover_image, card_image, cover_media_id, video_url, video_poster',
+      )
+      .eq('id', media.development_id)
+      .maybeSingle()
+    if (devErr) throw devErr
+
+    if (dev) {
+      const patch: Record<string, string | null> = {
+        updated_at: new Date().toISOString(),
+      }
+      let hasFieldPatch = false
+
+      if (dev.hero_media_id === media.id) {
+        patch.hero_media_id = null
+        patch.hero_image = null
+        hasFieldPatch = true
+      }
+      if (publicUrl && dev.hero_image === publicUrl) {
+        patch.hero_image = null
+        if (dev.hero_media_id === media.id) patch.hero_media_id = null
+        hasFieldPatch = true
+      }
+      if (dev.cover_media_id === media.id) {
+        patch.cover_media_id = null
+        hasFieldPatch = true
+      }
+      if (publicUrl && dev.cover_image === publicUrl) {
+        patch.cover_image = null
+        hasFieldPatch = true
+      }
+      if (publicUrl && dev.card_image === publicUrl) {
+        patch.card_image = null
+        hasFieldPatch = true
+      }
+      if (publicUrl && dev.video_url === publicUrl) {
+        patch.video_url = null
+        hasFieldPatch = true
+      }
+      if (publicUrl && dev.video_poster === publicUrl) {
+        patch.video_poster = null
+        hasFieldPatch = true
+      }
+
+      if (hasFieldPatch) {
+        const { error: updErr } = await supabase.from('developments').update(patch).eq('id', dev.id)
+        if (updErr) throw updErr
+      }
+    }
+  }
+
+  await forceDeleteCmsMedia(media)
+}
+
+export async function deleteCmsMediaById(mediaId: string): Promise<void> {
+  const supabase = getSupabaseClient()
+  if (!supabase) throw new Error('Supabase is not configured.')
+  const { data, error } = await supabase.from('cms_media').select('*').eq('id', mediaId).maybeSingle()
+  if (error) throw error
+  if (!data) return
+  await deleteAdminCmsMedia(data as DbCmsMedia)
+}
+
+/** Remove hero image from the property (Storage row + developments.hero_*). */
+export async function clearDevelopmentHeroMedia(developmentId: string): Promise<void> {
+  const supabase = getSupabaseClient()
+  if (!supabase) throw new Error('Supabase is not configured.')
+
+  const { data: dev, error: devErr } = await supabase
+    .from('developments')
+    .select('hero_media_id')
+    .eq('id', developmentId)
+    .maybeSingle()
+  if (devErr) throw devErr
+
+  if (dev?.hero_media_id) {
+    const { data: media } = await supabase
+      .from('cms_media')
+      .select('*')
+      .eq('id', dev.hero_media_id)
+      .maybeSingle()
+    if (media) {
+      await deleteAdminCmsMedia(media as DbCmsMedia)
+      return
+    }
+  }
+
+  const { error } = await supabase
+    .from('developments')
+    .update({
+      hero_image: null,
+      hero_media_id: null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', developmentId)
+  if (error) throw error
+}
+
 async function deleteCmsMediaByPlacement(developmentId: string, placement: string): Promise<void> {
   const supabase = getSupabaseClient()
   if (!supabase) return
