@@ -358,11 +358,25 @@ export async function replaceDevelopmentHeroMedia(
   const publicUrl = getStoragePublicUrl(media.bucket_id, media.storage_path)
   if (!publicUrl) throw new Error('Could not resolve public URL.')
 
+  const { data: existingDev } = await supabase
+    .from('developments')
+    .select('card_image, cover_image, hero_image')
+    .eq('id', developmentId)
+    .maybeSingle()
+
+  const syncCard =
+    !existingDev?.card_image ||
+    existingDev.card_image === existingDev.hero_image ||
+    !existingDev.cover_image
+
   const { error: devError } = await supabase
     .from('developments')
     .update({
       hero_image: publicUrl,
       hero_media_id: media.id,
+      ...(syncCard
+        ? { card_image: publicUrl, cover_image: publicUrl }
+        : {}),
       updated_at: new Date().toISOString(),
     })
     .eq('id', developmentId)

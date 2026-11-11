@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { AdminBreadcrumbs } from '../../components/admin/AdminBreadcrumbs'
+import { PropertyPublicVisibilityPanel } from '../../components/admin/PropertyPublicVisibilityPanel'
 import { MediaThumb, MediaUploadZone } from '../../components/admin/MediaUploadZone'
 import {
   fetchAdminDevelopment,
@@ -58,7 +59,15 @@ export function AdminPropertyMediaPage() {
         ]}
       />
       <h1 className="text-2xl font-medium">Gallery & media</h1>
+      <p className="mt-2 max-w-2xl text-sm text-title-muted">
+        Images here appear in the public <strong>gallery</strong> when <code className="text-xs">published</code>{' '}
+        is on. They do <strong>not</strong> replace the hero — use Overview → Hero for the top image.
+        Use &quot;Set as cover&quot; for portfolio cards, or upload hero on Overview (syncs card when
+        appropriate).
+      </p>
       {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
+
+      <PropertyPublicVisibilityPanel slug={slug} />
 
       <div className="mt-6">
         <MediaUploadZone
@@ -94,7 +103,8 @@ export function AdminPropertyMediaPage() {
             </div>
             <div className="space-y-2 p-3 text-sm">
               <p className="text-xs text-title-muted">
-                {m.placement ?? '—'} · order {m.display_order}
+                {m.placement ?? '—'} · order {m.display_order} ·{' '}
+                {m.published ? 'Public' : 'Hidden'}
               </p>
               <input
                 defaultValue={m.alt_text ?? ''}
@@ -126,6 +136,15 @@ export function AdminPropertyMediaPage() {
                   }
                 >
                   Move down
+                </button>
+                <button
+                  type="button"
+                  className="rounded-lg border border-border px-2 py-1 text-xs"
+                  onClick={() =>
+                    void updateMediaRow(m.id, { published: !m.published }).then(reload)
+                  }
+                >
+                  {m.published ? 'Hide from site' : 'Publish'}
                 </button>
                 <button
                   type="button"

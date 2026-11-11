@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { AdminBarChart, AdminSparkline } from '../../components/admin/AdminBarChart'
 import { AdminBreadcrumbs } from '../../components/admin/AdminBreadcrumbs'
 import { siteImageRegistry } from '../../config/siteImageRegistry'
+import { AdminCmsEnvStatus } from '../../components/admin/AdminCmsEnvStatus'
 import {
   fetchDashboardStats,
   fetchInquiryAnalytics,
@@ -49,6 +50,8 @@ export function AdminDashboardPage() {
           Could not load live stats: {error}
         </p>
       )}
+
+      <AdminCmsEnvStatus className="mt-6" />
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[

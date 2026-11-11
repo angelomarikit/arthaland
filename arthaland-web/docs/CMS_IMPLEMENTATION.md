@@ -58,6 +58,16 @@
 
 When `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set (and `VITE_CMS_SOURCE` is not `local` / `false`), `/properties` and `/properties/:slug` load `published` / `coming_soon` rows from Postgres only — no silent fallback to bundled seed data. If the query fails, the UI shows an error banner. Unit types and floor-plan images come from `cms_unit_types` and `cms_media` (`placement = floor_plan`). Set `VITE_CMS_SOURCE=local` to force the old seed-data behavior for local demos.
 
+### Uploads not showing on the live site
+
+1. **Vercel env** — Same `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` as local; no `VITE_CMS_SOURCE=local`. Redeploy after changes (env is build-time).
+2. **Admin → Dashboard** — “Public site data source” card must show CMS on.
+3. **Property → Overview** — “Public site visibility” panel lists blockers (draft status, hero, unpublished media, collection traps).
+4. **Hero** — Overview upload (`developments.hero_image`), not Media library alone.
+5. **Gallery** — Media library; each row must be **Public** (`cms_media.published = true`).
+6. **Collections** — Publish the collection or unassign media if images vanish from the gallery tab.
+
+
 Inquiries unchanged: `development_slug` FK to `developments.slug`.
 
 ## Tests

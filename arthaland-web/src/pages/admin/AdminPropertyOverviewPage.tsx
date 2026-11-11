@@ -16,6 +16,7 @@ import {
   clearDevelopmentShowcaseVideoPosterOnly,
   clearDevelopmentHeroMedia,
 } from '../../lib/cms/mediaUpload'
+import { PropertyPublicVisibilityPanel } from '../../components/admin/PropertyPublicVisibilityPanel'
 import type { DbDevelopment, DbDevelopmentSection } from '../../lib/supabase/database.types'
 
 export function AdminPropertyOverviewPage() {
@@ -97,6 +98,8 @@ export function AdminPropertyOverviewPage() {
           Preview public page
         </Link>
       </div>
+
+      <PropertyPublicVisibilityPanel slug={slug} />
 
       <div className="mt-8 grid gap-8 xl:grid-cols-2">
         <form onSubmit={onSave} className="space-y-4 rounded-2xl border border-border bg-surface p-6">
@@ -226,7 +229,7 @@ export function AdminPropertyOverviewPage() {
             label="Hero image"
             accept="image"
             previewUrl={dev.hero_image}
-            helperText="Upload replaces hero in Storage + developments row. Max 15 MB."
+            helperText="Sets the property page hero and portfolio card when card/cover are empty or match the old hero. Gallery uploads do not change this. Max 15 MB."
             onUpload={async (file, onProgress) => {
               await replaceDevelopmentHeroMedia(dev.id, dev.slug, file, dev.hero_media_id, onProgress)
               const refreshed = await fetchAdminDevelopment(slug)
@@ -247,7 +250,7 @@ export function AdminPropertyOverviewPage() {
             label="Showcase video (property page bottom)"
             accept="video"
             previewUrl={dev.video_url ?? undefined}
-            helperText="MP4, WebM, or MOV — max 100 MB. Stored in arthaland-videos; public page shows this near the bottom after Related."
+            helperText="MP4, WebM, or MOV — max 100 MB. Public page shows video after unit layouts (Video admin screen for external URL)."
             onUpload={async (file, onProgress) => {
               await replaceDevelopmentShowcaseVideo(dev.id, dev.slug, file, onProgress)
               const refreshed = await fetchAdminDevelopment(slug)

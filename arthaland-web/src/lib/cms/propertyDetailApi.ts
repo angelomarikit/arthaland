@@ -90,7 +90,8 @@ function groupGallery(
       m.media_kind === 'image' &&
       m.published &&
       m.placement !== 'floor_plan' &&
-      m.placement !== 'unit_render',
+      m.placement !== 'unit_render' &&
+      m.placement !== 'hero',
   )
 
   const byCollection = new Map<string, DbCmsMedia[]>()
@@ -133,7 +134,23 @@ function groupGallery(
     .sort((a, b) => a.display_order - b.display_order)
     .map((m) => mediaPublicUrl(m))
 
-  return { collections: mappedCollections, legacyGallery: legacyFromUnassigned }
+  const allGalleryUrls = galleryMedia
+    .sort((a, b) => a.display_order - b.display_order)
+    .map((m) => mediaPublicUrl(m))
+
+  const imagesInPublishedCollections = mappedCollections.reduce(
+    (n, c) => n + c.images.length,
+    0,
+  )
+
+  let legacyGallery = legacyFromUnassigned
+  if (imagesInPublishedCollections === 0 && allGalleryUrls.length > 0) {
+    legacyGallery = allGalleryUrls
+  } else if (legacyGallery.length === 0 && allGalleryUrls.length > 0) {
+    legacyGallery = allGalleryUrls
+  }
+
+  return { collections: mappedCollections, legacyGallery }
 }
 
 function mapAmenities(
