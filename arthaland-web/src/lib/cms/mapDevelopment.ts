@@ -32,7 +32,11 @@ function publicationStatus(row: DbDevelopment): Development['publicationStatus']
   return row.published ? 'published' : 'draft'
 }
 
-export function mapDbUnitType(row: DbUnitType, floorPlanImages: string[]): UnitType {
+export function mapDbUnitType(
+  row: DbUnitType,
+  floorPlanImages: string[],
+  extra?: Pick<UnitType, 'unitRenderImages'>,
+): UnitType {
   return {
     id: row.id,
     developmentId: row.development_id,
@@ -42,6 +46,12 @@ export function mapDbUnitType(row: DbUnitType, floorPlanImages: string[]): UnitT
     bedrooms: row.bedrooms ?? undefined,
     bathrooms: row.bathrooms ?? undefined,
     floorPlanImages,
+    unitRenderImages: extra?.unitRenderImages,
+    description: row.description ?? undefined,
+    features: Array.isArray(row.features) ? row.features : undefined,
+    tabGroup: row.tab_group ?? undefined,
+    brochureUrl: row.brochure_url ?? undefined,
+    priceNote: row.price_note ?? undefined,
     publicationStatus: row.publication_status,
     displayOrder: row.display_order,
   }

@@ -10,6 +10,11 @@ import {
   getUnitTypesByDevelopment as getLocalUnitTypesByDevelopment,
 } from '../data/repositories/developmentRepository'
 import { fetchPublicDevelopments, fetchPublicPropertyDetail } from '../lib/cms/developmentsApi'
+import {
+  buildLocalPropertyPageData,
+  fetchPublicPropertyPageData,
+} from '../lib/cms/propertyDetailApi'
+import type { PropertyPageData } from '../domain/propertyDetail/types'
 import { useSupabaseCms } from '../lib/supabase/config'
 
 type LoadState = 'idle' | 'loading' | 'ready' | 'error'
@@ -146,6 +151,49 @@ export function usePublicDevelopmentDetail(slug: string | undefined) {
   }, [cms, slug])
 
   return { development, units, state }
+}
+
+/** Full property page payload (sections, collections, certifications, etc.). */
+export function usePublicPropertyPageData(slug: string | undefined) {
+  const cms = useSupabaseCms()
+  const [state, setState] = useState<LoadState>(cms && slug ? 'loading' : 'ready')
+  const [page, setPage] = useState<PropertyPageData | undefined>()
+
+  useEffect(() => {
+    if (!slug) {
+      setPage(undefined)
+      setState('ready')
+      return
+    }
+    if (!cms) {
+      setPage(buildLocalPropertyPageData(slug) ?? undefined)
+      setState('ready')
+      return
+    }
+    let cancelled = false
+    setState('loading')
+    fetchPublicPropertyPageData(slug)
+      .then((data) => {
+        if (cancelled) return
+        setPage(data ?? undefined)
+        setState('ready')
+      })
+      .catch(() => {
+        if (cancelled) return
+        setPage(undefined)
+        setState('error')
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [cms, slug])
+
+  return {
+    page,
+    development: page?.development,
+    units: page?.units ?? [],
+    state,
+  }
 }
 
 export { filterDevelopments }

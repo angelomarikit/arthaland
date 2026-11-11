@@ -77,8 +77,14 @@ export const propertySectionLinks = (slug: string) => [
 
 export const propertySubLinks = (slug: string) => [
   { label: 'Overview', href: `/admin/properties/${slug}` },
+  { label: 'Specifications', href: `/admin/properties/${slug}/specifications` },
+  { label: 'Certifications', href: `/admin/properties/${slug}/certifications` },
+  { label: 'Location', href: `/admin/properties/${slug}/location` },
+  { label: 'Nearby', href: `/admin/properties/${slug}/nearby` },
   { label: 'Units', href: `/admin/properties/${slug}/units` },
-  { label: 'Media & Galleries', href: `/admin/properties/${slug}/media` },
+  { label: 'Gallery collections', href: `/admin/properties/${slug}/gallery` },
+  { label: 'Media library', href: `/admin/properties/${slug}/media` },
   { label: 'Amenities', href: `/admin/properties/${slug}/amenities` },
-  ...propertySectionLinks(slug),
+  { label: 'Video', href: `/admin/properties/${slug}/video` },
+  { label: 'SEO', href: `/admin/properties/${slug}/seo` },
 ]

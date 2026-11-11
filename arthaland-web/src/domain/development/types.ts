@@ -5,7 +5,7 @@ export type AvailabilityStatus =
   | 'Completed'
   | 'Inquire for Availability'
 
-export type PublicationStatus = 'published' | 'draft' | 'coming_soon'
+export type PublicationStatus = 'published' | 'draft' | 'coming_soon' | 'archived'
 
 export type DevelopmentCategory = 'residential' | 'commercial' | 'mixed-use'
 
@@ -93,6 +93,13 @@ export interface DevelopmentMedia {
   isIllustrative?: boolean
 }
 
+export type UnitTabGroup =
+  | 'studio'
+  | 'one_bedroom'
+  | 'two_bedroom'
+  | 'three_bedroom'
+  | 'custom'
+
 export interface UnitType {
   id: string
   developmentId: string
@@ -102,6 +109,12 @@ export interface UnitType {
   bedrooms?: string
   bathrooms?: string
   floorPlanImages: string[]
+  unitRenderImages?: string[]
+  description?: string
+  features?: string[]
+  tabGroup?: UnitTabGroup
+  brochureUrl?: string
+  priceNote?: string
   publicationStatus: PublicationStatus
   displayOrder: number
 }

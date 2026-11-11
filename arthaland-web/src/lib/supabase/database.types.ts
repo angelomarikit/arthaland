@@ -1,4 +1,25 @@
-export type PublicationStatus = 'published' | 'draft' | 'coming_soon'
+export type PublicationStatus = 'published' | 'draft' | 'coming_soon' | 'archived'
+
+export type CertificationStatus = 'registered' | 'on_track' | 'targeted' | 'certified'
+
+export type NearbyCategory =
+  | 'schools'
+  | 'shopping'
+  | 'healthcare'
+  | 'parks'
+  | 'transport'
+  | 'business'
+  | 'dining'
+  | 'other'
+
+export type UnitTabGroup =
+  | 'studio'
+  | 'one_bedroom'
+  | 'two_bedroom'
+  | 'three_bedroom'
+  | 'custom'
+
+export type VideoSource = 'upload' | 'external'
 
 export type DbDevelopment = {
   id: string
@@ -36,6 +57,17 @@ export type DbDevelopment = {
   source_note: string | null
   cover_media_id: string | null
   hero_media_id: string | null
+  hero_subtitle: string | null
+  total_stories: string | null
+  total_units: string | null
+  completion_date: string | null
+  developer_name: string | null
+  map_lat: number | null
+  map_lng: number | null
+  map_url: string | null
+  directions_url: string | null
+  overview_media_id: string | null
+  video_source: VideoSource | null
   created_at: string | null
   updated_at: string | null
 }
@@ -59,6 +91,7 @@ export type DbCmsMedia = {
   page_id: string | null
   page_section_id: string | null
   placement: string | null
+  gallery_collection_id: string | null
   is_cover: boolean
   is_illustrative: boolean
   created_at: string
@@ -88,8 +121,68 @@ export type DbUnitType = {
   bathrooms: string | null
   publication_status: PublicationStatus
   display_order: number
+  description: string | null
+  features: string[] | null
+  tab_group: UnitTabGroup | null
+  brochure_url: string | null
+  price_note: string | null
   created_at: string
   updated_at: string
+}
+
+export type DbGalleryCollection = {
+  id: string
+  development_id: string
+  development_slug: string
+  slug: string
+  title: string
+  description: string | null
+  display_order: number
+  published: boolean
+  created_at: string
+  updated_at: string
+}
+
+export type DbDevelopmentCertification = {
+  id: string
+  development_id: string
+  development_slug: string
+  name: string
+  status: CertificationStatus
+  logo_media_id: string | null
+  display_order: number
+  published: boolean
+  created_at: string
+  updated_at: string
+}
+
+export type DbDevelopmentNearbyPlace = {
+  id: string
+  development_id: string
+  development_slug: string
+  category: NearbyCategory
+  name: string
+  distance_label: string | null
+  notes: string | null
+  display_order: number
+  published: boolean
+  created_at: string
+  updated_at: string
+}
+
+export type DbAmenity = {
+  id: string
+  name: string
+  description: string | null
+  media_id: string | null
+  created_at: string
+}
+
+export type DbDevelopmentAmenity = {
+  development_id: string
+  amenity_id: string
+  description: string | null
+  display_order: number
 }
 
 export type DbPage = {
@@ -125,6 +218,8 @@ export type DbInquiry = {
   viewing_requested: boolean | null
   source: string | null
   status: string | null
+  unit_type_id: string | null
+  unit_type_name: string | null
   created_at: string
 }
 

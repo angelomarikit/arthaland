@@ -49,6 +49,7 @@ export function AdminPropertyOverviewPage() {
         location: String(fd.get('location') ?? ''),
         region: String(fd.get('region') ?? ''),
         category: String(fd.get('category') ?? ''),
+        hero_subtitle: String(fd.get('hero_subtitle') ?? '') || null,
         publication_status: String(fd.get('publication_status') ?? 'draft') as DbDevelopment['publication_status'],
         availability_status: String(fd.get('availability_status') ?? ''),
         short_description: String(fd.get('short_description') ?? ''),
@@ -144,7 +145,17 @@ export function AdminPropertyOverviewPage() {
               <option value="published">Published</option>
               <option value="coming_soon">Coming soon</option>
               <option value="draft">Draft</option>
+              <option value="archived">Archived (admin only)</option>
             </select>
+          </label>
+
+          <label className="block text-sm">
+            Hero subtitle
+            <input
+              name="hero_subtitle"
+              defaultValue={dev.hero_subtitle ?? ''}
+              className="mt-1 w-full rounded-xl border border-border px-3 py-2"
+            />
           </label>
 
           <label className="block text-sm">

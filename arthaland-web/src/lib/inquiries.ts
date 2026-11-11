@@ -9,6 +9,8 @@ export type InquiryPayload = {
   message: string
   viewing?: boolean
   source?: string
+  unitTypeId?: string
+  unitTypeName?: string
 }
 
 /** Inserts inquiry when Supabase is configured; otherwise logs in dev. */
@@ -31,6 +33,8 @@ export async function submitInquiry(payload: InquiryPayload): Promise<void> {
     message: payload.message,
     viewing_requested: payload.viewing ?? false,
     source: payload.source ?? 'website',
+    unit_type_id: payload.unitTypeId ?? null,
+    unit_type_name: payload.unitTypeName ?? null,
   })
 
   if (error) throw error

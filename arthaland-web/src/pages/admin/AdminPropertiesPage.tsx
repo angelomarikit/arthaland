@@ -30,7 +30,12 @@ export function AdminPropertiesPage() {
       <AdminBreadcrumbs items={[{ label: 'Properties' }]} />
       <div className="flex flex-wrap items-end justify-between gap-4">
         <h1 className="text-2xl font-medium">All developments</h1>
-        <p className="text-sm text-title-muted">Ten default slugs — edit in Supabase CMS</p>
+        <Link
+          to="/admin/properties/new"
+          className="rounded-xl bg-ink px-4 py-2 text-sm text-surface"
+        >
+          New property
+        </Link>
       </div>
 
       <div className="mt-6 flex flex-wrap gap-3">
@@ -50,6 +55,7 @@ export function AdminPropertiesPage() {
           <option value="published">Published</option>
           <option value="coming_soon">Coming soon</option>
           <option value="draft">Draft</option>
+          <option value="archived">Archived</option>
         </select>
       </div>
 

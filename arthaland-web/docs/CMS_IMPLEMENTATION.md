@@ -3,20 +3,21 @@
 ## Owner checklist (before CMS works)
 
 1. **Review** `supabase/migrations/002_full_cms.sql` (extends `001_initial.sql`).
-2. **Run** the script in Supabase SQL Editor (not executed by the agent).
-3. **Create** Auth user (email/password) in Supabase Authentication.
-4. **Enroll** admin (SQL Editor):
+2. **Run** `supabase/migrations/008_property_detail_cms.sql` after 002 when building the full property detail template (collections, certifications, nearby, specs columns, inquiry unit type). Confirm in SQL Editor before relying on new admin screens.
+3. **Run** earlier scripts in Supabase SQL Editor (not executed by the agent).
+4. **Create** Auth user (email/password) in Supabase Authentication.
+5. **Enroll** admin (SQL Editor):
    - Run `supabase/migrations/003_cms_enroll_admin.sql` once.
    - Create Auth user under **Authentication → Users**.
    - Run `supabase/scripts/enroll-admin.sql` (edit email), or:
    ```sql
    select * from public.cms_enroll_admin('your-email@example.com', 'Site Admin');
    ```
-5. Set **Vercel** (Preview + Production when ready):
+6. Set **Vercel** (Preview + Production when ready):
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`
    - Optional: `VITE_CMS_SOURCE=local` only if you explicitly want bundled seed data instead of the database.
-6. Sign in at `/admin/login`.
+7. Sign in at `/admin/login`. For LIV rollout steps see `docs/LIV_CMS_PUBLISH.md`.
 
 ## Security
 

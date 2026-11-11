@@ -7,8 +7,7 @@ import type {
   DbInquiry,
   DbUnitType,
 } from '../supabase/database.types'
-import { mapDbDevelopment, mapDbUnitType } from './mapDevelopment'
-import { mediaPublicUrl } from './mediaUpload'
+import { mapDbDevelopment } from './mapDevelopment'
 
 export async function fetchPublicDevelopments(): Promise<Development[]> {
   const supabase = getSupabaseClient()
@@ -25,69 +24,12 @@ export async function fetchPublicDevelopments(): Promise<Development[]> {
   return rows.map((r) => mapDbDevelopment(r))
 }
 
-/** Published property detail: development + unit types with floor-plan URLs from `cms_media`. */
+/** Published property detail: development + unit types (delegates to property page aggregator). */
 export async function fetchPublicPropertyDetail(
   slug: string,
 ): Promise<{ development: Development; units: UnitType[] } | null> {
-  const supabase = getSupabaseClient()
-  if (!supabase) return null
-
-  const { data, error } = await supabase
-    .from('developments')
-    .select('*')
-    .eq('slug', slug)
-    .in('publication_status', ['published', 'coming_soon'])
-    .maybeSingle()
-
-  if (error) throw error
-  if (!data) return null
-
-  const row = data as DbDevelopment
-  const developmentSlug = row.slug
-
-  const [{ data: media }, { data: unitRows }] = await Promise.all([
-    supabase
-      .from('cms_media')
-      .select('*')
-      .eq('development_slug', developmentSlug)
-      .eq('published', true)
-      .order('display_order'),
-    supabase
-      .from('cms_unit_types')
-      .select('*')
-      .eq('development_slug', developmentSlug)
-      .in('publication_status', ['published', 'coming_soon'])
-      .order('display_order'),
-  ])
-
-  const mediaList = (media ?? []) as DbCmsMedia[]
-  const galleryForMap = mediaList.filter(
-    (m) =>
-      m.media_kind === 'image' &&
-      m.published &&
-      m.placement !== 'floor_plan',
-  )
-
-  const development = mapDbDevelopment(row, galleryForMap)
-
-  const floorByUnit = new Map<string, DbCmsMedia[]>()
-  for (const m of mediaList) {
-    if (m.placement === 'floor_plan' && m.unit_type_id) {
-      const list = floorByUnit.get(m.unit_type_id) ?? []
-      list.push(m)
-      floorByUnit.set(m.unit_type_id, list)
-    }
-  }
-
-  const units = (unitRows ?? []).map((u) => {
-    const row = u as DbUnitType
-    const floors = (floorByUnit.get(row.id) ?? []).sort(
-      (a, b) => a.display_order - b.display_order,
-    )
-    return mapDbUnitType(row, floors.map((m) => mediaPublicUrl(m)))
-  })
-
-  return { development, units }
+  const { fetchPublicPropertyDetailAggregated } = await import('./propertyDetailApi')
+  return fetchPublicPropertyDetailAggregated(slug)
 }
 
 export async function fetchPublicDevelopmentBySlug(
@@ -149,6 +91,17 @@ export type DevelopmentPatch = Partial<
     | 'cover_image'
     | 'card_image'
     | 'hero_image'
+    | 'hero_subtitle'
+    | 'total_stories'
+    | 'total_units'
+    | 'completion_date'
+    | 'developer_name'
+    | 'map_lat'
+    | 'map_lng'
+    | 'map_url'
+    | 'directions_url'
+    | 'overview_media_id'
+    | 'video_source'
   >
 >
 
@@ -253,14 +206,17 @@ export async function upsertUnitType(
   return data as DbUnitType
 }
 
-export async function fetchInquiries(limit = 50): Promise<DbInquiry[]> {
+export async function fetchInquiries(
+  limit = 50,
+  developmentSlug?: string,
+): Promise<DbInquiry[]> {
   const supabase = getSupabaseClient()
   if (!supabase) return []
-  const { data, error } = await supabase
-    .from('inquiries')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(limit)
+  let query = supabase.from('inquiries').select('*').order('created_at', { ascending: false })
+  if (developmentSlug) {
+    query = query.eq('development_slug', developmentSlug)
+  }
+  const { data, error } = await query.limit(limit)
   if (error) throw error
   return (data ?? []) as DbInquiry[]
 }

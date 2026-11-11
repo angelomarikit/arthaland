@@ -90,6 +90,46 @@ const AdminPropertyAmenitiesPage = lazy(() =>
     default: m.AdminPropertyAmenitiesPage,
   })),
 )
+const AdminPropertyCreatePage = lazy(() =>
+  import('./pages/admin/AdminPropertyCreatePage').then((m) => ({
+    default: m.AdminPropertyCreatePage,
+  })),
+)
+const AdminPropertySpecificationsPage = lazy(() =>
+  import('./pages/admin/AdminPropertySpecificationsPage').then((m) => ({
+    default: m.AdminPropertySpecificationsPage,
+  })),
+)
+const AdminPropertyCertificationsPage = lazy(() =>
+  import('./pages/admin/AdminPropertyCertificationsPage').then((m) => ({
+    default: m.AdminPropertyCertificationsPage,
+  })),
+)
+const AdminPropertyLocationPage = lazy(() =>
+  import('./pages/admin/AdminPropertyLocationPage').then((m) => ({
+    default: m.AdminPropertyLocationPage,
+  })),
+)
+const AdminPropertyNearbyPage = lazy(() =>
+  import('./pages/admin/AdminPropertyNearbyPage').then((m) => ({
+    default: m.AdminPropertyNearbyPage,
+  })),
+)
+const AdminPropertyGalleryCollectionsPage = lazy(() =>
+  import('./pages/admin/AdminPropertyGalleryCollectionsPage').then((m) => ({
+    default: m.AdminPropertyGalleryCollectionsPage,
+  })),
+)
+const AdminPropertyVideoPage = lazy(() =>
+  import('./pages/admin/AdminPropertyVideoPage').then((m) => ({
+    default: m.AdminPropertyVideoPage,
+  })),
+)
+const AdminPropertySeoPage = lazy(() =>
+  import('./pages/admin/AdminPropertySeoPage').then((m) => ({
+    default: m.AdminPropertySeoPage,
+  })),
+)
 const AdminPagesPage = lazy(() =>
   import('./pages/admin/AdminPagesPage').then((m) => ({
     default: m.AdminPagesPage,
@@ -177,9 +217,38 @@ export default function App() {
                   element={<AdminPageSectionPage />}
                 />
                 <Route path="admin/properties" element={<AdminPropertiesPage />} />
+                <Route path="admin/properties/new" element={<AdminPropertyCreatePage />} />
                 <Route
                   path="admin/properties/:slug"
                   element={<AdminPropertyOverviewPage />}
+                />
+                <Route
+                  path="admin/properties/:slug/specifications"
+                  element={<AdminPropertySpecificationsPage />}
+                />
+                <Route
+                  path="admin/properties/:slug/certifications"
+                  element={<AdminPropertyCertificationsPage />}
+                />
+                <Route
+                  path="admin/properties/:slug/location"
+                  element={<AdminPropertyLocationPage />}
+                />
+                <Route
+                  path="admin/properties/:slug/nearby"
+                  element={<AdminPropertyNearbyPage />}
+                />
+                <Route
+                  path="admin/properties/:slug/gallery"
+                  element={<AdminPropertyGalleryCollectionsPage />}
+                />
+                <Route
+                  path="admin/properties/:slug/video"
+                  element={<AdminPropertyVideoPage />}
+                />
+                <Route
+                  path="admin/properties/:slug/seo"
+                  element={<AdminPropertySeoPage />}
                 />
                 <Route
                   path="admin/properties/:slug/sections/:sectionKey"

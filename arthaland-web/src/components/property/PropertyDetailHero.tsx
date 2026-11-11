@@ -1,11 +1,13 @@
-import type { Development } from '../../data/developments'
+import type { Development } from '../../domain/development/types'
+import type { PropertySpecs } from '../../domain/propertyDetail/types'
 import { Button } from '../ui/Button'
 
 type PropertyDetailHeroProps = {
   development: Development
+  specs?: PropertySpecs
 }
 
-export function PropertyDetailHero({ development }: PropertyDetailHeroProps) {
+export function PropertyDetailHero({ development, specs }: PropertyDetailHeroProps) {
   return (
     <section className="hero-under-header relative min-h-[72vh] overflow-hidden bg-ink text-surface">
       <img
@@ -29,6 +31,11 @@ export function PropertyDetailHero({ development }: PropertyDetailHeroProps) {
         <h1 className="text-display-l mt-4 max-w-[16ch] animate-fade-up animation-delay-150">
           {development.name}
         </h1>
+        {specs?.heroSubtitle && (
+          <p className="mt-3 max-w-2xl animate-fade-up text-lg text-surface/90 animation-delay-150">
+            {specs.heroSubtitle}
+          </p>
+        )}
         <p className="mt-4 animate-fade-up text-lg text-surface/85 animation-delay-150">
           {development.location}
         </p>
@@ -39,7 +46,10 @@ export function PropertyDetailHero({ development }: PropertyDetailHeroProps) {
           {development.priceLabel}
         </p>
         <div className="mt-8 flex animate-fade-up flex-wrap gap-4 animation-delay-150">
-          <Button href="/contact">Request a Viewing</Button>
+          <Button href="#gallery" variant="outlineOnDark">
+            View gallery
+          </Button>
+          <Button href="#inquiry">Inquire</Button>
         </div>
       </div>
     </section>
