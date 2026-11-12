@@ -200,9 +200,22 @@ export function AdminPropertyOverviewPage() {
             />
           </label>
 
-          <label className="flex items-center gap-2 text-sm">
-            <input name="featured" type="checkbox" defaultChecked={Boolean(dev.featured)} />
-            Featured on portfolio
+          <label className="flex items-start gap-2 text-sm">
+            <input
+              name="featured"
+              type="checkbox"
+              className="mt-1"
+              defaultChecked={Boolean(dev.featured)}
+            />
+            <span>
+              <span className="font-medium">Featured property</span>
+              <span className="mt-0.5 block text-title-muted">
+                Shows in the homepage showcase, portfolio spotlight, and the vertical{' '}
+                <strong className="font-medium text-ink">Featured properties</strong> column on
+                other property pages. Requires <strong className="font-medium text-ink">Published</strong>{' '}
+                status. Use Display order to rank (lower first).
+              </span>
+            </span>
           </label>
           <label className="flex items-center gap-2 text-sm">
             <input

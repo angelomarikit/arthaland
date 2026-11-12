@@ -66,6 +66,7 @@ When `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set (and `VITE_CMS_SOU
 4. **Hero** — Overview upload (`developments.hero_image`), not Media library alone.
 5. **Gallery** — Media library; each row must be **Public** (`cms_media.published = true`).
 6. **Collections** — Publish the collection or unassign media if images vanish from the gallery tab.
+7. **Map** — Admin → Property → **Location** — paste a Google Maps share link (`https://maps.app.goo.gl/…`). The public Location section embeds the map; optional `VITE_GOOGLE_MAPS_EMBED_API_KEY` improves embed when lat/lng are stored.
 
 
 Inquiries unchanged: `development_slug` FK to `developments.slug`.

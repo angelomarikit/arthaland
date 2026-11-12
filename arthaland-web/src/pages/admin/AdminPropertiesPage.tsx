@@ -82,7 +82,15 @@ export function AdminPropertiesPage() {
                   <p className="text-xs text-title-muted">{row.slug}</p>
                 </td>
                 <td className="px-4 py-3 capitalize">{row.publication_status ?? 'draft'}</td>
-                <td className="px-4 py-3">{row.featured ? 'Yes' : '—'}</td>
+                <td className="px-4 py-3">
+                  {row.featured ? (
+                    <span title="Shown in Featured properties sidebar on property pages">
+                      Featured
+                    </span>
+                  ) : (
+                    '—'
+                  )}
+                </td>
                 <td className="px-4 py-3">{row.hero_image ? '✓' : 'Missing'}</td>
                 <td className="px-4 py-3 text-right">
                   <Link

@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom'
 import { SiteHeader } from '../components/layout/SiteHeader'
 import { Button } from '../components/ui/Button'
 import { Container } from '../components/ui/Container'
-import { PropertyCard } from '../components/property/PropertyCard'
+import { PropertyDiscoverFooterSection } from '../components/property/PropertyDiscoverFooterSection'
 import { PropertyAmenitiesSection } from '../components/property/PropertyAmenitiesSection'
 import { PropertyCertificationsSection } from '../components/property/PropertyCertificationsSection'
 import { PropertyDetailHero } from '../components/property/PropertyDetailHero'
@@ -124,18 +124,11 @@ export function PropertyDetailPage() {
       <PropertyVideoSection development={development} video={page.video} />
       <PropertyInquirySection development={development} units={units} />
 
-      {relatedList.length > 0 && (
-        <section className="border-t border-border py-16 md:py-24">
-          <Container className="section-x">
-            <h2 className="text-heading-3">Related developments</h2>
-            <div className="mt-12 grid gap-12 md:grid-cols-2 lg:grid-cols-3">
-              {relatedList.map((d) => (
-                <PropertyCard key={d.slug} development={d} />
-              ))}
-            </div>
-          </Container>
-        </section>
-      )}
+      <PropertyDiscoverFooterSection
+        currentSlug={development.slug}
+        portfolioList={list}
+        relatedList={relatedList}
+      />
     </>
   )
 }
