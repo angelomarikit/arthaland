@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { AdminBreadcrumbs } from '../../components/admin/AdminBreadcrumbs'
 import { MediaUploadZone } from '../../components/admin/MediaUploadZone'
 import { fetchAdminDevelopment, updateDevelopment } from '../../lib/cms/developmentsApi'
-import { isGoogleMapsLink } from '../../lib/maps/googleMaps'
+import { isGoogleMapsLink, parseLatLngFromGoogleMapsUrl } from '../../lib/maps/googleMaps'
 import { uploadMediaWithMetadata, mediaPublicUrl } from '../../lib/cms/mediaUpload'
 import type { DbDevelopment } from '../../lib/supabase/database.types'
 
@@ -34,10 +34,20 @@ export function AdminPropertyLocationPage() {
         setError('Please paste a valid Google Maps link (e.g. maps.app.goo.gl/…).')
         return
       }
+      let mapLat = fd.get('map_lat') ? Number(fd.get('map_lat')) : null
+      let mapLng = fd.get('map_lng') ? Number(fd.get('map_lng')) : null
+      if (mapsLink && (mapLat == null || mapLng == null)) {
+        const fromUrl = parseLatLngFromGoogleMapsUrl(mapsLink)
+        if (fromUrl) {
+          mapLat = fromUrl.lat
+          mapLng = fromUrl.lng
+        }
+      }
+
       const patch: Parameters<typeof updateDevelopment>[1] = {
         directions_url: mapsLink || null,
-        map_lat: fd.get('map_lat') ? Number(fd.get('map_lat')) : null,
-        map_lng: fd.get('map_lng') ? Number(fd.get('map_lng')) : null,
+        map_lat: mapLat,
+        map_lng: mapLng,
       }
       // Keep uploaded map image unless user is replacing with a maps link only
       if (mapsLink) {
@@ -77,7 +87,11 @@ export function AdminPropertyLocationPage() {
       <p className="mt-2 max-w-2xl text-sm text-title-muted">
         Paste a Google Maps share link from the app or browser — for example{' '}
         <code className="text-xs">https://maps.app.goo.gl/…</code>. The property page will show
-        an embedded map and a &quot;Open in Google Maps&quot; button.
+        an embedded map and a &quot;Open in Google Maps&quot; button. Short{' '}
+        <code className="text-xs">maps.app.goo.gl</code> links are supported; the embed uses your
+        property location text unless you save latitude/longitude (advanced). For the sharpest pin,
+        set <strong className="font-medium text-ink">VITE_GOOGLE_MAPS_EMBED_API_KEY</strong> in
+        Vercel, or paste a full Maps URL that contains <code className="text-xs">@lat,lng</code>.
       </p>
 
       <form onSubmit={onSave} className="mt-8 max-w-xl space-y-4 rounded-2xl border border-border bg-surface p-6">

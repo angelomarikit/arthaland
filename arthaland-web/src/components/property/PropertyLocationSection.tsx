@@ -28,11 +28,14 @@ export function PropertyLocationSection({
         ? location.mapUrl
         : undefined
 
+  const placeQuery = [development.location, development.region].filter(Boolean).join(', ')
+
   const embedSrc = googleMapsEmbedSrc({
     googleMapsLink: googleLink,
     lat: location.lat,
     lng: location.lng,
     embedApiKey: mapsEmbedKey,
+    placeQuery: placeQuery || development.location,
   })
 
   const mapImage =
