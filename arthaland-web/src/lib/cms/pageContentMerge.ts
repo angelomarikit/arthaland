@@ -20,6 +20,7 @@ function hasCmsContent(content: unknown): boolean {
     c.posterObjectPosition,
     c.videoObjectPosition,
     c.coverImageUrl,
+    c.imageObjectPosition,
   ].some((v) => typeof v === 'string' && v.trim().length > 0)
 }
 
@@ -42,6 +43,8 @@ export function mergeSectionContent(
     posterObjectPosition: pick(cms.posterObjectPosition, defaults.posterObjectPosition),
     videoObjectPosition: pick(cms.videoObjectPosition, defaults.videoObjectPosition),
     coverImageUrl: pick(cms.coverImageUrl, defaults.coverImageUrl),
+    imageObjectFit: cms.imageObjectFit ?? defaults.imageObjectFit,
+    imageObjectPosition: pick(cms.imageObjectPosition, defaults.imageObjectPosition),
     items:
       Array.isArray(cms.items) && cms.items.length > 0
         ? cms.items

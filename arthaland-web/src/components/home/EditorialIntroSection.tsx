@@ -16,6 +16,8 @@ export function EditorialIntroSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const titleLines = titleToDisplayLines(copy.title, ['A New Perspective', 'on Living.'])
   const introImage = copy.imageUrl ?? sectionImages.editorialIntro
+  const introFit = copy.imageObjectFit ?? 'contain'
+  const introPosition = copy.imageObjectPosition ?? 'center top'
 
   useGsapScope(
     sectionRef,
@@ -73,12 +75,21 @@ export function EditorialIntroSection() {
               Sales team supervised by Mr. Gary Lee · Site by Apex Technology
             </p>
           </div>
-          <div className="lg:col-span-5">
-            <ImageMaskReveal className="aspect-[4/5]">
+          <div className="lg:col-span-5 lg:self-start">
+            <ImageMaskReveal
+              className={
+                introFit === 'contain'
+                  ? 'rounded-sm bg-surface-soft/50'
+                  : 'aspect-[4/5] rounded-sm bg-surface-soft/50'
+              }
+            >
               <ParallaxImage
                 src={introImage}
-                className="aspect-[4/5]"
-                speed={8}
+                alt=""
+                intrinsic={introFit === 'contain'}
+                objectFit={introFit}
+                objectPosition={introPosition}
+                className={introFit === 'contain' ? 'max-h-[min(85vh,720px)]' : 'aspect-[4/5]'}
               />
             </ImageMaskReveal>
           </div>

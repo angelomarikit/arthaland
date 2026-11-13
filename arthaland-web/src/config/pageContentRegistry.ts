@@ -13,6 +13,9 @@ export type PageSectionContent = {
   posterObjectPosition?: string
   videoObjectPosition?: string
   coverImageUrl?: string
+  /** Section still image framing (introduction, etc.) */
+  imageObjectFit?: 'cover' | 'contain'
+  imageObjectPosition?: string
   /** Home gallery / lifestyle tiles (stored in cms_page_sections.content JSON) */
   items?: unknown[]
 }

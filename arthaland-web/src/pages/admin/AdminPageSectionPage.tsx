@@ -19,6 +19,8 @@ type SectionContent = {
   subtitle?: string
   body?: string
   imageUrl?: string
+  imageObjectFit?: 'cover' | 'contain'
+  imageObjectPosition?: string
 }
 
 export function AdminPageSectionPage() {
@@ -161,9 +163,50 @@ export function AdminPageSectionPage() {
               published: true,
               onProgress,
             })
-            setContent((c) => ({ ...c, imageUrl: mediaPublicUrl(media) }))
+            setContent((c) => ({
+              ...c,
+              imageUrl: mediaPublicUrl(media),
+              imageObjectFit: c.imageObjectFit ?? 'contain',
+            }))
           }}
         />
+
+        {content.imageUrl ? (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block text-sm">
+              Image fit
+              <select
+                value={content.imageObjectFit ?? 'contain'}
+                onChange={(e) =>
+                  setContent((c) => ({
+                    ...c,
+                    imageObjectFit: e.target.value as 'cover' | 'contain',
+                  }))
+                }
+                className="mt-1 w-full rounded-xl border border-border px-3 py-2 text-sm"
+              >
+                <option value="contain">Show full image (no crop)</option>
+                <option value="cover">Fill frame (may crop edges)</option>
+              </select>
+            </label>
+            <label className="block text-sm">
+              Image focus (CSS object-position)
+              <select
+                value={content.imageObjectPosition ?? 'center top'}
+                onChange={(e) =>
+                  setContent((c) => ({ ...c, imageObjectPosition: e.target.value }))
+                }
+                className="mt-1 w-full rounded-xl border border-border px-3 py-2 text-sm"
+              >
+                <option value="center top">Center top</option>
+                <option value="center center">Center</option>
+                <option value="center bottom">Center bottom</option>
+                <option value="left center">Left</option>
+                <option value="right center">Right</option>
+              </select>
+            </label>
+          </div>
+        ) : null}
 
         <label className="flex items-center gap-2 text-sm">
           <input
