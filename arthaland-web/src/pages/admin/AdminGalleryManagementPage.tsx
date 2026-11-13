@@ -158,6 +158,22 @@ export function AdminGalleryManagementPage() {
                 />
                 Feature image (editorial highlight)
               </label>
+              <label className="block text-xs">
+                Image display
+                <select
+                  value={item.imageObjectFit ?? 'natural'}
+                  onChange={(e) =>
+                    onPatch({
+                      imageObjectFit: e.target.value as HomeGalleryItem['imageObjectFit'],
+                    } as Partial<HomeGalleryItem>)
+                  }
+                  className="mt-1 w-full rounded-lg border border-border px-2 py-1 text-sm"
+                >
+                  <option value="natural">Full image (recommended — no crop)</option>
+                  <option value="contain">Fit inside tile (letterboxing)</option>
+                  <option value="cover">Fill tile (may crop edges)</option>
+                </select>
+              </label>
             </>
           )}
         />

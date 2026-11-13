@@ -11,6 +11,9 @@ export type HomeGalleryItem = {
   category?: string
   featured?: boolean
   mediaId?: string
+  /** natural = full image, column width; cover = crop to tile */
+  imageObjectFit?: 'natural' | 'cover' | 'contain'
+  imageObjectPosition?: string
 }
 
 export type HomeLifestyleItem = {

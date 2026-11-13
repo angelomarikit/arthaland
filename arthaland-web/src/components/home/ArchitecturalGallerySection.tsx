@@ -7,6 +7,20 @@ import type { GallerySectionContent } from '../../domain/home/types'
 import { useHomeGalleryItems } from '../../hooks/useHomeGalleryItems'
 import { Container } from '../ui/Container'
 import { Eyebrow } from '../ui/Eyebrow'
+import type { HomeGalleryItem } from '../../domain/home/types'
+
+function galleryTileClass(item: HomeGalleryItem): string {
+  const fit = item.imageObjectFit ?? 'natural'
+  if (fit === 'cover') {
+    return 'aspect-[3/4] w-full object-cover transition-transform duration-700 hover:scale-[1.02]'
+  }
+  const base =
+    'block w-full transition-transform duration-700 hover:scale-[1.01] bg-surface-muted/25'
+  if (fit === 'contain') {
+    return `${base} aspect-[3/4] object-contain`
+  }
+  return `${base} h-auto max-h-[min(92vh,960px)]`
+}
 
 export function ArchitecturalGallerySection() {
   const copy = usePageSection('gallery') as GallerySectionContent
@@ -57,11 +71,16 @@ export function ArchitecturalGallerySection() {
           <div key={colIndex} className="flex flex-col gap-6 lg:gap-8">
             {col.map((item) => (
               <figure key={item.id} data-gallery-item>
-                <div className="overflow-hidden">
+                <div className="overflow-hidden rounded-sm">
                   <img
                     src={item.imageUrl}
                     alt=""
-                    className="aspect-[3/4] w-full object-cover object-center transition-transform duration-700 hover:scale-[1.02]"
+                    className={galleryTileClass(item)}
+                    style={
+                      item.imageObjectPosition
+                        ? { objectPosition: item.imageObjectPosition }
+                        : undefined
+                    }
                     loading="lazy"
                     decoding="async"
                   />
