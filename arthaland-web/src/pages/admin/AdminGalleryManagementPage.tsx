@@ -16,6 +16,8 @@ export function AdminGalleryManagementPage() {
   const [published, setPublished] = useState(true)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const [dirty, setDirty] = useState(false)
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
@@ -36,6 +38,8 @@ export function AdminGalleryManagementPage() {
       const id = await saveGallerySection(payload, published, sectionId || undefined)
       setSectionId(id)
       setSaved(true)
+      setDirty(false)
+      setUploadError(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Save failed')
     }
@@ -66,7 +70,11 @@ export function AdminGalleryManagementPage() {
             Eyebrow
             <input
               value={content.eyebrow ?? ''}
-              onChange={(e) => setContent((c) => ({ ...c, eyebrow: e.target.value }))}
+              onChange={(e) => {
+                setContent((c) => ({ ...c, eyebrow: e.target.value }))
+                setDirty(true)
+                setSaved(false)
+              }}
               className="mt-1 w-full rounded-xl border border-border px-3 py-2"
             />
           </label>
@@ -74,7 +82,11 @@ export function AdminGalleryManagementPage() {
             Section heading
             <input
               value={content.title ?? ''}
-              onChange={(e) => setContent((c) => ({ ...c, title: e.target.value }))}
+              onChange={(e) => {
+                setContent((c) => ({ ...c, title: e.target.value }))
+                setDirty(true)
+                setSaved(false)
+              }}
               className="mt-1 w-full rounded-xl border border-border px-3 py-2"
             />
           </label>
@@ -83,16 +95,33 @@ export function AdminGalleryManagementPage() {
             <textarea
               rows={3}
               value={content.body ?? ''}
-              onChange={(e) => setContent((c) => ({ ...c, body: e.target.value }))}
+              onChange={(e) => {
+                setContent((c) => ({ ...c, body: e.target.value }))
+                setDirty(true)
+                setSaved(false)
+              }}
               className="mt-1 w-full rounded-xl border border-border px-3 py-2"
             />
           </label>
         </div>
 
+        {dirty && !saved ? (
+          <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+            You have unsaved image or text changes. Click <strong>Save gallery</strong> below —
+            uploads alone do not update the live homepage until you save.
+          </p>
+        ) : null}
+
         <AdminHomeItemListEditor
           items={items}
-          onChange={setItems}
+          onChange={(next) => {
+            setItems(next)
+            setDirty(true)
+            setSaved(false)
+          }}
           uploadFolder="pages/home/gallery"
+          pageSectionId={sectionId || undefined}
+          onUploadError={setUploadError}
           addLabel="Upload gallery image"
           renderExtraFields={(item, onPatch) => (
             <>
@@ -147,6 +176,7 @@ export function AdminGalleryManagementPage() {
           </label>
         </div>
 
+        {uploadError && <p className="text-sm text-red-700">Upload: {uploadError}</p>}
         {error && <p className="text-sm text-red-700">{error}</p>}
         {saved && <p className="text-sm text-emerald-800">Saved — refresh the homepage to verify.</p>}
         <button type="submit" className="rounded-xl bg-ink px-4 py-2 text-sm text-surface">

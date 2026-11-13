@@ -97,7 +97,15 @@ export function AdminPageDetailPage() {
                   {s.db?.published ? 'CMS: published' : 'CMS: not saved yet'}
                 </span>
                 <Link
-                  to={`/admin/pages/${slug}/sections/${s.sectionKey}`}
+                  to={
+                    slug === 'home' && s.sectionKey === 'gallery'
+                      ? '/admin/gallery'
+                      : slug === 'home' && s.sectionKey === 'lifestyle'
+                        ? '/admin/lifestyle'
+                        : slug === 'home' && s.sectionKey === 'hero'
+                          ? '/admin/homepage'
+                          : `/admin/pages/${slug}/sections/${s.sectionKey}`
+                  }
                   className="rounded-lg border border-ink/20 px-3 py-1.5 text-xs font-medium hover:border-ink/40"
                 >
                   Edit content

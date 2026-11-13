@@ -13,6 +13,8 @@ export function AdminLifestyleManagementPage() {
   const [published, setPublished] = useState(true)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const [dirty, setDirty] = useState(false)
 
   useEffect(() => {
     loadLifestyleSection().then((row) => {
@@ -28,6 +30,8 @@ export function AdminLifestyleManagementPage() {
       const id = await saveLifestyleSection({ ...content, items }, published, sectionId || undefined)
       setSectionId(id)
       setSaved(true)
+      setDirty(false)
+      setUploadError(null)
       setError(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Save failed')
@@ -75,10 +79,23 @@ export function AdminLifestyleManagementPage() {
           </label>
         </div>
 
+        {dirty && !saved ? (
+          <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+            You have unsaved changes. Click <strong>Save lifestyle section</strong> after uploading or
+            replacing images.
+          </p>
+        ) : null}
+
         <AdminHomeItemListEditor
           items={items}
-          onChange={setItems}
+          onChange={(next) => {
+            setItems(next)
+            setDirty(true)
+            setSaved(false)
+          }}
           uploadFolder="pages/home/lifestyle"
+          pageSectionId={sectionId || undefined}
+          onUploadError={setUploadError}
           addLabel="Upload lifestyle image"
           renderExtraFields={(item, onPatch) => (
             <label className="block text-xs">
@@ -108,6 +125,7 @@ export function AdminLifestyleManagementPage() {
           Section published
         </label>
 
+        {uploadError && <p className="text-sm text-red-700">Upload: {uploadError}</p>}
         {error && <p className="text-sm text-red-700">{error}</p>}
         {saved && <p className="text-sm text-emerald-800">Saved to CMS.</p>}
         <button type="submit" className="rounded-xl bg-ink px-4 py-2 text-sm text-surface">
