@@ -57,8 +57,9 @@ export function AdminGalleryManagementPage() {
       <AdminBreadcrumbs items={[{ label: 'Gallery management' }]} />
       <h1 className="text-2xl font-medium">Homepage gallery</h1>
       <p className="mt-2 text-sm text-title-muted">
-        Masonry gallery on the homepage. Assign a column (1–3), category, and order. Unpublished
-        items stay hidden on the live site.
+        Three-column gallery on the homepage. Images auto-size to the column width (full graphic
+        visible). Order controls left-to-right flow: 1st → column 1, 2nd → column 2, 3rd → column 3,
+        4th → column 1, and so on. Unpublished items stay hidden on the live site.
       </p>
       <Link to="/#gallery" target="_blank" rel="noreferrer" className="mt-2 inline-block text-sm underline">
         Preview gallery section
@@ -134,20 +135,9 @@ export function AdminGalleryManagementPage() {
                   placeholder="Facade, Interior, Aerial…"
                 />
               </label>
-              <label className="block text-xs">
-                Column
-                <select
-                  value={item.column}
-                  onChange={(e) =>
-                    onPatch({ column: Number(e.target.value) } as Partial<HomeGalleryItem>)
-                  }
-                  className="mt-1 w-full rounded-lg border border-border px-2 py-1 text-sm"
-                >
-                  <option value={0}>Column 1</option>
-                  <option value={1}>Column 2</option>
-                  <option value={2}>Column 3</option>
-                </select>
-              </label>
+              <p className="text-xs text-title-muted">
+                Position: #{item.displayOrder + 1} in grid (spreads across 3 columns automatically).
+              </p>
               <label className="flex items-center gap-2 text-xs">
                 <input
                   type="checkbox"
@@ -169,8 +159,8 @@ export function AdminGalleryManagementPage() {
                   }
                   className="mt-1 w-full rounded-lg border border-border px-2 py-1 text-sm"
                 >
-                  <option value="natural">Full image (recommended — no crop)</option>
-                  <option value="contain">Fit inside tile (letterboxing)</option>
+                  <option value="contain">Full image in column (default)</option>
+                  <option value="natural">Full height (tall posters)</option>
                   <option value="cover">Fill tile (may crop edges)</option>
                 </select>
               </label>

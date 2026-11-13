@@ -3,23 +3,47 @@ import { gsap } from '../../animation/gsapSetup'
 import { motionDuration, motionEase } from '../../animation/motionTokens'
 import { useGsapScope } from '../../animation/useGsapScope'
 import { usePageSection } from '../../contexts/PageContentContext'
-import type { GallerySectionContent } from '../../domain/home/types'
+import type { GallerySectionContent, HomeGalleryItem } from '../../domain/home/types'
 import { useHomeGalleryItems } from '../../hooks/useHomeGalleryItems'
 import { Container } from '../ui/Container'
 import { Eyebrow } from '../ui/Eyebrow'
-import type { HomeGalleryItem } from '../../domain/home/types'
 
-function galleryTileClass(item: HomeGalleryItem): string {
-  const fit = item.imageObjectFit ?? 'natural'
-  if (fit === 'cover') {
-    return 'aspect-[3/4] w-full object-cover transition-transform duration-700 hover:scale-[1.02]'
-  }
-  const base =
-    'block w-full transition-transform duration-700 hover:scale-[1.01] bg-surface-muted/25'
-  if (fit === 'contain') {
-    return `${base} aspect-[3/4] object-contain`
-  }
-  return `${base} h-auto max-h-[min(92vh,960px)]`
+const COLUMN_COUNT = 3
+
+/** Spread tiles evenly across three masonry columns (1st → col 1, 2nd → col 2, …). */
+function itemsInThreeColumns(items: HomeGalleryItem[]): HomeGalleryItem[][] {
+  const sorted = [...items].sort(
+    (a, b) => a.displayOrder - b.displayOrder || a.caption.localeCompare(b.caption),
+  )
+  const cols: HomeGalleryItem[][] = [[], [], []]
+  sorted.forEach((item, index) => {
+    cols[index % COLUMN_COUNT]!.push(item)
+  })
+  return cols
+}
+
+function GalleryTile({ item }: { item: HomeGalleryItem }) {
+  const fit = item.imageObjectFit ?? 'contain'
+
+  const imgClass =
+    fit === 'cover'
+      ? 'aspect-[3/4] w-full object-cover'
+      : fit === 'natural'
+        ? 'h-auto w-full max-h-[min(88vh,900px)]'
+        : 'w-full max-h-[min(52vh,620px)] object-contain object-top'
+
+  return (
+    <div className="flex w-full min-w-0 items-start justify-center overflow-hidden rounded-sm bg-surface-muted/15">
+      <img
+        src={item.imageUrl}
+        alt=""
+        className={`block max-w-full transition-transform duration-700 hover:scale-[1.01] ${imgClass}`}
+        style={item.imageObjectPosition ? { objectPosition: item.imageObjectPosition } : undefined}
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  )
 }
 
 export function ArchitecturalGallerySection() {
@@ -27,17 +51,7 @@ export function ArchitecturalGallerySection() {
   const items = useHomeGalleryItems()
   const ref = useRef<HTMLElement>(null)
 
-  const columns = useMemo(() => {
-    const cols: [typeof items, typeof items, typeof items] = [[], [], []]
-    for (const item of items) {
-      const col = Math.min(2, Math.max(0, item.column ?? 0))
-      cols[col].push(item)
-    }
-    for (const col of cols) {
-      col.sort((a, b) => a.displayOrder - b.displayOrder)
-    }
-    return cols
-  }, [items])
+  const columns = useMemo(() => itemsInThreeColumns(items), [items])
 
   useGsapScope(
     ref,
@@ -55,7 +69,7 @@ export function ArchitecturalGallerySection() {
   )
 
   return (
-    <section ref={ref} className="overflow-hidden bg-stage py-24 md:py-32" id="gallery">
+    <section ref={ref} className="bg-stage py-24 md:py-32" id="gallery">
       <Container className="section-x">
         <Eyebrow>{copy.eyebrow ?? 'Gallery'}</Eyebrow>
         <h2 className="text-heading-2 mt-4 max-w-[20ch]">
@@ -66,35 +80,26 @@ export function ArchitecturalGallerySection() {
         )}
       </Container>
 
-      <div className="section-x mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-        {columns.map((col, colIndex) => (
-          <div key={colIndex} className="flex flex-col gap-6 lg:gap-8">
-            {col.map((item) => (
-              <figure key={item.id} data-gallery-item>
-                <div className="overflow-hidden rounded-sm">
-                  <img
-                    src={item.imageUrl}
-                    alt=""
-                    className={galleryTileClass(item)}
-                    style={
-                      item.imageObjectPosition
-                        ? { objectPosition: item.imageObjectPosition }
-                        : undefined
-                    }
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-                <figcaption className="text-eyebrow mt-3 text-title-muted">
-                  {item.caption}
-                  {item.category ? (
-                    <span className="text-title-muted/80"> · {item.category}</span>
-                  ) : null}
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-        ))}
+      <div className="section-x mt-14">
+        <div className="grid grid-cols-1 gap-8 min-[720px]:grid-cols-3 min-[720px]:gap-6 lg:gap-8">
+          {columns.map((col, colIndex) => (
+            <ul key={colIndex} className="flex min-w-0 flex-col gap-8 lg:gap-10">
+              {col.map((item) => (
+                <li key={item.id} data-gallery-item className="min-w-0">
+                  <figure>
+                    <GalleryTile item={item} />
+                    <figcaption className="text-eyebrow mt-3 text-title-muted">
+                      {item.caption}
+                      {item.category ? (
+                        <span className="text-title-muted/80"> · {item.category}</span>
+                      ) : null}
+                    </figcaption>
+                  </figure>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
       </div>
     </section>
   )
