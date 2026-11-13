@@ -21,6 +21,7 @@ type SectionContent = {
   imageUrl?: string
   imageObjectFit?: 'cover' | 'contain'
   imageObjectPosition?: string
+  imageLayout?: 'sidebar' | 'banner'
 }
 
 export function AdminPageSectionPage() {
@@ -167,12 +168,29 @@ export function AdminPageSectionPage() {
               ...c,
               imageUrl: mediaPublicUrl(media),
               imageObjectFit: c.imageObjectFit ?? 'contain',
+              imageLayout: c.imageLayout ?? 'banner',
             }))
           }}
         />
 
         {content.imageUrl ? (
           <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block text-sm sm:col-span-2">
+              Image layout
+              <select
+                value={content.imageLayout ?? 'banner'}
+                onChange={(e) =>
+                  setContent((c) => ({
+                    ...c,
+                    imageLayout: e.target.value as 'sidebar' | 'banner',
+                  }))
+                }
+                className="mt-1 w-full rounded-xl border border-border px-3 py-2 text-sm"
+              >
+                <option value="banner">Full width below text (collages &amp; wide graphics)</option>
+                <option value="sidebar">Beside text (portrait photos)</option>
+              </select>
+            </label>
             <label className="block text-sm">
               Image fit
               <select

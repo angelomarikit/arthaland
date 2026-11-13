@@ -45,6 +45,7 @@ export function mergeSectionContent(
     coverImageUrl: pick(cms.coverImageUrl, defaults.coverImageUrl),
     imageObjectFit: cms.imageObjectFit ?? defaults.imageObjectFit,
     imageObjectPosition: pick(cms.imageObjectPosition, defaults.imageObjectPosition),
+    imageLayout: cms.imageLayout ?? defaults.imageLayout,
     items:
       Array.isArray(cms.items) && cms.items.length > 0
         ? cms.items

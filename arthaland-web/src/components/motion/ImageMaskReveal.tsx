@@ -7,12 +7,15 @@ type ImageMaskRevealProps = {
   children: ReactNode
   className?: string
   delay?: number
+  /** Let height follow the child (e.g. intrinsic `h-auto` images). */
+  fitContent?: boolean
 }
 
 export function ImageMaskReveal({
   children,
   className = '',
   delay = 0,
+  fitContent = false,
 }: ImageMaskRevealProps) {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -41,7 +44,7 @@ export function ImageMaskReveal({
 
   return (
     <div ref={ref} className={`overflow-hidden ${className}`}>
-      <div data-mask-inner className="size-full">
+      <div data-mask-inner className={fitContent ? 'w-full' : 'size-full'}>
         {children}
       </div>
     </div>
