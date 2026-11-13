@@ -4,7 +4,9 @@ import { AdminBreadcrumbs } from '../../components/admin/AdminBreadcrumbs'
 import { AdminHomeItemListEditor } from '../../components/admin/AdminHomeItemListEditor'
 import { defaultHomeGalleryItems } from '../../config/homeContentDefaults'
 import type { GallerySectionContent, HomeGalleryItem } from '../../domain/home/types'
+import { fetchAdminDevelopments } from '../../lib/cms/developmentsApi'
 import { loadGallerySection, saveGallerySection } from '../../lib/cms/homeSectionsApi'
+import type { DbDevelopment } from '../../lib/supabase/database.types'
 
 export function AdminGalleryManagementPage() {
   const [content, setContent] = useState<GallerySectionContent>({
@@ -19,6 +21,11 @@ export function AdminGalleryManagementPage() {
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [dirty, setDirty] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const [developments, setDevelopments] = useState<DbDevelopment[]>([])
+
+  useEffect(() => {
+    fetchAdminDevelopments().then(setDevelopments).catch(() => setDevelopments([]))
+  }, [])
 
   useEffect(() => {
     loadGallerySection().then((row) => {
@@ -133,6 +140,39 @@ export function AdminGalleryManagementPage() {
                   onChange={(e) => onPatch({ category: e.target.value } as Partial<HomeGalleryItem>)}
                   className="mt-1 w-full rounded-lg border border-border px-2 py-1 text-sm"
                   placeholder="Facade, Interior, Aerial…"
+                />
+              </label>
+              <label className="block text-xs">
+                Link when image is clicked
+                <select
+                  value={
+                    developments.some((d) => item.href === `/properties/${d.slug}`)
+                      ? item.href!
+                      : ''
+                  }
+                  onChange={(e) =>
+                    onPatch({
+                      href: e.target.value || undefined,
+                    } as Partial<HomeGalleryItem>)
+                  }
+                  className="mt-1 w-full rounded-lg border border-border px-2 py-1 text-sm"
+                >
+                  <option value="">Choose a property page…</option>
+                  {developments.map((d) => (
+                    <option key={d.id} value={`/properties/${d.slug}`}>
+                      {d.name}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  value={item.href ?? ''}
+                  onChange={(e) =>
+                    onPatch({
+                      href: e.target.value.trim() || undefined,
+                    } as Partial<HomeGalleryItem>)
+                  }
+                  className="mt-2 w-full rounded-lg border border-border px-2 py-1 text-sm"
+                  placeholder="/properties/liv or full https:// URL"
                 />
               </label>
               <p className="text-xs text-title-muted">

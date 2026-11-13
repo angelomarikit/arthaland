@@ -1,4 +1,5 @@
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, type ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import { gsap } from '../../animation/gsapSetup'
 import { motionDuration, motionEase } from '../../animation/motionTokens'
 import { useGsapScope } from '../../animation/useGsapScope'
@@ -22,8 +23,44 @@ function itemsInThreeColumns(items: HomeGalleryItem[]): HomeGalleryItem[][] {
   return cols
 }
 
+function isInternalHref(href: string) {
+  return href.startsWith('/') && !href.startsWith('//')
+}
+
+function GalleryLink({
+  href,
+  label,
+  children,
+}: {
+  href: string
+  label: string
+  children: ReactNode
+}) {
+  const shell =
+    'group flex w-full min-w-0 cursor-pointer items-start justify-center overflow-hidden rounded-sm bg-surface-muted/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink'
+  if (isInternalHref(href)) {
+    return (
+      <Link to={href} className={shell} aria-label={label}>
+        {children}
+      </Link>
+    )
+  }
+  return (
+    <a
+      href={href}
+      className={shell}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+    >
+      {children}
+    </a>
+  )
+}
+
 function GalleryTile({ item }: { item: HomeGalleryItem }) {
   const fit = item.imageObjectFit ?? 'contain'
+  const href = item.href?.trim()
 
   const imgClass =
     fit === 'cover'
@@ -32,16 +69,28 @@ function GalleryTile({ item }: { item: HomeGalleryItem }) {
         ? 'h-auto w-full max-h-[min(88vh,900px)]'
         : 'w-full max-h-[min(52vh,620px)] object-contain object-top'
 
+  const image = (
+    <img
+      src={item.imageUrl}
+      alt={item.caption || 'Gallery image'}
+      className={`block max-w-full transition-transform duration-700 group-hover:scale-[1.01] ${imgClass}`}
+      style={item.imageObjectPosition ? { objectPosition: item.imageObjectPosition } : undefined}
+      loading="lazy"
+      decoding="async"
+    />
+  )
+
+  if (href) {
+    return (
+      <GalleryLink href={href} label={item.caption || 'View project'}>
+        {image}
+      </GalleryLink>
+    )
+  }
+
   return (
     <div className="flex w-full min-w-0 items-start justify-center overflow-hidden rounded-sm bg-surface-muted/15">
-      <img
-        src={item.imageUrl}
-        alt=""
-        className={`block max-w-full transition-transform duration-700 hover:scale-[1.01] ${imgClass}`}
-        style={item.imageObjectPosition ? { objectPosition: item.imageObjectPosition } : undefined}
-        loading="lazy"
-        decoding="async"
-      />
+      {image}
     </div>
   )
 }
@@ -89,7 +138,24 @@ export function ArchitecturalGallerySection() {
                   <figure>
                     <GalleryTile item={item} />
                     <figcaption className="text-eyebrow mt-3 text-title-muted">
-                      {item.caption}
+                      {item.href?.trim() ? (
+                        isInternalHref(item.href.trim()) ? (
+                          <Link to={item.href.trim()} className="underline-offset-2 hover:underline">
+                            {item.caption}
+                          </Link>
+                        ) : (
+                          <a
+                            href={item.href.trim()}
+                            className="underline-offset-2 hover:underline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {item.caption}
+                          </a>
+                        )
+                      ) : (
+                        item.caption
+                      )}
                       {item.category ? (
                         <span className="text-title-muted/80"> · {item.category}</span>
                       ) : null}

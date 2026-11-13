@@ -14,6 +14,8 @@ export type HomeGalleryItem = {
   /** natural = full image, column width; cover = crop to tile */
   imageObjectFit?: 'natural' | 'cover' | 'contain'
   imageObjectPosition?: string
+  /** Internal path or full URL when the tile is clicked */
+  href?: string
 }
 
 export type HomeLifestyleItem = {
