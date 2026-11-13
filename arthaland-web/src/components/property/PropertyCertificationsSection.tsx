@@ -31,11 +31,11 @@ export function PropertyCertificationsSection({
         <FadeInWhenVisible>
           <Eyebrow>Sustainability</Eyebrow>
           <h2 className="text-heading-3 mt-4">Certifications & standards</h2>
-          <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-10 grid grid-cols-1 gap-4 min-[640px]:grid-cols-2 min-[1024px]:grid-cols-4 lg:gap-6">
             {items.map((cert) => (
               <li
                 key={cert.id}
-                className="flex flex-col border border-border bg-surface p-6"
+                className="flex min-w-0 flex-col border border-border bg-surface p-5 md:p-6"
               >
                 {cert.logoUrl ? (
                   <img
@@ -49,7 +49,7 @@ export function PropertyCertificationsSection({
                     Logo pending
                   </span>
                 )}
-                <p className="mt-4 text-lg font-medium">{cert.name}</p>
+                <p className="mt-4 text-base font-medium leading-snug md:text-lg">{cert.name}</p>
                 <span className="mt-2 inline-flex w-fit rounded-full border border-border px-3 py-1 text-xs uppercase tracking-wider">
                   {CERTIFICATION_STATUS_LABEL[cert.status]}
                 </span>
