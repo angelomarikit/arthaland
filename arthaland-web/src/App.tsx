@@ -90,6 +90,21 @@ const AdminPropertyAmenitiesPage = lazy(() =>
     default: m.AdminPropertyAmenitiesPage,
   })),
 )
+const AdminHomepageManagementPage = lazy(() =>
+  import('./pages/admin/AdminHomepageManagementPage').then((m) => ({
+    default: m.AdminHomepageManagementPage,
+  })),
+)
+const AdminGalleryManagementPage = lazy(() =>
+  import('./pages/admin/AdminGalleryManagementPage').then((m) => ({
+    default: m.AdminGalleryManagementPage,
+  })),
+)
+const AdminLifestyleManagementPage = lazy(() =>
+  import('./pages/admin/AdminLifestyleManagementPage').then((m) => ({
+    default: m.AdminLifestyleManagementPage,
+  })),
+)
 const AdminPropertyCreatePage = lazy(() =>
   import('./pages/admin/AdminPropertyCreatePage').then((m) => ({
     default: m.AdminPropertyCreatePage,
@@ -209,6 +224,9 @@ export default function App() {
             <Route element={<AdminGuard />}>
               <Route element={<AdminLayout />}>
                 <Route path="admin" element={<AdminDashboardPage />} />
+                <Route path="admin/homepage" element={<AdminHomepageManagementPage />} />
+                <Route path="admin/gallery" element={<AdminGalleryManagementPage />} />
+                <Route path="admin/lifestyle" element={<AdminLifestyleManagementPage />} />
                 <Route path="admin/site-images" element={<AdminSiteImagesPage />} />
                 <Route path="admin/pages" element={<AdminPagesPage />} />
                 <Route path="admin/pages/:slug" element={<AdminPageDetailPage />} />

@@ -7,10 +7,11 @@ import { motionDuration, motionEase } from '../../animation/motionTokens'
 import { heroAssets } from '../../config/assets'
 import { siteConfig } from '../../config/site'
 import { usePageSection } from '../../contexts/PageContentContext'
+import type { HeroSectionContent } from '../../domain/home/types'
 import { SiteHeader } from '../layout/SiteHeader'
 
 export function CinematicHero() {
-  const cmsHero = usePageSection('hero')
+  const cmsHero = usePageSection('hero') as HeroSectionContent
   const reduceMotion = useReducedMotion()
   const desktopVideoRef = useRef<HTMLVideoElement>(null)
   const mobileVideoRef = useRef<HTMLVideoElement>(null)
@@ -21,7 +22,11 @@ export function CinematicHero() {
   const heroEyebrow = cmsHero.eyebrow ?? hero.eyebrow
   const heroHeadline = cmsHero.title ?? hero.headline
   const heroSubheading = cmsHero.subtitle ?? cmsHero.body ?? hero.subheading
-  const posterSrc = heroAssets.poster
+  const posterSrc = cmsHero.posterImageUrl?.trim() || heroAssets.poster
+  const videoDesktopSrc = cmsHero.videoDesktopUrl?.trim() || heroAssets.videoDesktop
+  const videoMobileSrc = cmsHero.videoMobileUrl?.trim() || heroAssets.videoMobile
+  const posterPosition = cmsHero.posterObjectPosition?.trim() || 'center center'
+  const videoPosition = cmsHero.videoObjectPosition?.trim() || posterPosition
   const headlineLines = heroHeadline.includes('\n')
     ? heroHeadline.split('\n').map((s) => s.trim()).filter(Boolean)
     : heroHeadline.split(' ').reduce<string[][]>((acc, word, i) => {
@@ -101,19 +106,20 @@ export function CinematicHero() {
   }, [reduceMotion])
 
   const videoClass = (mobile: boolean) =>
-    `absolute inset-0 size-full object-cover transition-opacity duration-700 ${videoReady ? 'opacity-100' : 'opacity-0'} ${mobile ? 'object-[center_38%] md:hidden' : 'hidden md:block'}`
+    `absolute inset-0 size-full object-cover transition-opacity duration-700 ${videoReady ? 'opacity-100' : 'opacity-0'} ${mobile ? 'md:hidden' : 'hidden md:block'}`
 
   return (
     <section ref={sectionRef} className="relative">
       <SiteHeader embedded />
 
       <div className="hero-under-header relative isolate w-full overflow-hidden bg-ink">
-        <div className="relative mx-auto min-h-[min(782px,92vh)] w-full max-w-[1920px]">
+        <div className="relative mx-auto min-h-[min(82svh,920px)] w-full max-w-[1920px] md:min-h-[min(88svh,960px)]">
           {!reduceMotion && (
             <>
               <video
                 ref={desktopVideoRef}
                 className={videoClass(false)}
+                style={{ objectPosition: videoPosition }}
                 autoPlay
                 muted
                 loop
@@ -121,11 +127,12 @@ export function CinematicHero() {
                 preload="metadata"
                 poster={posterSrc}
               >
-                <source src={heroAssets.videoDesktop} type="video/mp4" />
+                <source src={videoDesktopSrc} type="video/mp4" />
               </video>
               <video
                 ref={mobileVideoRef}
                 className={videoClass(true)}
+                style={{ objectPosition: videoPosition }}
                 autoPlay
                 muted
                 loop
@@ -133,7 +140,7 @@ export function CinematicHero() {
                 preload="metadata"
                 poster={posterSrc}
               >
-                <source src={heroAssets.videoMobile} type="video/mp4" />
+                <source src={videoMobileSrc} type="video/mp4" />
               </video>
             </>
           )}
@@ -141,7 +148,8 @@ export function CinematicHero() {
           <img
             src={posterSrc}
             alt=""
-            className={`absolute inset-0 size-full object-cover object-[center_38%] md:object-center ${!reduceMotion && videoReady ? 'opacity-0' : 'opacity-100'} transition-opacity duration-700`}
+            className={`absolute inset-0 size-full object-cover ${!reduceMotion && videoReady ? 'opacity-0' : 'opacity-100'} transition-opacity duration-700`}
+            style={{ objectPosition: posterPosition }}
             fetchPriority="high"
             decoding="async"
           />
@@ -155,7 +163,7 @@ export function CinematicHero() {
             aria-hidden
           />
 
-          <div className="relative z-10 flex min-h-[min(782px,92vh)] flex-col justify-end px-6 pb-24 pt-28 md:px-10 md:pb-28 lg:px-20 lg:pb-32">
+          <div className="relative z-10 flex min-h-[min(82svh,920px)] flex-col justify-end px-6 pb-24 pt-28 md:min-h-[min(88svh,960px)] md:px-10 md:pb-28 lg:px-20 lg:pb-32">
             <div className="mx-auto w-full max-w-[1200px]">
               <p
                 data-hero-fade

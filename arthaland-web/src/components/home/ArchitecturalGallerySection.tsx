@@ -1,30 +1,29 @@
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { gsap } from '../../animation/gsapSetup'
 import { motionDuration, motionEase } from '../../animation/motionTokens'
 import { useGsapScope } from '../../animation/useGsapScope'
-import { sectionImages } from '../../config/sectionImages'
 import { usePageSection } from '../../contexts/PageContentContext'
+import type { GallerySectionContent } from '../../domain/home/types'
+import { useHomeGalleryItems } from '../../hooks/useHomeGalleryItems'
 import { Container } from '../ui/Container'
 import { Eyebrow } from '../ui/Eyebrow'
 
-const columns = [
-  [
-    { src: sectionImages.gallery.col1a, cap: 'Lucima · Facade' },
-    { src: sectionImages.gallery.col1b, cap: 'Una · Laguna' },
-  ],
-  [
-    { src: sectionImages.gallery.col2a, cap: 'Sondris' },
-    { src: sectionImages.gallery.col2b, cap: 'Lucima · Aerial' },
-  ],
-  [
-    { src: sectionImages.gallery.col3a, cap: 'Lucima · Suite' },
-    { src: sectionImages.gallery.col3b, cap: 'Lucima · Exterior' },
-  ],
-]
-
 export function ArchitecturalGallerySection() {
-  const copy = usePageSection('gallery')
+  const copy = usePageSection('gallery') as GallerySectionContent
+  const items = useHomeGalleryItems()
   const ref = useRef<HTMLElement>(null)
+
+  const columns = useMemo(() => {
+    const cols: [typeof items, typeof items, typeof items] = [[], [], []]
+    for (const item of items) {
+      const col = Math.min(2, Math.max(0, item.column ?? 0))
+      cols[col].push(item)
+    }
+    for (const col of cols) {
+      col.sort((a, b) => a.displayOrder - b.displayOrder)
+    }
+    return cols
+  }, [items])
 
   useGsapScope(
     ref,
@@ -42,29 +41,36 @@ export function ArchitecturalGallerySection() {
   )
 
   return (
-    <section ref={ref} className="overflow-hidden bg-stage py-24 md:py-32">
+    <section ref={ref} className="overflow-hidden bg-stage py-24 md:py-32" id="gallery">
       <Container className="section-x">
         <Eyebrow>{copy.eyebrow ?? 'Gallery'}</Eyebrow>
         <h2 className="text-heading-2 mt-4 max-w-[20ch]">
           {copy.title ?? 'Architectural rhythm across developments'}
         </h2>
+        {copy.body && (
+          <p className="mt-4 max-w-xl text-title-muted whitespace-pre-line">{copy.body}</p>
+        )}
       </Container>
 
       <div className="section-x mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
         {columns.map((col, colIndex) => (
           <div key={colIndex} className="flex flex-col gap-6 lg:gap-8">
             {col.map((item) => (
-              <figure key={item.src} data-gallery-item>
+              <figure key={item.id} data-gallery-item>
                 <div className="overflow-hidden">
                   <img
-                    src={item.src}
+                    src={item.imageUrl}
                     alt=""
-                    className="aspect-[3/4] w-full object-cover transition-transform duration-700 hover:scale-[1.02]"
+                    className="aspect-[3/4] w-full object-cover object-center transition-transform duration-700 hover:scale-[1.02]"
                     loading="lazy"
+                    decoding="async"
                   />
                 </div>
                 <figcaption className="text-eyebrow mt-3 text-title-muted">
-                  {item.cap}
+                  {item.caption}
+                  {item.category ? (
+                    <span className="text-title-muted/80"> · {item.category}</span>
+                  ) : null}
                 </figcaption>
               </figure>
             ))}

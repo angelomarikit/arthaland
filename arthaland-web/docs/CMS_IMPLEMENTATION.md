@@ -68,6 +68,18 @@ When `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set (and `VITE_CMS_SOU
 6. **Collections** — Publish the collection or unassign media if images vanish from the gallery tab.
 7. **Map** — Admin → Property → **Location** — paste a Google Maps share link (`https://maps.app.goo.gl/…`). The public Location section embeds the map; optional `VITE_GOOGLE_MAPS_EMBED_API_KEY` improves embed when lat/lng are stored.
 
+### Homepage, gallery & lifestyle (no new SQL)
+
+Content is stored in existing `cms_page_sections.content` (JSON) for the `home` page keys `hero`, `gallery`, and `lifestyle`. Images upload to Supabase Storage via `cms_media`.
+
+| Admin screen | Public section |
+|--------------|----------------|
+| `/admin/homepage` | Top hero video, poster, copy, **object-position** framing |
+| `/admin/gallery` | Architectural gallery masonry |
+| `/admin/lifestyle` | Lifestyle editorial grid |
+
+Requires `002_full_cms.sql` (`cms_pages` includes `home`). No additional migration unless you add new page slugs.
+
 
 Inquiries unchanged: `development_slug` FK to `developments.slug`.
 

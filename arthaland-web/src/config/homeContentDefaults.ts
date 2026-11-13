@@ -1,0 +1,41 @@
+import type { HomeGalleryItem, HomeLifestyleItem } from '../domain/home/types'
+import { sectionImages } from './sectionImages'
+
+export const defaultHomeGalleryItems: HomeGalleryItem[] = [
+  { id: 'g1', imageUrl: sectionImages.gallery.col1a, caption: 'Lucima · Facade', column: 0, displayOrder: 0, published: true, category: 'Facade' },
+  { id: 'g2', imageUrl: sectionImages.gallery.col1b, caption: 'Una · Laguna', column: 0, displayOrder: 1, published: true, category: 'Exterior' },
+  { id: 'g3', imageUrl: sectionImages.gallery.col2a, caption: 'Sondris', column: 1, displayOrder: 0, published: true, category: 'Facade' },
+  { id: 'g4', imageUrl: sectionImages.gallery.col2b, caption: 'Lucima · Aerial', column: 1, displayOrder: 1, published: true, category: 'Aerial' },
+  { id: 'g5', imageUrl: sectionImages.gallery.col3a, caption: 'Lucima · Suite', column: 2, displayOrder: 0, published: true, category: 'Interior' },
+  { id: 'g6', imageUrl: sectionImages.gallery.col3b, caption: 'Lucima · Exterior', column: 2, displayOrder: 1, published: true, category: 'Exterior' },
+]
+
+export const defaultHomeLifestyleItems: HomeLifestyleItem[] = [
+  {
+    id: 'l1',
+    imageUrl: sectionImages.lifestyleInterior,
+    caption: 'Lucima · Living spaces',
+    layout: 'large',
+    displayOrder: 0,
+    published: true,
+    animationDelay: 0,
+  },
+  {
+    id: 'l2',
+    imageUrl: sectionImages.lifestyleExterior,
+    caption: 'Una · Sevina Park',
+    layout: 'standard',
+    displayOrder: 1,
+    published: true,
+    animationDelay: 0.12,
+  },
+  {
+    id: 'l3',
+    imageUrl: sectionImages.lifestyleWellness,
+    caption: 'Liv · Wellness-led living',
+    layout: 'standard',
+    displayOrder: 2,
+    published: true,
+    animationDelay: 0.2,
+  },
+]

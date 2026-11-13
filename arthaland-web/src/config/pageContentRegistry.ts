@@ -7,6 +7,14 @@ export type PageSectionContent = {
   subtitle?: string
   body?: string
   imageUrl?: string
+  posterImageUrl?: string
+  videoDesktopUrl?: string
+  videoMobileUrl?: string
+  posterObjectPosition?: string
+  videoObjectPosition?: string
+  coverImageUrl?: string
+  /** Home gallery / lifestyle tiles (stored in cms_page_sections.content JSON) */
+  items?: unknown[]
 }
 
 export type LivePageSection = {

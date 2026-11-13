@@ -7,9 +7,20 @@ import type { DbPageSection } from '../supabase/database.types'
 function hasCmsContent(content: unknown): boolean {
   if (!content || typeof content !== 'object') return false
   const c = content as PageSectionContent
-  return [c.eyebrow, c.title, c.subtitle, c.body, c.imageUrl].some(
-    (v) => typeof v === 'string' && v.trim().length > 0,
-  )
+  if (Array.isArray(c.items) && c.items.length > 0) return true
+  return [
+    c.eyebrow,
+    c.title,
+    c.subtitle,
+    c.body,
+    c.imageUrl,
+    c.posterImageUrl,
+    c.videoDesktopUrl,
+    c.videoMobileUrl,
+    c.posterObjectPosition,
+    c.videoObjectPosition,
+    c.coverImageUrl,
+  ].some((v) => typeof v === 'string' && v.trim().length > 0)
 }
 
 export function mergeSectionContent(
@@ -25,6 +36,16 @@ export function mergeSectionContent(
     subtitle: pick(cms.subtitle, defaults.subtitle),
     body: pick(cms.body, defaults.body),
     imageUrl: pick(cms.imageUrl, defaults.imageUrl),
+    posterImageUrl: pick(cms.posterImageUrl, defaults.posterImageUrl),
+    videoDesktopUrl: pick(cms.videoDesktopUrl, defaults.videoDesktopUrl),
+    videoMobileUrl: pick(cms.videoMobileUrl, defaults.videoMobileUrl),
+    posterObjectPosition: pick(cms.posterObjectPosition, defaults.posterObjectPosition),
+    videoObjectPosition: pick(cms.videoObjectPosition, defaults.videoObjectPosition),
+    coverImageUrl: pick(cms.coverImageUrl, defaults.coverImageUrl),
+    items:
+      Array.isArray(cms.items) && cms.items.length > 0
+        ? cms.items
+        : defaults.items,
   }
 }
 
