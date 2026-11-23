@@ -22,3 +22,4 @@ create policy "Public read published unit types"
 update public.cms_unit_types
 set publication_status = 'published'
 where publication_status is null;
+//qwe
