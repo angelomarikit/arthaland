@@ -139,11 +139,12 @@ export function AdminPropertyUnitsPage() {
                 <p className="font-medium">{u.name}</p>
                 <p className="text-xs text-title-muted">{u.tab_group ? u.tab_group : 'custom tab'}</p>
               </div>
-              <label className="text-xs">
-                Visibility on website
+              <label className="text-xs font-medium">
+                Published on live site? (Visibility on website)
                 <select
                   value={u.publication_status ?? 'draft'}
-                  className="mt-1 block rounded-lg border border-border px-2 py-1 text-sm"
+                  className="mt-1 block min-w-[11rem] rounded-lg border border-border px-2 py-1.5 text-sm"
+                  aria-label={`Publication status for ${u.name}`}
                   onChange={(e) => {
                     const status = e.target.value as DbUnitType['publication_status']
                     void upsertUnitType({ ...u, publication_status: status }).then(reload)

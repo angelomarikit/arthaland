@@ -23,13 +23,13 @@ export function PropertyVideoSection({ development, video }: PropertyVideoSectio
           Project showcase — overview of the address and lifestyle (not a unit-specific
           walk-through unless noted).
         </p>
-        <div className="relative mt-8 aspect-video overflow-hidden bg-ink">
+        <div className="relative mt-8 w-full bg-ink">
           {isExternal ? (
             <a
               href={url}
               target="_blank"
               rel="noreferrer"
-              className="flex size-full items-center justify-center bg-ink text-surface underline"
+              className="flex min-h-[200px] w-full items-center justify-center bg-ink px-6 py-12 text-surface underline"
             >
               Watch showcase video (opens in new tab)
             </a>
@@ -38,7 +38,8 @@ export function PropertyVideoSection({ development, video }: PropertyVideoSectio
               src={url}
               poster={poster}
               controls
-              className="size-full object-cover"
+              playsInline
+              className="mx-auto block max-h-[min(80svh,720px)] w-full object-contain"
               preload="metadata"
             />
           )}

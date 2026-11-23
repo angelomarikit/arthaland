@@ -45,6 +45,10 @@ export function AdminPropertyVideoPage() {
         ]}
       />
       <h1 className="text-2xl font-medium">Showcase video</h1>
+      <p className="mt-2 max-w-xl text-sm text-title-muted">
+        The public player shows the <strong>full frame</strong> (no crop). Use a 16:9 export when
+        possible; taller or wider files will show letterboxing instead of zooming in.
+      </p>
 
       <form onSubmit={onSaveExternal} className="mt-8 max-w-xl space-y-4 rounded-2xl border border-border bg-surface p-6">
         <label className="block text-sm">

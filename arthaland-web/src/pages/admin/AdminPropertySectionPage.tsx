@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { AdminBreadcrumbs } from '../../components/admin/AdminBreadcrumbs'
 import { MediaUploadZone } from '../../components/admin/MediaUploadZone'
 import {
@@ -78,6 +78,33 @@ export function AdminPropertySectionPage() {
         ]}
       />
       <h1 className="text-2xl font-medium capitalize">{title}</h1>
+
+      {(sectionKey === 'residences' || sectionKey === 'gallery') && (
+        <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50/80 p-4 text-sm text-amber-950">
+          {sectionKey === 'residences' ? (
+            <>
+              <p className="font-medium">Floor plans are not edited here</p>
+              <p className="mt-1 text-xs">
+                This screen only changes section headings/copy. To show unit layouts on the live
+                site, open{' '}
+                <Link to={`/admin/properties/${slug}/units`} className="underline">
+                  Properties → Units
+                </Link>
+                , set <strong>Visibility on website</strong> to <strong>Published</strong>, and
+                upload a <strong>Floor plan</strong> on each unit row.
+              </p>
+            </>
+          ) : (
+            <p className="text-xs">
+              Gallery photos →{' '}
+              <Link to={`/admin/properties/${slug}/media`} className="underline">
+                Media library
+              </Link>
+              , not this section editor.
+            </p>
+          )}
+        </div>
+      )}
 
       <form onSubmit={onSave} className="mt-8 space-y-4 rounded-2xl border border-border bg-surface p-6">
         <label className="block text-sm">

@@ -309,10 +309,27 @@ export function AdminPropertyOverviewPage() {
             }
           />
 
+          <Link
+            to={`/admin/properties/${slug}/units`}
+            className="block rounded-2xl border border-amber-200 bg-amber-50/80 p-5 text-sm text-amber-950"
+          >
+            <p className="font-medium">Unit layouts &amp; floor plans</p>
+            <p className="mt-1 text-xs leading-relaxed">
+              Hindi ito nasa &quot;Sections → Residences&quot;. Dito mo i-<strong>Published</strong>{' '}
+              ang bawat unit type at i-upload ang <strong>Floor plan</strong>.
+            </p>
+            <span className="mt-3 inline-block text-xs font-medium underline">
+              Open Units admin →
+            </span>
+          </Link>
+
           <div className="rounded-2xl border border-border bg-surface p-6">
             <h2 className="text-sm font-medium uppercase tracking-wider text-title-muted">
-              Sections
+              Sections (headings &amp; copy only)
             </h2>
+            <p className="mt-2 text-xs text-title-muted">
+              Ang &quot;Published&quot; dito ay section text lang — hindi floor plans.
+            </p>
             <ul className="mt-4 space-y-2">
               {propertySectionLinks(slug).map((s) => {
                 const sec = sections.find((x) => x.section_key === s.key)
