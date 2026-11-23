@@ -161,17 +161,41 @@ export function AdminPropertyUnitsPage() {
 
       <ul className="mt-8 space-y-6">
         {units.map((u) => (
-          <li key={u.id} className="rounded-2xl border border-border bg-surface p-6">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <p className="font-medium">{u.name}</p>
-                <p className="text-xs text-title-muted">{u.tab_group ? u.tab_group : 'custom tab'}</p>
-              </div>
-              <label className="text-xs font-medium">
-                Published on live site? (Visibility on website)
+          <li
+            key={u.id}
+            className={`rounded-2xl border p-6 ${
+              u.publication_status === 'published'
+                ? 'border-emerald-200 bg-emerald-50/40'
+                : 'border-amber-300 bg-amber-50/50'
+            }`}
+          >
+            <p className="font-medium">{u.name}</p>
+            <p className="text-xs text-title-muted">{u.tab_group ? u.tab_group : 'custom tab'}</p>
+
+            <div className="mt-4 w-full space-y-2">
+              <p className="text-xs font-medium uppercase tracking-wider text-title-muted">
+                Show on live website?
+              </p>
+              {u.publication_status !== 'published' ? (
+                <button
+                  type="button"
+                  className="w-full rounded-xl bg-ink px-4 py-3 text-sm font-medium text-surface"
+                  onClick={() =>
+                    void upsertUnitType({ ...u, publication_status: 'published' }).then(reload)
+                  }
+                >
+                  Publish unit layouts now
+                </button>
+              ) : (
+                <p className="rounded-xl border border-emerald-300 bg-surface px-4 py-3 text-sm text-emerald-900">
+                  Published — floor plans can appear on the property page.
+                </p>
+              )}
+              <label className="block text-xs text-title-muted">
+                Or change status
                 <select
                   value={u.publication_status ?? 'draft'}
-                  className="mt-1 block min-w-[11rem] rounded-lg border border-border px-2 py-1.5 text-sm"
+                  className="mt-1 block w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm"
                   aria-label={`Publication status for ${u.name}`}
                   onChange={(e) => {
                     const status = e.target.value as DbUnitType['publication_status']
@@ -185,8 +209,9 @@ export function AdminPropertyUnitsPage() {
               </label>
             </div>
             {u.publication_status === 'draft' && (
-              <p className="mt-2 text-xs text-amber-900">
-                This unit is hidden on the live property page — set to Published to show layouts.
+              <p className="mt-3 text-xs font-medium text-amber-950">
+                Floor plans are uploaded but hidden until you tap{' '}
+                <strong>Publish unit layouts now</strong> above.
               </p>
             )}
             {u.description && <p className="mt-2 text-sm text-title-muted">{u.description}</p>}
@@ -232,6 +257,9 @@ export function AdminPropertyUnitsPage() {
                       displayOrder: start + i,
                       onProgress,
                     })
+                  }
+                  if (u.publication_status !== 'published') {
+                    await upsertUnitType({ ...u, publication_status: 'published' })
                   }
                   await reload()
                 }}

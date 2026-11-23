@@ -149,6 +149,7 @@ function buildPublicUnits(
   mediaList: DbCmsMedia[],
   dev: DbDevelopment,
 ): UnitType[] {
+  const nameByUnitId = new Map(unitRows.map((r) => [r.id, r.name]))
   const mapped = mapUnits(unitRows, mediaList)
   const withImages = mapped.filter(
     (u) =>
@@ -156,7 +157,12 @@ function buildPublicUnits(
       ((u.floorPlanImages?.length ?? 0) > 0 || (u.unitRenderImages?.length ?? 0) > 0),
   )
   if (withImages.length > 0) return withImages
-  return syntheticUnitsFromLayoutMedia(mediaList, dev)
+
+  const synthetic = syntheticUnitsFromLayoutMedia(mediaList, dev).map((u) => {
+    const named = nameByUnitId.get(u.id)
+    return named ? { ...u, name: named } : u
+  })
+  return synthetic
 }
 
 function groupGallery(
@@ -328,9 +334,7 @@ export async function fetchPublicPropertyPageData(
             .from('cms_unit_types')
             .select('*')
             .eq('development_slug', developmentSlug)
-            .or(
-              'publication_status.eq.published,publication_status.eq.coming_soon,publication_status.is.null',
-            )
+            .in('publication_status', ['published', 'coming_soon'])
             .order('display_order'),
         [] as DbUnitType[],
       ),
