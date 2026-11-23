@@ -1,0 +1,29 @@
+# Deploy arthaland-web to Vercel on every push to main (bypasses broken Vercel↔Git auto-deploy).
+# Add these GitHub repo secrets (Settings → Secrets → Actions):
+#   VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
+name: Vercel Production
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'arthaland-web/**'
+      - '.github/workflows/vercel-production.yml'
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: arthaland-web/package-lock.json
+      - run: npm ci
+        working-directory: arthaland-web
+      - uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: arthaland-web
+          vercel-args: '--prod'
