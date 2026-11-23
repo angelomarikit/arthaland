@@ -1,6 +1,7 @@
 import type { Development } from '../../domain/development/types'
 import type { PropertySpecs } from '../../domain/propertyDetail/types'
 import { Container } from '../ui/Container'
+import { ReadableBodyText } from '../ui/ReadableBodyText'
 import { Eyebrow } from '../ui/Eyebrow'
 import { FadeInWhenVisible } from '../page/FadeInWhenVisible'
 
@@ -21,9 +22,7 @@ export function PropertyOverviewSection({
           <h2 className="text-heading-3 mt-4">
             A considered address in {development.region}
           </h2>
-          <p className="mt-6 leading-relaxed text-title-muted">
-            {development.fullDescription}
-          </p>
+          <ReadableBodyText className="mt-6">{development.fullDescription}</ReadableBodyText>
           {specs.overviewImageUrl && (
             <img
               src={specs.overviewImageUrl}

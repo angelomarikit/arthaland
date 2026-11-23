@@ -14,6 +14,9 @@ export const siteConfig = {
   },
   social: {
     facebook: 'https://www.facebook.com/arthaland',
+    /** Sales agent — opens Facebook Messenger */
+    messengerAgent: 'https://m.me/GaryElipeLee',
+    messengerAgentProfile: 'https://www.facebook.com/GaryElipeLee',
   },
   /** Property sales team — shown on Contact, footer, widget, FAQ */
   contact: {

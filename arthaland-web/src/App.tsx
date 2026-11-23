@@ -190,6 +190,26 @@ const AdminSiteImagesPage = lazy(() =>
     default: m.AdminSiteImagesPage,
   })),
 )
+const AdminContentGuidePage = lazy(() =>
+  import('./pages/admin/AdminContentGuidePage').then((m) => ({
+    default: m.AdminContentGuidePage,
+  })),
+)
+const AdminEditHubIndexPage = lazy(() =>
+  import('./pages/admin/AdminEditHubIndexPage').then((m) => ({
+    default: m.AdminEditHubIndexPage,
+  })),
+)
+const AdminPageEditHubPage = lazy(() =>
+  import('./pages/admin/AdminPageEditHubPage').then((m) => ({
+    default: m.AdminPageEditHubPage,
+  })),
+)
+const AdminPropertyEditHubPage = lazy(() =>
+  import('./pages/admin/AdminPropertyEditHubPage').then((m) => ({
+    default: m.AdminPropertyEditHubPage,
+  })),
+)
 
 function PageFallback() {
   return <div className="min-h-[40vh] bg-surface" aria-hidden />
@@ -224,6 +244,13 @@ export default function App() {
             <Route element={<AdminGuard />}>
               <Route element={<AdminLayout />}>
                 <Route path="admin" element={<AdminDashboardPage />} />
+                <Route path="admin/edit" element={<AdminEditHubIndexPage />} />
+                <Route path="admin/edit/site/:slug" element={<AdminPageEditHubPage />} />
+                <Route
+                  path="admin/edit/property/:slug"
+                  element={<AdminPropertyEditHubPage />}
+                />
+                <Route path="admin/content-guide" element={<AdminContentGuidePage />} />
                 <Route path="admin/homepage" element={<AdminHomepageManagementPage />} />
                 <Route path="admin/gallery" element={<AdminGalleryManagementPage />} />
                 <Route path="admin/lifestyle" element={<AdminLifestyleManagementPage />} />

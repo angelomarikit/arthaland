@@ -1,4 +1,5 @@
 import { useRef, useState, type ReactNode } from 'react'
+import { AdminSortableList } from './AdminSortableList'
 import { MediaUploadZone } from './MediaUploadZone'
 import {
   deleteCmsMediaById,
@@ -65,14 +66,9 @@ export function AdminHomeItemListEditor<T extends ItemBase>({
     })()
   }
 
-  function move(id: string, dir: -1 | 1) {
-    const sorted = [...itemsRef.current].sort((a, b) => a.displayOrder - b.displayOrder)
-    const idx = sorted.findIndex((i) => i.id === id)
-    const swap = sorted[idx + dir]
-    if (!sorted[idx] || !swap) return
-    const aOrder = sorted[idx].displayOrder
-    patchItem(sorted[idx].id, { displayOrder: swap.displayOrder } as Partial<T>)
-    patchItem(swap.id, { displayOrder: aOrder } as Partial<T>)
+  function reorderItems(next: T[]) {
+    const withOrder = next.map((item, index) => ({ ...item, displayOrder: index }))
+    setItems(withOrder)
   }
 
   async function uploadForItem(
@@ -167,16 +163,24 @@ export function AdminHomeItemListEditor<T extends ItemBase>({
         }}
       />
 
-      <ul className="space-y-4">
-        {sorted.map((item) => (
-          <li key={item.id} className="rounded-2xl border border-border bg-surface p-4">
-            <div className="flex gap-4">
+      <p className="text-xs text-title-muted">Drag ⋮⋮ on a row to reorder. Remember to Save the section.</p>
+
+      <AdminSortableList
+        className="space-y-4"
+        itemClassName="rounded-2xl border border-border bg-surface p-4"
+        items={sorted}
+        onReorder={reorderItems}
+        renderItem={(item, handle) => (
+          <div className="flex gap-4">
+            <div className="flex shrink-0 flex-col gap-2">
+              {handle}
               <img
                 src={item.imageUrl}
                 alt=""
-                className="aspect-[4/5] w-24 shrink-0 object-cover object-center"
+                className="aspect-[4/5] w-24 object-cover object-center"
               />
-              <div className="min-w-0 flex-1 space-y-2">
+            </div>
+            <div className="min-w-0 flex-1 space-y-2">
                 <label className="block text-xs">
                   Caption
                   <input
@@ -199,20 +203,6 @@ export function AdminHomeItemListEditor<T extends ItemBase>({
                 <div className="flex flex-wrap gap-2 pt-1">
                   <button
                     type="button"
-                    className="rounded-lg border border-border px-2 py-1 text-xs"
-                    onClick={() => move(item.id, -1)}
-                  >
-                    Move up
-                  </button>
-                  <button
-                    type="button"
-                    className="rounded-lg border border-border px-2 py-1 text-xs"
-                    onClick={() => move(item.id, 1)}
-                  >
-                    Move down
-                  </button>
-                  <button
-                    type="button"
                     disabled={replacingId === item.id}
                     className="rounded-lg border border-border px-2 py-1 text-xs disabled:opacity-50"
                     onClick={() => {
@@ -231,10 +221,9 @@ export function AdminHomeItemListEditor<T extends ItemBase>({
                   </button>
                 </div>
               </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+          </div>
+        )}
+      />
     </div>
   )
 }

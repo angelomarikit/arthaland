@@ -5,9 +5,10 @@ import type { PropertyPublicAudit } from '../../lib/cms/propertyPublicAudit'
 
 type PropertyPublicVisibilityPanelProps = {
   slug: string
+  className?: string
 }
 
-export function PropertyPublicVisibilityPanel({ slug }: PropertyPublicVisibilityPanelProps) {
+export function PropertyPublicVisibilityPanel({ slug, className = '' }: PropertyPublicVisibilityPanelProps) {
   const [audit, setAudit] = useState<PropertyPublicAudit | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -37,7 +38,7 @@ export function PropertyPublicVisibilityPanel({ slug }: PropertyPublicVisibility
 
   return (
     <div
-      className={`rounded-2xl border p-6 ${ok ? 'border-emerald-200 bg-emerald-50/50' : 'border-amber-200 bg-amber-50/60'}`}
+      className={`rounded-2xl border p-6 ${ok ? 'border-emerald-200 bg-emerald-50/50' : 'border-amber-200 bg-amber-50/60'} ${className}`}
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>

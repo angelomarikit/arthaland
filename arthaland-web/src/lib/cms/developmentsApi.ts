@@ -166,7 +166,15 @@ export async function updateMediaRow(
   patch: Partial<
     Pick<
       DbCmsMedia,
-      'alt_text' | 'caption' | 'display_order' | 'published' | 'is_cover' | 'focal_x' | 'focal_y'
+      | 'alt_text'
+      | 'caption'
+      | 'display_order'
+      | 'published'
+      | 'is_cover'
+      | 'focal_x'
+      | 'focal_y'
+      | 'unit_type_id'
+      | 'placement'
     >
   >,
 ): Promise<void> {

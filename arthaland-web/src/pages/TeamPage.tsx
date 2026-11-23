@@ -1,6 +1,7 @@
 import { SiteHeader } from '../components/layout/SiteHeader'
 import { Button } from '../components/ui/Button'
 import { Container } from '../components/ui/Container'
+import { ReadableBodyText } from '../components/ui/ReadableBodyText'
 import { Eyebrow } from '../components/ui/Eyebrow'
 import { FadeInWhenVisible } from '../components/page/FadeInWhenVisible'
 import { PageConsultCta } from '../components/page/PageConsultCta'
@@ -107,7 +108,7 @@ export function TeamPage() {
                   <h3 className="text-xl font-medium tracking-[-0.03em]">
                     {item.title}
                   </h3>
-                  <p className="mt-3 text-title-muted">{item.body}</p>
+                  <ReadableBodyText className="mt-3">{item.body}</ReadableBodyText>
                 </li>
               </FadeInWhenVisible>
             ))}

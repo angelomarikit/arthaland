@@ -1,6 +1,7 @@
 import type { Amenity } from '../../domain/development/types'
 import type { Development } from '../../domain/development/types'
 import { Container } from '../ui/Container'
+import { ReadableBodyText } from '../ui/ReadableBodyText'
 import { Eyebrow } from '../ui/Eyebrow'
 import { FadeInWhenVisible } from '../page/FadeInWhenVisible'
 
@@ -57,9 +58,9 @@ export function PropertyAmenitiesSection({
                   )}
                   <div className="p-5">
                     <h3 className="font-medium">{item.name}</h3>
-                    {item.description && (
-                      <p className="mt-2 text-sm text-title-muted">{item.description}</p>
-                    )}
+                    {item.description ? (
+                      <ReadableBodyText className="mt-2 text-sm">{item.description}</ReadableBodyText>
+                    ) : null}
                   </div>
                 </article>
               ))}

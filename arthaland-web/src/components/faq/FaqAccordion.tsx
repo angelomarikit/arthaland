@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Minus, Plus } from 'lucide-react'
 import type { FaqItem } from '../../data/faqs'
+import { ReadableBodyText } from '../ui/ReadableBodyText'
 
 type FaqAccordionProps = {
   items: FaqItem[]
@@ -43,9 +44,9 @@ export function FaqAccordion({
               )}
             </button>
             {open && (
-              <p className="pb-5 text-sm leading-relaxed text-title-muted md:pb-6 md:text-base">
+              <ReadableBodyText className="pb-5 text-sm md:pb-6 md:text-base">
                 {faq.a}
-              </p>
+              </ReadableBodyText>
             )}
           </div>
         )

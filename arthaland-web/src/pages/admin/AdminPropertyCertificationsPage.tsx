@@ -64,6 +64,9 @@ export function AdminPropertyCertificationsPage() {
         ]}
       />
       <h1 className="text-2xl font-medium">Certifications</h1>
+      <p className="mt-2 max-w-2xl text-sm text-title-muted">
+        Logos appear in the Sustainability section only — not in the property photo gallery.
+      </p>
       {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
 
       <form onSubmit={onAdd} className="mt-6 max-w-xl space-y-3 rounded-2xl border border-border bg-surface p-6">
@@ -108,7 +111,7 @@ export function AdminPropertyCertificationsPage() {
                   folder: `developments/${dev.id}/certifications`,
                   developmentId: dev.id,
                   developmentSlug: slug,
-                  placement: 'gallery',
+                  placement: 'certification',
                   published: true,
                   displayOrder: 0,
                   onProgress,

@@ -21,6 +21,11 @@ import type {
   DbUnitType,
 } from '../supabase/database.types'
 import { mapDbDevelopment, mapDbUnitType } from './mapDevelopment'
+import { resolveUnitTypeIdForMedia } from './unitLayoutMedia'
+import {
+  filterPropertyGalleryUrls,
+  isPropertyGalleryMedia,
+} from './propertyGalleryMedia'
 import { mediaPublicUrl } from './mediaUpload'
 
 function isMissingRelationError(err: unknown): boolean {
@@ -52,15 +57,16 @@ function mapUnits(
   const floorByUnit = new Map<string, DbCmsMedia[]>()
   const renderByUnit = new Map<string, DbCmsMedia[]>()
   for (const m of mediaList) {
-    if (!m.unit_type_id) continue
+    const unitId = resolveUnitTypeIdForMedia(m)
+    if (!unitId) continue
     if (m.placement === 'floor_plan') {
-      const list = floorByUnit.get(m.unit_type_id) ?? []
+      const list = floorByUnit.get(unitId) ?? []
       list.push(m)
-      floorByUnit.set(m.unit_type_id, list)
+      floorByUnit.set(unitId, list)
     } else if (m.placement === 'unit_render') {
-      const list = renderByUnit.get(m.unit_type_id) ?? []
+      const list = renderByUnit.get(unitId) ?? []
       list.push(m)
-      renderByUnit.set(m.unit_type_id, list)
+      renderByUnit.set(unitId, list)
     }
   }
 
@@ -71,11 +77,13 @@ function mapUnits(
     const renders = (renderByUnit.get(row.id) ?? []).sort(
       (a, b) => a.display_order - b.display_order,
     )
+    const floorUrls = floors.map((m) => mediaPublicUrl(m))
+    const renderUrls = renders.map((m) => mediaPublicUrl(m))
     return mapDbUnitType(
       row,
-      floors.map((m) => mediaPublicUrl(m)),
+      floorUrls.length > 0 ? floorUrls : renderUrls,
       {
-        unitRenderImages: renders.map((m) => mediaPublicUrl(m)),
+        unitRenderImages: renderUrls,
       },
     )
   })
@@ -84,14 +92,10 @@ function mapUnits(
 function groupGallery(
   collections: DbGalleryCollection[],
   mediaList: DbCmsMedia[],
+  reservedMediaIds?: ReadonlySet<string>,
 ): { collections: GalleryCollection[]; legacyGallery: string[] } {
-  const galleryMedia = mediaList.filter(
-    (m) =>
-      m.media_kind === 'image' &&
-      m.published &&
-      m.placement !== 'floor_plan' &&
-      m.placement !== 'unit_render' &&
-      m.placement !== 'hero',
+  const galleryMedia = mediaList.filter((m) =>
+    isPropertyGalleryMedia(m, reservedMediaIds),
   )
 
   const byCollection = new Map<string, DbCmsMedia[]>()
@@ -254,7 +258,9 @@ export async function fetchPublicPropertyPageData(
             .from('cms_unit_types')
             .select('*')
             .eq('development_slug', developmentSlug)
-            .in('publication_status', ['published', 'coming_soon'])
+            .or(
+              'publication_status.eq.published,publication_status.eq.coming_soon,publication_status.is.null',
+            )
             .order('display_order'),
         [] as DbUnitType[],
       ),
@@ -309,12 +315,20 @@ export async function fetchPublicPropertyPageData(
   }
 
   const mediaById = new Map(mediaList.map((m) => [m.id, m]))
-  const galleryForMap = mediaList.filter(
-    (m) =>
-      m.media_kind === 'image' &&
-      m.published &&
-      m.placement !== 'floor_plan' &&
-      m.placement !== 'unit_render',
+
+  const reservedGalleryMediaIds = new Set<string>()
+  if (row.overview_media_id) reservedGalleryMediaIds.add(row.overview_media_id)
+  if (row.hero_media_id) reservedGalleryMediaIds.add(row.hero_media_id)
+  for (const c of certifications) {
+    if (c.logo_media_id) reservedGalleryMediaIds.add(c.logo_media_id)
+  }
+  for (const m of mediaList) {
+    const placement = (m.placement ?? '').toLowerCase()
+    if (placement === 'certification') reservedGalleryMediaIds.add(m.id)
+  }
+
+  const galleryForMap = mediaList.filter((m) =>
+    isPropertyGalleryMedia(m, reservedGalleryMediaIds),
   )
 
   const development = applyPropertyTurnoverSchedule(
@@ -329,6 +343,7 @@ export async function fetchPublicPropertyPageData(
   const { collections: galleryCollections, legacyGallery } = groupGallery(
     collections,
     mediaList,
+    reservedGalleryMediaIds,
   )
 
   const certs = certifications.map((c) => {
@@ -362,8 +377,9 @@ export async function fetchPublicPropertyPageData(
     certifications: certs,
     nearby: nearbyMapped,
     galleryCollections,
-    legacyGallery:
+    legacyGallery: filterPropertyGalleryUrls(
       legacyGallery.length > 0 ? legacyGallery : development.gallery,
+    ),
     amenitiesRich,
     location: {
       lat: row.map_lat ?? undefined,

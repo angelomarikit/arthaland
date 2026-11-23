@@ -3,9 +3,12 @@ import type {
   DbCmsMedia,
   DbDevelopment,
   DbGalleryCollection,
+  DbUnitType,
 } from '../supabase/database.types'
+import { resolveUnitTypeIdForMedia, isLayoutPlacement } from './unitLayoutMedia'
 import { isSupabaseCmsEnabled } from '../supabase/config'
 import { fetchAdminGalleryCollections } from './propertyDetailApi'
+import { isPropertyGalleryMedia } from './propertyGalleryMedia'
 
 export type PropertyPublicAudit = {
   cmsEnabledInBuild: boolean
@@ -23,12 +26,7 @@ export type PropertyPublicAudit = {
 }
 
 function galleryEligible(m: DbCmsMedia): boolean {
-  return (
-    m.media_kind === 'image' &&
-    m.placement !== 'floor_plan' &&
-    m.placement !== 'unit_render' &&
-    m.placement !== 'hero'
-  )
+  return isPropertyGalleryMedia(m, undefined, { requirePublished: false })
 }
 
 /** Admin-only snapshot: what anonymous visitors can read for this slug. */
@@ -48,10 +46,12 @@ export async function auditPropertyPublicVisibility(
   if (!dev) return null
 
   const row = dev as DbDevelopment
-  const [{ data: media }, collections] = await Promise.all([
+  const [{ data: media }, collections, { data: unitRows }] = await Promise.all([
     supabase.from('cms_media').select('*').eq('development_slug', slug),
     fetchAdminGalleryCollections(slug).catch(() => [] as DbGalleryCollection[]),
+    supabase.from('cms_unit_types').select('*').eq('development_slug', slug),
   ])
+  const units = (unitRows ?? []) as DbUnitType[]
 
   const allMedia = (media ?? []) as DbCmsMedia[]
   const galleryRows = allMedia.filter(galleryEligible)
@@ -122,6 +122,34 @@ export async function auditPropertyPublicVisibility(
     issues.push(
       `${assignedToUnpublishedCollection} published image(s) sit in unpublished collections (${[...unpublishedCollectionTitles].join(', ')}). Publish those collections or unassign media.`,
     )
+  }
+
+  const publishedUnits = units.filter((u) => u.publication_status === 'published')
+  const layoutMedia = allMedia.filter((m) => isLayoutPlacement(m.placement))
+  const orphanLayouts = layoutMedia.filter((m) => !resolveUnitTypeIdForMedia(m))
+  const hiddenLayoutFiles = layoutMedia.filter((m) => !m.published)
+
+  if (units.length === 0) {
+    issues.push(
+      'No unit types — floor plans cannot appear until you add units (Properties → Units), set Published, and upload floor plans there.',
+    )
+  } else if (publishedUnits.length === 0) {
+    issues.push(
+      `${units.length} unit type(s) exist but none are Published — open Units and set Visibility to Published for each layout you want live.`,
+    )
+  }
+  if (orphanLayouts.length > 0) {
+    issues.push(
+      `${orphanLayouts.length} floor plan/render file(s) in Media library are not linked to a unit — assign them below or re-upload on the Units screen.`,
+    )
+  }
+  if (hiddenLayoutFiles.length > 0) {
+    issues.push(
+      `${hiddenLayoutFiles.length} unit layout file(s) are not Public (published=false) — publish them on Media library or Units.`,
+    )
+  }
+  if (publishedUnits.length > 0 && layoutMedia.length === 0) {
+    issues.push('Published units exist but no floor plan or unit render images were found.')
   }
 
   return {

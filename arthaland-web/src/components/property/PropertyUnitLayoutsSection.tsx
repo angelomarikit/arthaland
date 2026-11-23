@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import type { UnitType } from '../../domain/development/types'
 import { UNIT_TAB_LABEL, UNIT_TAB_ORDER } from '../../domain/propertyDetail/types'
 import { Container } from '../ui/Container'
+import { ReadableBodyText } from '../ui/ReadableBodyText'
 import { Eyebrow } from '../ui/Eyebrow'
 import { FadeInWhenVisible } from '../page/FadeInWhenVisible'
 
@@ -10,32 +11,41 @@ type PropertyUnitLayoutsSectionProps = {
 }
 
 export function PropertyUnitLayoutsSection({ units }: PropertyUnitLayoutsSectionProps) {
+  const visibleUnits = useMemo(
+    () =>
+      units
+        .filter((u) => u.publicationStatus !== 'draft')
+        .sort((a, b) => a.displayOrder - b.displayOrder),
+    [units],
+  )
+
   const tabGroups = useMemo(() => {
     const present = new Set(
-      units.map((u) => u.tabGroup ?? 'custom').filter(Boolean),
+      visibleUnits.map((u) => u.tabGroup ?? 'custom').filter(Boolean),
     )
     return UNIT_TAB_ORDER.filter((t) => present.has(t))
-  }, [units])
+  }, [visibleUnits])
 
   const [activeTab, setActiveTab] = useState(tabGroups[0] ?? 'custom')
   const [zoomUnitId, setZoomUnitId] = useState<string | null>(null)
 
   const filtered = useMemo(
     () =>
-      units.filter((u) => (u.tabGroup ?? 'custom') === activeTab).sort(
-        (a, b) => a.displayOrder - b.displayOrder,
-      ),
-    [units, activeTab],
+      visibleUnits
+        .filter((u) => (u.tabGroup ?? 'custom') === activeTab)
+        .sort((a, b) => a.displayOrder - b.displayOrder),
+    [visibleUnits, activeTab],
   )
 
-  if (units.length === 0) {
+  if (visibleUnits.length === 0) {
     return (
       <section className="py-16 md:py-20" id="layouts">
         <Container className="section-x max-w-3xl">
           <Eyebrow>Residences</Eyebrow>
           <h2 className="text-heading-3 mt-4">Unit layouts</h2>
           <p className="mt-4 text-title-muted">
-            Content will be published when available.
+            Floor plans appear here after unit types are set to <strong>Published</strong> in admin
+            (Properties → Units) and a floor plan image is uploaded.
           </p>
         </Container>
       </section>
@@ -74,9 +84,9 @@ export function PropertyUnitLayoutsSection({ units }: PropertyUnitLayoutsSection
             {filtered.map((unit) => (
               <article key={unit.id} className="border border-border bg-surface-soft p-6">
                 <h3 className="text-lg font-medium">{unit.name}</h3>
-                {unit.description && (
-                  <p className="mt-2 text-sm text-title-muted">{unit.description}</p>
-                )}
+                {unit.description ? (
+                  <ReadableBodyText className="mt-2 text-sm">{unit.description}</ReadableBodyText>
+                ) : null}
                 <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
                   {unit.bedrooms && (
                     <>

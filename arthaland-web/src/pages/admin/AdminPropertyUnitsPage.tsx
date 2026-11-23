@@ -66,7 +66,7 @@ export function AdminPropertyUnitsPage() {
       tab_group: String(fd.get('tab_group') ?? 'custom') as DbUnitType['tab_group'],
       brochure_url: String(fd.get('brochure_url') ?? '') || null,
       price_note: String(fd.get('price_note') ?? '') || null,
-      publication_status: 'draft',
+      publication_status: 'published',
       display_order: units.length,
     })
     await reload()
@@ -94,6 +94,16 @@ export function AdminPropertyUnitsPage() {
         ]}
       />
       <h1 className="text-2xl font-medium">Unit types</h1>
+      <p className="mt-2 max-w-2xl text-sm text-title-muted">
+        Floor plans appear under <strong className="font-medium text-ink">Unit layouts</strong> on the live site
+        only when: (1) the unit is <strong className="font-medium text-ink">Published</strong> here, (2) you upload
+        using the <strong className="font-medium text-ink">Floor plan</strong> control below (not the general Media
+        library gallery upload), and (3) the file stays <strong className="font-medium text-ink">Public</strong>.
+      </p>
+      <p className="mt-1 max-w-2xl text-xs text-amber-900">
+        Files already sitting in Media library without a unit link will not show — open Media library → Unit layouts
+        section and assign each file to a unit, or upload again from this page.
+      </p>
       {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
 
       <form onSubmit={addUnit} className="mt-6 grid max-w-xl gap-3 rounded-2xl border border-border bg-surface p-6">
@@ -124,11 +134,32 @@ export function AdminPropertyUnitsPage() {
       <ul className="mt-8 space-y-6">
         {units.map((u) => (
           <li key={u.id} className="rounded-2xl border border-border bg-surface p-6">
-            <p className="font-medium">{u.name}</p>
-            <p className="text-xs text-title-muted">
-              {u.publication_status}
-              {u.tab_group ? ` · ${u.tab_group}` : ''}
-            </p>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="font-medium">{u.name}</p>
+                <p className="text-xs text-title-muted">{u.tab_group ? u.tab_group : 'custom tab'}</p>
+              </div>
+              <label className="text-xs">
+                Visibility on website
+                <select
+                  value={u.publication_status ?? 'draft'}
+                  className="mt-1 block rounded-lg border border-border px-2 py-1 text-sm"
+                  onChange={(e) => {
+                    const status = e.target.value as DbUnitType['publication_status']
+                    void upsertUnitType({ ...u, publication_status: status }).then(reload)
+                  }}
+                >
+                  <option value="published">Published</option>
+                  <option value="coming_soon">Coming soon</option>
+                  <option value="draft">Draft (hidden)</option>
+                </select>
+              </label>
+            </div>
+            {u.publication_status === 'draft' && (
+              <p className="mt-2 text-xs text-amber-900">
+                This unit is hidden on the live property page — set to Published to show layouts.
+              </p>
+            )}
             {u.description && <p className="mt-2 text-sm text-title-muted">{u.description}</p>}
             <div className="mt-4 max-w-md">
               <MediaUploadZone

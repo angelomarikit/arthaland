@@ -89,6 +89,20 @@ export function SupportWidget() {
                   </span>
                   <ChevronRight className="size-5 shrink-0 text-title-muted" />
                 </button>
+                <a
+                  href={siteConfig.social.messengerAgent}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-tile flex w-full items-center justify-between px-4 py-4 text-left"
+                >
+                  <span>
+                    <span className="block font-medium">Message on Messenger</span>
+                    <span className="mt-1 block text-sm text-title-muted">
+                      Chat with Mr. Gary Lee (Facebook)
+                    </span>
+                  </span>
+                  <ChevronRight className="size-5 shrink-0 text-title-muted" />
+                </a>
                 <button
                   type="button"
                   className="btn-tile flex w-full items-center justify-between px-4 py-4 text-left"

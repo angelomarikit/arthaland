@@ -194,7 +194,7 @@ export function AdminPropertyLocationPage() {
                   folder: `developments/${dev.id}/map`,
                   developmentId: dev.id,
                   developmentSlug: slug,
-                  placement: 'gallery',
+                  placement: 'map',
                   published: true,
                   displayOrder: 0,
                   onProgress,

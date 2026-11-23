@@ -5,6 +5,7 @@ import { FadeInWhenVisible } from '../components/page/FadeInWhenVisible'
 import { PageConsultCta } from '../components/page/PageConsultCta'
 import { Button } from '../components/ui/Button'
 import { Container } from '../components/ui/Container'
+import { ReadableBodyText } from '../components/ui/ReadableBodyText'
 import { Eyebrow } from '../components/ui/Eyebrow'
 import { certificationLogos } from '../config/certificationLogos'
 import { sectionImages } from '../config/sectionImages'
@@ -146,7 +147,7 @@ export function CertificationsPage() {
                     {String(i + 1).padStart(2, '0')}
                   </p>
                   <h3 className="text-heading-3 mt-2">{item.title}</h3>
-                  <p className="mt-3 leading-relaxed text-title-muted">{item.body}</p>
+                  <ReadableBodyText className="mt-3">{item.body}</ReadableBodyText>
                 </li>
               </FadeInWhenVisible>
             ))}

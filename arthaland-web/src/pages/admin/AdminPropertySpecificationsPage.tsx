@@ -103,7 +103,7 @@ export function AdminPropertySpecificationsPage() {
               folder: `developments/${dev.id}/overview`,
               developmentId: dev.id,
               developmentSlug: slug,
-              placement: 'gallery',
+              placement: 'overview',
               published: true,
               displayOrder: 0,
               onProgress,

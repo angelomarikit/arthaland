@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useParams } from 'react-router-dom'
 import { AdminBreadcrumbs } from '../../components/admin/AdminBreadcrumbs'
+import { AdminSortableLines } from '../../components/admin/AdminSortableLines'
 import { fetchAdminDevelopment, updateDevelopment } from '../../lib/cms/developmentsApi'
 
 export function AdminPropertyAmenitiesPage() {
@@ -41,24 +42,30 @@ export function AdminPropertyAmenitiesPage() {
       />
       <h1 className="text-2xl font-medium">Amenities & sustainability</h1>
       <form onSubmit={onSave} className="mt-6 space-y-4 rounded-2xl border border-border bg-surface p-6">
-        <label className="block text-sm">
-          Amenities (one per line)
-          <textarea
-            rows={8}
-            value={amenitiesText}
-            onChange={(e) => setAmenitiesText(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-border px-3 py-2"
-          />
-        </label>
-        <label className="block text-sm">
-          Sustainability highlights (one per line)
-          <textarea
-            rows={6}
-            value={sustainText}
-            onChange={(e) => setSustainText(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-border px-3 py-2"
-          />
-        </label>
+        <AdminSortableLines
+          label="Amenities (one per line)"
+          value={amenitiesText}
+          onChange={setAmenitiesText}
+        />
+        <textarea
+          rows={4}
+          value={amenitiesText}
+          onChange={(e) => setAmenitiesText(e.target.value)}
+          className="mt-2 w-full rounded-xl border border-border px-3 py-2 text-sm"
+          placeholder="Type a line and press Enter to add…"
+        />
+        <AdminSortableLines
+          label="Sustainability highlights (one per line)"
+          value={sustainText}
+          onChange={setSustainText}
+        />
+        <textarea
+          rows={3}
+          value={sustainText}
+          onChange={(e) => setSustainText(e.target.value)}
+          className="mt-2 w-full rounded-xl border border-border px-3 py-2 text-sm"
+          placeholder="Type a line and press Enter to add…"
+        />
         {saved && <p className="text-sm text-emerald-800">Saved.</p>}
         <button type="submit" className="rounded-xl bg-ink px-4 py-2 text-sm text-surface">
           Save

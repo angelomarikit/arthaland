@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
 import { SiteHeader } from '../components/layout/SiteHeader'
 import { Container } from '../components/ui/Container'
+import { ReadableBodyText } from '../components/ui/ReadableBodyText'
 import { Button } from '../components/ui/Button'
 import { FeaturedUnitPhotoGallery } from '../components/featuredUnit/FeaturedUnitPhotoGallery'
 import type { FeaturedUnit } from '../domain/featuredUnit/types'
@@ -115,7 +116,7 @@ export function FeaturedUnitDetailPage() {
 
             <div className="mt-8">
               <h2 className="text-heading-3">About this unit</h2>
-              <p className="mt-4 leading-relaxed text-title-muted">{unit.description}</p>
+              <ReadableBodyText className="mt-4">{unit.description}</ReadableBodyText>
               {unit.highlights.length > 0 ? (
                 <ul className="mt-6 grid gap-2 sm:grid-cols-2">
                   {unit.highlights.map((h) => (

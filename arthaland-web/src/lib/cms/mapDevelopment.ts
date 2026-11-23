@@ -7,6 +7,10 @@ import type {
   UnitType,
 } from '../../domain/development/types'
 import type { DbCmsMedia, DbDevelopment, DbUnitType } from '../supabase/database.types'
+import {
+  filterPropertyGalleryUrls,
+  isPropertyGalleryMedia,
+} from './propertyGalleryMedia'
 import { mediaPublicUrl } from './mediaUpload'
 
 function asCategory(v: string | null): DevelopmentCategory {
@@ -61,17 +65,13 @@ export function mapDbDevelopment(
   row: DbDevelopment,
   galleryMedia: DbCmsMedia[] = [],
 ): Development {
-  const galleryFromMedia = galleryMedia
-    .filter(
-      (m) =>
-        m.media_kind === 'image' &&
-        m.published &&
-        m.placement !== 'floor_plan',
-    )
+  const galleryFromMedia = galleryMedia.filter((m) => isPropertyGalleryMedia(m))
     .sort((a, b) => a.display_order - b.display_order)
     .map((m) => mediaPublicUrl(m))
 
-  const legacyGallery = Array.isArray(row.gallery) ? row.gallery : []
+  const legacyGallery = filterPropertyGalleryUrls(
+    Array.isArray(row.gallery) ? row.gallery : [],
+  )
   const gallery = galleryFromMedia.length ? galleryFromMedia : legacyGallery
 
   const hero = row.hero_image ?? row.cover_image ?? gallery[0] ?? ''

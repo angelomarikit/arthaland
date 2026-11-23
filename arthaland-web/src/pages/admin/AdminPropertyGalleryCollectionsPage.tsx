@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useParams } from 'react-router-dom'
 import { AdminBreadcrumbs } from '../../components/admin/AdminBreadcrumbs'
+import { AdminSortableList } from '../../components/admin/AdminSortableList'
 import { fetchAdminDevelopment, fetchDevelopmentMedia } from '../../lib/cms/developmentsApi'
 import {
   assignMediaToCollection,
@@ -76,24 +77,45 @@ export function AdminPropertyGalleryCollectionsPage() {
         </button>
       </form>
 
-      <ul className="mt-8 space-y-4">
-        {collections.map((c) => (
-          <li key={c.id} className="rounded-2xl border border-border bg-surface p-4">
-            <div className="flex flex-wrap justify-between gap-2">
+      <h2 className="mt-8 text-sm font-medium">Collections (drag to reorder)</h2>
+      <AdminSortableList
+        className="mt-4 space-y-4"
+        itemClassName="rounded-2xl border border-border bg-surface p-4"
+        items={[...collections].sort((a, b) => a.display_order - b.display_order)}
+        onReorder={(next) => {
+          void Promise.all(
+            next.map((c, index) =>
+              upsertGalleryCollection({
+                id: c.id,
+                development_id: c.development_id,
+                development_slug: c.development_slug,
+                slug: c.slug,
+                title: c.title,
+                description: c.description,
+                display_order: index,
+                published: c.published,
+              }),
+            ),
+          ).then(reload)
+        }}
+        renderItem={(c, handle) => (
+          <div className="flex flex-wrap items-start justify-between gap-2">
+            <div className="flex min-w-0 items-start gap-2">
+              {handle}
               <p className="font-medium">
                 {c.title} <span className="text-xs text-title-muted">({c.slug})</span>
               </p>
-              <button
-                type="button"
-                className="text-xs text-red-800"
-                onClick={() => void deleteGalleryCollection(c.id).then(reload)}
-              >
-                Delete collection
-              </button>
             </div>
-          </li>
-        ))}
-      </ul>
+            <button
+              type="button"
+              className="text-xs text-red-800"
+              onClick={() => void deleteGalleryCollection(c.id).then(reload)}
+            >
+              Delete collection
+            </button>
+          </div>
+        )}
+      />
 
       <h2 className="mt-10 text-lg font-medium">Assign media</h2>
       <ul className="mt-4 space-y-3">

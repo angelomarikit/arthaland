@@ -157,3 +157,25 @@ export async function deleteFeaturedUnit(id: string): Promise<void> {
   const { error } = await supabase.from('featured_units').delete().eq('id', id)
   if (error) throw error
 }
+
+/** Persist marketplace listing order after drag-and-drop in admin. */
+export async function patchFeaturedUnitDisplayOrder(
+  orderedIds: string[],
+): Promise<void> {
+  const supabase = getSupabaseClient()
+  if (!supabase) throw new Error('Supabase is not configured.')
+
+  const results = await Promise.all(
+    orderedIds.map((id, index) =>
+      supabase
+        .from('featured_units')
+        .update({
+          display_order: index,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', id),
+    ),
+  )
+  const err = results.find((r) => r.error)?.error
+  if (err) throw err
+}

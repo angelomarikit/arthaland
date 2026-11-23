@@ -137,6 +137,18 @@ export function ContactPage() {
                   </div>
 
                   <a
+                    href={siteConfig.social.messengerAgent}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center justify-between border border-surface/25 bg-surface/5 px-6 py-4 text-surface transition-colors hover:bg-surface hover:text-ink"
+                  >
+                    <span className="inline-flex items-center gap-3 text-sm font-medium">
+                      <FacebookIcon className="size-5" />
+                      Message Mr. Gary Lee on Messenger
+                    </span>
+                    <ArrowUpRight className="size-4 opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </a>
+                  <a
                     href={siteConfig.social.facebook}
                     target="_blank"
                     rel="noopener noreferrer"

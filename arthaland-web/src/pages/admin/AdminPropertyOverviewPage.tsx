@@ -89,14 +89,22 @@ export function AdminPropertyOverviewPage() {
       />
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-medium">{dev.name}</h1>
-        <Link
-          to={`/properties/${dev.slug}`}
-          target="_blank"
-          rel="noreferrer"
-          className="text-sm underline"
-        >
-          Preview public page
-        </Link>
+        <div className="flex flex-wrap items-center gap-4 text-sm">
+          <Link
+            to={`/admin/edit/property/${dev.slug}`}
+            className="rounded-xl bg-ink px-4 py-2 text-surface"
+          >
+            Edit property page (section map)
+          </Link>
+          <Link
+            to={`/properties/${dev.slug}`}
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
+          >
+            Preview public page
+          </Link>
+        </div>
       </div>
 
       <PropertyPublicVisibilityPanel slug={slug} />

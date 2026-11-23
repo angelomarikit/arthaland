@@ -32,6 +32,10 @@
 |-------|---------|
 | `/admin/login` | Supabase Auth |
 | `/admin` | Dashboard stats |
+| `/admin/edit` | **Edit website** hub — marketing pages + properties with section map links |
+| `/admin/edit/site/:slug` | Per-page section map (home, about, contact, …) |
+| `/admin/edit/property/:slug` | Per-property section map + visibility |
+| `/admin/content-guide` | Client-facing guide (what to edit where) |
 | `/admin/pages` | Website pages |
 | `/admin/pages/:slug` | Page sections list |
 | `/admin/pages/:slug/sections/:sectionKey` | Section editor |
@@ -79,6 +83,20 @@ Content is stored in existing `cms_page_sections.content` (JSON) for the `home` 
 | `/admin/lifestyle` | Lifestyle editorial grid |
 
 Requires `002_full_cms.sql` (`cms_pages` includes `home`). No additional migration unless you add new page slugs.
+
+### Drag-and-drop reorder (Phase B)
+
+HTML5 drag handles (⋮⋮) persist order to the database:
+
+| Admin screen | Field |
+|--------------|-------|
+| `/admin/gallery`, `/admin/lifestyle` | Item list order in page JSON (save required) |
+| `/admin/properties/:slug/media` | `cms_media.display_order` (gallery images only) |
+| `/admin/properties/:slug/gallery` | `cms_gallery_collections.display_order` |
+| `/admin/properties/:slug/amenities` | List order in `developments.amenities` / `sustainability` (save required) |
+| `/admin/featured-units` | `featured_units.display_order` |
+
+Start from **Website → Edit website** (`/admin/edit`) or **Content guide** (`/admin/content-guide`) for a map of every public section.
 
 
 Inquiries unchanged: `development_slug` FK to `developments.slug`.
