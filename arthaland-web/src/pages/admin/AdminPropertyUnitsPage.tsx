@@ -9,6 +9,7 @@ import {
   upsertUnitType,
 } from '../../lib/cms/developmentsApi'
 import { deleteAdminCmsMedia, uploadMediaWithMetadata } from '../../lib/cms/mediaUpload'
+import { isLayoutMediaForPublic, resolveUnitTypeIdForMedia } from '../../lib/cms/unitLayoutMedia'
 import type { DbCmsMedia, DbUnitType } from '../../lib/supabase/database.types'
 
 export function AdminPropertyUnitsPage() {
@@ -29,11 +30,12 @@ export function AdminPropertyUnitsPage() {
     const all = await fetchDevelopmentMedia(slug)
     const byUnit: Record<string, DbCmsMedia[]> = {}
     for (const m of all) {
-      if (m.placement === 'floor_plan' && m.unit_type_id) {
-        const list = byUnit[m.unit_type_id] ?? []
-        list.push(m)
-        byUnit[m.unit_type_id] = list
-      }
+      if (!isLayoutMediaForPublic(m)) continue
+      const unitId = resolveUnitTypeIdForMedia(m)
+      if (!unitId) continue
+      const list = byUnit[unitId] ?? []
+      list.push(m)
+      byUnit[unitId] = list
     }
     for (const id of Object.keys(byUnit)) {
       byUnit[id]!.sort((a, b) => a.display_order - b.display_order)
@@ -73,6 +75,21 @@ export function AdminPropertyUnitsPage() {
     e.currentTarget.reset()
   }
 
+  async function publishAllUnits() {
+    if (units.length === 0) return
+    setError(null)
+    try {
+      await Promise.all(
+        units.map((u) => upsertUnitType({ ...u, publication_status: 'published' })),
+      )
+      await reload()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not publish all units')
+    }
+  }
+
+  const draftCount = units.filter((u) => u.publication_status === 'draft').length
+
   async function deleteFloorPlan(media: DbCmsMedia) {
     if (!window.confirm('Delete this floor plan image?')) return
     setError(null)
@@ -93,7 +110,18 @@ export function AdminPropertyUnitsPage() {
           { label: 'Units' },
         ]}
       />
-      <h1 className="text-2xl font-medium">Unit types</h1>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <h1 className="text-2xl font-medium">Unit types</h1>
+        {draftCount > 0 ? (
+          <button
+            type="button"
+            className="rounded-xl bg-ink px-4 py-2 text-sm text-surface"
+            onClick={() => void publishAllUnits()}
+          >
+            Publish all {draftCount} unit(s) on website
+          </button>
+        ) : null}
+      </div>
       <p className="mt-2 max-w-2xl text-sm text-title-muted">
         Floor plans appear under <strong className="font-medium text-ink">Unit layouts</strong> on the live site
         only when: (1) the unit is <strong className="font-medium text-ink">Published</strong> here, (2) you upload

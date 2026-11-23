@@ -62,6 +62,14 @@
 
 When `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set (and `VITE_CMS_SOURCE` is not `local` / `false`), `/properties` and `/properties/:slug` load `published` / `coming_soon` rows from Postgres only — no silent fallback to bundled seed data. If the query fails, the UI shows an error banner. Unit types and floor-plan images come from `cms_unit_types` and `cms_media` (`placement = floor_plan`). Set `VITE_CMS_SOURCE=local` to force the old seed-data behavior for local demos.
 
+### Unit layouts / floor plans not on the live site
+
+1. **Admin → Properties → Units** (not Sections / Media gallery).
+2. Each unit: **Visibility → Published** (or **Publish all** on the Units page).
+3. Upload with **Floor plan** on that unit row; images must be **Public** (`published`).
+4. **Property → Overview** panel: “Public site visibility” lists unit/layout issues.
+5. **Supabase SQL (once):** run `supabase/migrations/009_unit_types_public_read.sql` so anonymous visitors can read published units (older projects used stricter RLS).
+
 ### Uploads not showing on the live site
 
 1. **Vercel env** — Same `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` as local; no `VITE_CMS_SOURCE=local`. Redeploy after changes (env is build-time).

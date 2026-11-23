@@ -14,7 +14,12 @@ export function PropertyUnitLayoutsSection({ units }: PropertyUnitLayoutsSection
   const visibleUnits = useMemo(
     () =>
       units
-        .filter((u) => u.publicationStatus !== 'draft')
+        .filter(
+          (u) =>
+            u.publicationStatus !== 'draft' &&
+            ((u.floorPlanImages?.length ?? 0) > 0 ||
+              (u.unitRenderImages?.length ?? 0) > 0),
+        )
         .sort((a, b) => a.displayOrder - b.displayOrder),
     [units],
   )

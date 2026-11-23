@@ -21,7 +21,11 @@ import type {
   DbUnitType,
 } from '../supabase/database.types'
 import { mapDbDevelopment, mapDbUnitType } from './mapDevelopment'
-import { resolveUnitTypeIdForMedia } from './unitLayoutMedia'
+import {
+  isLayoutMediaForPublic,
+  layoutMediaRole,
+  resolveUnitTypeIdForMedia,
+} from './unitLayoutMedia'
 import {
   filterPropertyGalleryUrls,
   isPropertyGalleryMedia,
@@ -57,13 +61,15 @@ function mapUnits(
   const floorByUnit = new Map<string, DbCmsMedia[]>()
   const renderByUnit = new Map<string, DbCmsMedia[]>()
   for (const m of mediaList) {
+    if (!isLayoutMediaForPublic(m)) continue
     const unitId = resolveUnitTypeIdForMedia(m)
     if (!unitId) continue
-    if (m.placement === 'floor_plan') {
+    const role = layoutMediaRole(m)
+    if (role === 'floor') {
       const list = floorByUnit.get(unitId) ?? []
       list.push(m)
       floorByUnit.set(unitId, list)
-    } else if (m.placement === 'unit_render') {
+    } else {
       const list = renderByUnit.get(unitId) ?? []
       list.push(m)
       renderByUnit.set(unitId, list)
@@ -87,6 +93,70 @@ function mapUnits(
       },
     )
   })
+}
+
+/** When CMS unit rows are missing or unlinked, show published layout files anyway. */
+function syntheticUnitsFromLayoutMedia(
+  mediaList: DbCmsMedia[],
+  dev: DbDevelopment,
+): UnitType[] {
+  const layout = mediaList.filter(isLayoutMediaForPublic)
+  if (layout.length === 0) return []
+
+  const groups = new Map<string, DbCmsMedia[]>()
+  for (const m of layout) {
+    const key = resolveUnitTypeIdForMedia(m) ?? `media-${m.id}`
+    const list = groups.get(key) ?? []
+    list.push(m)
+    groups.set(key, list)
+  }
+
+  return [...groups.entries()].map(([id, meds], index) => {
+    const sorted = [...meds].sort((a, b) => a.display_order - b.display_order)
+    const floorMeds = sorted.filter((m) => layoutMediaRole(m) === 'floor')
+    const renderMeds = sorted.filter((m) => layoutMediaRole(m) === 'render')
+    const floorUrls = (floorMeds.length > 0 ? floorMeds : sorted).map((m) => mediaPublicUrl(m))
+    const renderUrls = renderMeds.map((m) => mediaPublicUrl(m))
+    const primary = sorted[0]!
+    const stub: DbUnitType = {
+      id: id.startsWith('media-') ? primary.id : id,
+      development_id: primary.development_id ?? dev.id,
+      development_slug: primary.development_slug ?? dev.slug,
+      name:
+        primary.alt_text?.trim() ||
+        primary.caption?.trim() ||
+        `Unit layout ${index + 1}`,
+      area_min: null,
+      area_max: null,
+      bedrooms: null,
+      bathrooms: null,
+      publication_status: 'published',
+      display_order: index,
+      description: null,
+      features: null,
+      tab_group: 'custom',
+      brochure_url: null,
+      price_note: null,
+      created_at: primary.created_at,
+      updated_at: primary.updated_at,
+    }
+    return mapDbUnitType(stub, floorUrls, { unitRenderImages: renderUrls })
+  })
+}
+
+function buildPublicUnits(
+  unitRows: DbUnitType[],
+  mediaList: DbCmsMedia[],
+  dev: DbDevelopment,
+): UnitType[] {
+  const mapped = mapUnits(unitRows, mediaList)
+  const withImages = mapped.filter(
+    (u) =>
+      u.publicationStatus !== 'draft' &&
+      ((u.floorPlanImages?.length ?? 0) > 0 || (u.unitRenderImages?.length ?? 0) > 0),
+  )
+  if (withImages.length > 0) return withImages
+  return syntheticUnitsFromLayoutMedia(mediaList, dev)
 }
 
 function groupGallery(
@@ -368,7 +438,7 @@ export async function fetchPublicPropertyPageData(
 
   const amenitiesRich = mapAmenities(joinAmenities, amenityRows, mediaById)
 
-  const units = mapUnits(unitRows, mediaList)
+  const units = buildPublicUnits(unitRows, mediaList, row)
 
   return {
     development,
