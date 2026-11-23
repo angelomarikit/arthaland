@@ -38,6 +38,8 @@
   html {
     scroll-behavior: auto;
     overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
@@ -51,6 +53,8 @@
     color: var(--color-ink);
     background: var(--color-surface);
     -webkit-font-smoothing: antialiased;
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 
   a {
@@ -136,7 +140,27 @@
   }
 
   .section-x {
-    padding-inline: var(--spacing-gutter-mobile);
+    padding-left: max(var(--spacing-gutter-mobile), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--spacing-gutter-mobile), env(safe-area-inset-right, 0px));
+  }
+
+  /** Fixed UI (help widget, etc.) — clear home indicator on phones */
+  .fixed-safe-bottom {
+    bottom: max(1.25rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .fixed-safe-right {
+    right: max(1.25rem, env(safe-area-inset-right, 0px));
+  }
+
+  @media (min-width: 768px) {
+    .fixed-safe-bottom {
+      bottom: max(2rem, env(safe-area-inset-bottom, 0px));
+    }
+
+    .fixed-safe-right {
+      right: max(2rem, env(safe-area-inset-right, 0px));
+    }
   }
 
   @media (min-width: 810px) {

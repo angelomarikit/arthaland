@@ -60,7 +60,7 @@ export function MobileNavOverlay({ open, onClose }: MobileNavOverlayProps) {
       />
       <div
         ref={panelRef}
-        className="absolute inset-y-0 right-0 flex w-[min(100%,420px)] flex-col bg-surface shadow-2xl"
+        className="absolute inset-y-0 right-0 flex w-[min(100%,420px)] max-w-full flex-col bg-surface pt-[env(safe-area-inset-top)] shadow-2xl"
       >
         <div className="flex h-[82px] items-center justify-between border-b border-border px-6">
           <span className="text-nav font-medium">{siteConfig.brand.name}</span>

@@ -41,7 +41,7 @@ export function SupportWidget() {
 
   return (
     <div
-      className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3 md:bottom-8 md:right-8"
+      className="fixed-safe-bottom fixed-safe-right fixed z-40 flex flex-col items-end gap-3 md:bottom-8 md:right-8"
       data-support-widget
     >
       {open && (

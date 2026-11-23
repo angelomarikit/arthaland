@@ -3,6 +3,27 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return
+          if (
+            id.includes('react-dom') ||
+            id.includes('react-router') ||
+            id.includes('/react/')
+          ) {
+            return 'vendor-react'
+          }
+          if (id.includes('@supabase')) return 'vendor-supabase'
+          if (id.includes('gsap') || id.includes('motion/') || id.includes('@gsap')) {
+            return 'vendor-motion'
+          }
+          if (id.includes('lucide-react')) return 'vendor-icons'
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),
